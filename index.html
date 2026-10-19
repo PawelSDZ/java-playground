@@ -155,6 +155,9 @@ h1, h2 { text-wrap: balance; }
 .chip.Reto, .lv.Reto { background: var(--lv-hard-bg); color: var(--lv-hard); }
 .lv { flex: none; font-size: 11px; font-weight: 600; padding: 1px 7px; border-radius: 99px; line-height: 1.5; }
 .ex-btn .ex-name { flex: 1; min-width: 0; }
+.practice-btn { min-height: 28px; padding: 0 10px; border-radius: 99px; border: 1px solid var(--line); background: transparent; color: var(--fg-2); font: inherit; font-size: 12.5px; font-weight: 600; cursor: pointer; }
+.practice-btn:hover { color: var(--fg); border-color: var(--fg-2); }
+.practice-btn.confirm { border-color: #F2A65A; color: #F2A65A; }
 .solved-tag { display: inline-flex; align-items: center; gap: 4px; color: var(--ok); font-weight: 600; font-size: 12.5px; }
 .title { margin: 8px 0 10px; font-size: 26px; line-height: 1.2; letter-spacing: -0.015em; }
 .statement { margin: 0 0 18px; color: var(--fg-2); max-width: 70ch; }
@@ -307,7 +310,7 @@ textarea.code:focus { outline: none; box-shadow: inset 0 0 0 2px #3B82F6; }
     </div>
 
     <section class="card" aria-labelledby="exTitle">
-      <div class="crumb"><span id="exGroup"></span><span aria-hidden="true">/</span><span id="exNum"></span><span class="chip" id="exLevel"></span><span class="solved-tag" id="exSolved" hidden><svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>Completado</span></div>
+      <div class="crumb"><span id="exGroup"></span><span aria-hidden="true">/</span><span id="exNum"></span><span class="chip" id="exLevel"></span><span class="solved-tag" id="exSolved" hidden><svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>Completado</span><button type="button" class="practice-btn" id="practiceBtn" hidden>Practicar de nuevo</button></div>
       <h1 class="title" id="exTitle"></h1>
       <p class="statement" id="exStatement"></p>
       <div class="io">
@@ -2688,7 +2691,7 @@ var EXERCISES = [
     refreshNav();
     hooks.render.forEach(function (f) { f(); });
     // si ya está resuelto, mostrar directamente su resultado (se ejecuta en el navegador, no gasta nada)
-    if (state.solved[e.id]) runCode(true);
+    if (state.solved[e.id] && !(state.practice && state.practice[e.id])) runCode(true);
   }
   function helpOf(e) { return (state.help && state.help[e.id]) || ''; }
   function paintSolvedTag(e) {
@@ -2696,7 +2699,23 @@ var EXERCISES = [
     tag.hidden = !state.solved[e.id];
     tag.className = 'solved-tag' + (h ? ' help' : '');
     tag.lastChild.textContent = h === 'solution' ? 'Completado viendo la solución' : h === 'hints' ? 'Completado con pistas' : 'Completado';
+    var pb = $('practiceBtn'), practicing = !!(state.practice && state.practice[e.id]);
+    pb.hidden = !state.solved[e.id] || practicing;
+    if (practicing && state.solved[e.id]) tag.lastChild.textContent += ' · practicando de nuevo';
+    disarmPractice();
   }
+  // ----- practicar de nuevo un ejercicio ya resuelto: código inicial, sin pistas ni solución -----
+  var practiceArmed = false, practiceTimer = null;
+  function disarmPractice() { practiceArmed = false; clearTimeout(practiceTimer); var b = $('practiceBtn'); if (b) { b.textContent = 'Practicar de nuevo'; b.classList.remove('confirm'); } }
+  $('practiceBtn').addEventListener('click', function () {
+    var b = $('practiceBtn');
+    if (!practiceArmed) { practiceArmed = true; b.textContent = 'Se borrará tu código. Pulsa otra vez'; b.classList.add('confirm'); practiceTimer = setTimeout(disarmPractice, 4000); return; }
+    var e = ex();
+    delete state.code[e.id]; state.hints[e.id] = 0;
+    if (state.solSeen) delete state.solSeen[e.id];
+    state.practice = state.practice || {}; state.practice[e.id] = true;
+    save(); render(); codeEl.focus();
+  });
   function go(i) {
     if (i < 0 || i >= EXERCISES.length) return;
     state.current = i; state.currentId = EXERCISES[i].id;
@@ -3075,6 +3094,12 @@ var EXERCISES = [
           state.solved[e.id] = true; state.help = state.help || {};
           var used = state.solSeen && state.solSeen[e.id] ? 'solution' : ((state.hints[e.id] || 0) > 0 ? 'hints' : '');
           if (used) state.help[e.id] = used;
+          save();
+        } else if (state.practice && state.practice[e.id]) {
+          // al repetirlo sin ayuda, la marca pasa a verde; si se usó ayuda, se queda como estaba
+          delete state.practice[e.id];
+          var usedNow = state.solSeen && state.solSeen[e.id] ? 'solution' : ((state.hints[e.id] || 0) > 0 ? 'hints' : '');
+          if (!usedNow && state.help) delete state.help[e.id];
           save();
         }
         paintSolvedTag(e); refreshNav();
