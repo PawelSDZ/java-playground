@@ -1,4 +1,38 @@
 W = {
+'b7': [
+ ('if (edad >= 18) {', 'El if de fuera mira la edad. 20 >= 18 es true, así que entra en su bloque.'),
+ ('if (tieneCarnet) {', 'El if de dentro solo se evalúa si es mayor de edad. tieneCarnet ya es un boolean, así que no hace falta == true. Vale false: no entra.'),
+ ('System.out.println("Necesitas el carnet");', 'Es el else del if de dentro: muestra "Necesitas el carnet".'),
+ ('System.out.println("Eres menor de edad");', 'Es el else del if de fuera: solo se llega aquí con menos de 18 años, y el carnet ni se mira.'),
+],
+'l10': [
+ ('for (int i = 1; i <= limite; i++) {', 'i recorre del 1 al 10.'),
+ ('if (i % 3 == 0) {', 'i % 3 es el resto de dividir entre 3. Si es 0, i es múltiplo de 3: pasa con 3, 6 y 9.'),
+ ('continue;', 'Salta el resto de esta vuelta y pasa a la siguiente. A diferencia de break, el bucle no termina.'),
+ ('System.out.println(i);', 'Solo llegan aquí los que no son múltiplos de 3: 1, 2, 4, 5, 7, 8 y 10.'),
+],
+'l11': [
+ ('for (int i = 1; i <= filas; i++) {', 'El bucle de fuera recorre las filas: i vale 1, 2, 3 y 4.'),
+ ('for (int j = 1; j <= i; j++) {', 'El de dentro da i vueltas: una en la fila 1, cuatro en la fila 4. Por cada vuelta del de fuera, el de dentro hace todas las suyas.'),
+ ('System.out.print("*");', 'print escribe el * sin saltar de línea, así que los asteriscos de una fila salen seguidos.'),
+ ('System.out.println();', 'Va fuera del bucle de dentro: cuando la fila está completa, salta a la línea siguiente.'),
+],
+'l12': [
+ ('int valor = numero;', 'Se copia el número para ir duplicándolo sin perder el original.'),
+ ('do {', 'do-while ejecuta el bloque primero y comprueba la condición al final, así que siempre duplica al menos una vez.'),
+ ('valor = valor * 2;', 'Duplica: 6, 12, 24, 48 y 96.'),
+ ('veces++;', 'Una duplicación más por vuelta.'),
+ ('} while (valor <= limite);', 'Repite mientras no supere el límite. Con 96, 96 <= 50 es false y para tras 5 vueltas.'),
+ ('System.out.println(valor + " tras " + veces + " duplicaciones");', 'Muestra "96 tras 5 duplicaciones".'),
+],
+'l13': [
+ ('int candidato = numero + 1;', 'Empieza justo después del número, porque el múltiplo tiene que ser mayor: 31.'),
+ ('while (true) {', 'La condición siempre es true, así que el bucle no para por sí solo: es un bucle infinito controlado, y la salida es el break.'),
+ ('if (candidato % divisor == 0) {', 'Si el resto de dividir entre 7 es 0, es múltiplo. 31, 32, 33 y 34 no lo son; 35 sí.'),
+ ('break;', 'Sale del bucle en cuanto lo encuentra, sin llegar a candidato++.'),
+ ('candidato++;', 'Si no era múltiplo, prueba el siguiente.'),
+ ('System.out.println(candidato);', 'Muestra 35.'),
+],
 'a4': [
  ('kilos / 5', 'Divide los kilos entre lo que cabe en una caja: 47.8 / 5 = 9.56. Como kilos es double, el resultado también es double.'),
  ('(int) (kilos / 5)', 'El casting (int) convierte el resultado a entero cortando los decimales: 9.56 pasa a 9. No redondea, así que nunca cuenta una caja a medias. Los paréntesis hacen que primero se divida y después se convierta.'),

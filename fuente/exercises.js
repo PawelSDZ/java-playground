@@ -634,12 +634,100 @@ var EXERCISES = [
     explanation: 'Cada división entre 10 quita la última cifra (4096 → 409 → 40 → 4 → 0) y el contador suma una por vuelta: 4. Se usa do-while porque comprueba la condición después de la primera vuelta: así el 0 cuenta como una cifra. Con while (n > 0), el 0 no entraría en el bucle y daría 0.',
     req: [{ re: /\b(for|while)\s*\(|\bdo\s*\{/, msg: 'usar un bucle' }],
     alt: { unless: /\bdo\s*\{/, code: 'do {\n    n = n / 10;\n    cifras++;\n} while (n > 0);', why: 'Con do-while el bloque se ejecuta al menos una vez, así que el 0 cuenta como una cifra sin tener que tratarlo aparte.' }
+  },
+  {
+    id: 'b7', group: 'Booleanos y condiciones', title: 'Permiso de conducir', level: 'Fácil',
+    statement: 'Con un if dentro de otro, muestra "Eres menor de edad" si tiene menos de 18 años. Si tiene 18 o más, muestra "Puedes conducir" si tiene carnet y "Necesitas el carnet" si no lo tiene.',
+    input: 'int edad = 20;\nboolean tieneCarnet = false;',
+    tests: ["int edad = 16;\nboolean tieneCarnet = false;", "int edad = 18;\nboolean tieneCarnet = true;", "int edad = 45;\nboolean tieneCarnet = true;", "int edad = 18;\nboolean tieneCarnet = false;", "int edad = 17;\nboolean tieneCarnet = false;"],
+    expected: 'Necesitas el carnet',
+    outInfo: 'Un texto (String): uno de los tres mensajes.',
+    starter: 'int edad = 20;\nboolean tieneCarnet = false;\n\n// Tu código aquí\n',
+    hints: [
+      "Hay dos preguntas y van en orden: primero la edad y, solo si es mayor de edad, el carnet. Si es menor, el carnet ni se mira.",
+      "El if de fuera comprueba la edad. Dentro de su bloque va otro if con su propio else para el carnet. El else del if de fuera es el de los menores.",
+      { t: "Completa los huecos:", code: "if (edad ___ 18) {\n    if (___) {\n        System.out.println(\"Puedes conducir\");\n    } else {\n        System.out.println(\"Necesitas el carnet\");\n    }\n} ___ {\n    System.out.println(\"Eres menor de edad\");\n}" }
+    ],
+    solution: 'int edad = 20;\nboolean tieneCarnet = false;\nif (edad >= 18) {\n    if (tieneCarnet) {\n        System.out.println("Puedes conducir");\n    } else {\n        System.out.println("Necesitas el carnet");\n    }\n} else {\n    System.out.println("Eres menor de edad");\n}',
+    explanation: 'El if de fuera mira la edad: 20 >= 18 es true, así que entra. El if de dentro mira el carnet: tieneCarnet es false, así que va a su else y muestra "Necesitas el carnet". Cada if tiene su propio else: el de dentro responde a la pregunta del carnet y el de fuera, a la de la edad. Como tieneCarnet ya es un boolean, se escribe if (tieneCarnet), sin == true.',
+    req: [{ re: /\b(if\s*\([^{}]*\)|else)\s*\{[^}]*\bif\s*\(/, msg: 'poner un if dentro del bloque de otro if' }]
+  },
+  {
+    id: 'l10', group: 'Bucles', title: 'Saltar los múltiplos de 3', level: 'Fácil',
+    statement: 'Muestra los números del 1 al límite, uno por línea, pero sáltate los múltiplos de 3 usando continue.',
+    input: 'int limite = 10;',
+    tests: ["int limite = 1;", "int limite = 3;", "int limite = 7;", "int limite = 20;"],
+    expected: '1\n2\n4\n5\n7\n8\n10',
+    outInfo: 'Varias líneas con un número entero (int) cada una: los que no son múltiplos de 3.',
+    starter: 'int limite = 10;\n\n// Tu código aquí\n',
+    hints: [
+      "Recorres todos los números del 1 al límite, pero algunos no se muestran: el 3, el 6, el 9… En esas vueltas hay que pasar directamente a la siguiente.",
+      "Un número es múltiplo de 3 si el resto de dividirlo entre 3 es 0 (operador %). Dentro del bucle, si lo es, continue salta lo que queda de esa vuelta; el println va después.",
+      { t: "Completa los huecos:", code: "for (int i = 1; i <= limite; i++) {\n    if (i ___ 3 == 0) {\n        ___;\n    }\n    System.out.println(i);\n}" }
+    ],
+    solution: 'int limite = 10;\nfor (int i = 1; i <= limite; i++) {\n    if (i % 3 == 0) {\n        continue;\n    }\n    System.out.println(i);\n}',
+    explanation: 'El for recorre del 1 al 10. Cuando i % 3 == 0 (3, 6 y 9), continue salta el resto de esa vuelta: no llega al println y pasa a la siguiente. A diferencia de break, el bucle no termina: sigue hasta el 10.',
+    req: [{ re: /\bcontinue\s*;/, msg: 'usar continue para saltar una vuelta' }]
+  },
+  {
+    id: 'l11', group: 'Bucles', title: 'Triángulo de asteriscos', level: 'Media',
+    statement: 'Dibuja un triángulo de asteriscos con tantas filas como indica el número: la primera fila tiene un *, la segunda dos, y así hasta la última. Usa un bucle dentro de otro.',
+    input: 'int filas = 4;',
+    tests: ["int filas = 1;", "int filas = 2;", "int filas = 6;"],
+    expected: '*\n**\n***\n****',
+    outInfo: 'Tantas líneas como filas, cada una con asteriscos (*) seguidos y sin espacios.',
+    starter: 'int filas = 4;\n\n// Tu código aquí\n',
+    hints: [
+      "Cada fila tiene tantos asteriscos como su número de fila: la fila 1 tiene uno, la fila 4 tiene cuatro. Fíjate en que todos los asteriscos de una fila salen en la misma línea.",
+      "Hay dos formas de mostrar texto: una salta de línea al terminar y otra no. Necesitas las dos: una para cada asterisco y otra para acabar la fila.",
+      "Un bucle de fuera recorre las filas (i de 1 a filas). Dentro, otro bucle da i vueltas y muestra un * en cada una con System.out.print. Al acabar el de dentro, System.out.println() salta a la fila siguiente.",
+      { t: "Completa los huecos:", code: "for (int i = 1; i <= filas; i++) {\n    for (int j = 1; j <= ___; j++) {\n        System.out.___(\"*\");\n    }\n    System.out.___();\n}" }
+    ],
+    solution: 'int filas = 4;\nfor (int i = 1; i <= filas; i++) {\n    for (int j = 1; j <= i; j++) {\n        System.out.print("*");\n    }\n    System.out.println();\n}',
+    explanation: 'El bucle de fuera recorre las filas: i vale 1, 2, 3 y 4. Por cada fila, el de dentro da i vueltas y escribe un * con print, que no salta de línea. Cuando termina, println() salta a la fila siguiente. La clave es que el límite del bucle de dentro (j <= i) cambia en cada fila: por eso cada una tiene un asterisco más.',
+    req: [{ re: /\b(for|while)\s*\([^{}]*\)\s*\{[^}]*\b(for|while)\s*\(/, msg: 'poner un bucle dentro de otro' }]
+  },
+  {
+    id: 'l12', group: 'Bucles', title: 'Duplicar hasta superar', level: 'Media',
+    statement: 'Duplica el número al menos una vez y sigue duplicándolo mientras no supere el límite. Muestra el valor final y cuántas veces lo has duplicado, usando un bucle do-while.',
+    input: 'int numero = 3;\nint limite = 50;',
+    tests: ["int numero = 80;\nint limite = 50;", "int numero = 50;\nint limite = 50;", "int numero = 1;\nint limite = 1000;", "int numero = 7;\nint limite = 14;"],
+    expected: '96 tras 5 duplicaciones',
+    outInfo: 'Una línea con el valor final (int), la palabra «tras» y el número de duplicaciones (int).',
+    starter: 'int numero = 3;\nint limite = 50;\n\n// Tu código aquí\n',
+    hints: [
+      "Partiendo de 3: 6, 12, 24, 48 y 96. El 96 ya supera 50, así que se para ahí tras 5 duplicaciones. Ojo: aunque el número ya supere el límite desde el principio, se duplica una vez.",
+      "Necesitas un bucle que dé al menos una vuelta antes de comprobar la condición, una variable con el valor que vas duplicando y un contador.",
+      "Copia numero en otra variable. Dentro de do { ... } duplícala y suma 1 al contador. La condición del while (al final) es «mientras no supere el límite»: valor <= limite.",
+      { t: "Completa los huecos:", code: "int valor = numero;\nint veces = 0;\n___ {\n    valor = valor * ___;\n    veces++;\n} while (valor ___ limite);\nSystem.out.println(valor + \" tras \" + veces + \" duplicaciones\");" }
+    ],
+    solution: 'int numero = 3;\nint limite = 50;\nint valor = numero;\nint veces = 0;\ndo {\n    valor = valor * 2;\n    veces++;\n} while (valor <= limite);\nSystem.out.println(valor + " tras " + veces + " duplicaciones");',
+    explanation: 'El do-while ejecuta el bloque y después comprueba la condición: 6 (1), 12 (2), 24 (3), 48 (4) y 96 (5). 96 <= 50 es false, así que para. Con numero = 80 se duplica una vez (160) aunque ya superaba el límite: con un while normal la condición se comprobaría antes y daría 0 duplicaciones.',
+    req: [{ re: /\bdo\s*\{/, msg: 'usar un bucle do-while' }]
+  },
+  {
+    id: 'l13', group: 'Bucles', title: 'Primer múltiplo', level: 'Media',
+    statement: 'Busca el primer múltiplo del divisor que sea mayor que el número. Hazlo con un bucle while (true) y sal de él con break cuando lo encuentres.',
+    input: 'int numero = 30;\nint divisor = 7;',
+    tests: ["int numero = 0;\nint divisor = 7;", "int numero = 7;\nint divisor = 7;", "int numero = 13;\nint divisor = 5;", "int numero = 100;\nint divisor = 9;"],
+    expected: '35',
+    outInfo: 'Un número entero (int): el primer múltiplo del divisor mayor que el número.',
+    starter: 'int numero = 30;\nint divisor = 7;\n\n// Tu código aquí\n',
+    hints: [
+      "Prueba los números siguientes uno a uno: 31, 32, 33… El primero que sea múltiplo de 7 es la respuesta. No sabes cuántos tendrás que probar.",
+      "while (true) no termina nunca por sí solo: la única salida es break. Necesitas un candidato que empiece justo después del número y el operador que da el resto de una división.",
+      "Empieza con candidato = numero + 1. En cada vuelta, si candidato % divisor == 0, sal con break; si no, súmale 1. Después del bucle, muestra el candidato.",
+      { t: "Completa los huecos:", code: "int candidato = numero + 1;\nwhile (___) {\n    if (candidato % divisor == 0) {\n        ___;\n    }\n    candidato++;\n}\nSystem.out.println(candidato);" }
+    ],
+    solution: 'int numero = 30;\nint divisor = 7;\nint candidato = numero + 1;\nwhile (true) {\n    if (candidato % divisor == 0) {\n        break;\n    }\n    candidato++;\n}\nSystem.out.println(candidato);',
+    explanation: 'while (true) es un bucle infinito controlado: no para por su condición, sino con break. Prueba 31, 32, 33 y 34 (ninguno es múltiplo de 7) y en 35 el resto es 0, así que break sale del bucle sin llegar a candidato++. Se empieza en numero + 1 porque tiene que ser mayor: con numero = 7 la respuesta es 14, no 7.',
+    req: [{ re: /\bwhile\s*\(\s*true\s*\)/, msg: 'usar un bucle while (true)' }, { re: /\bbreak\s*;/, msg: 'salir del bucle con break' }]
   }
 ];
 // Orden: de lo más básico a lo que necesita lo anterior, y de fácil a difícil dentro de cada sección
 (function () {
-  var ORDER = ['a1', 'a4', 'a2', 'a3', 'b1', 'b2', 'b3', 'b4', 'b6', 'b5', 's1', 's2', 's5', 's7', 's3', 's4', 's6',
-    'l1', 'l2', 'l3', 'l4', 'l7', 'l6', 'l9', 'l5', 'l8', 'r2', 'r3', 'r5', 'r6', 'r4', 'r7', 'r1', 'r8', 'r9'];
+  var ORDER = ['a1', 'a4', 'a2', 'a3', 'b1', 'b2', 'b3', 'b4', 'b7', 'b6', 'b5', 's1', 's2', 's5', 's7', 's3', 's4', 's6',
+    'l1', 'l2', 'l3', 'l4', 'l10', 'l7', 'l6', 'l9', 'l12', 'l13', 'l11', 'l5', 'l8', 'r2', 'r3', 'r5', 'r6', 'r4', 'r7', 'r1', 'r8', 'r9'];
   EXERCISES.sort(function (x, y) { return ORDER.indexOf(x.id) - ORDER.indexOf(y.id); });
 })();
 if (typeof module !== 'undefined') module.exports = EXERCISES;

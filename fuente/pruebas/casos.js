@@ -192,3 +192,16 @@ X.l9 = { ok: ['String r = "";\nfor (char letra : palabra.toCharArray()) r = letr
          bad: ['String r = "";\nfor (char letra : palabra.toCharArray()) r = r + letra;\nSystem.out.println(palabra.equals(r));', 'System.out.println(true);'] };
 X.l8 = { ok: ['int c = 0;\nint n = numero;\nif (n == 0) c = 1;\nwhile (n > 0) {\n    n /= 10;\n    c++;\n}\nSystem.out.println(c);'],
          bad: ['int c = 0;\nint n = numero;\nwhile (n > 0) {\n    n /= 10;\n    c++;\n}\nSystem.out.println(c);', 'System.out.println(String.valueOf(numero).length());'] };
+// ejercicios nuevos (tema 3)
+X.b7 = { ok: ['if (edad < 18) {\n    System.out.println("Eres menor de edad");\n} else {\n    if (tieneCarnet == true) System.out.println("Puedes conducir");\n    else System.out.println("Necesitas el carnet");\n}'],
+         bad: ['if (edad >= 18 && tieneCarnet) System.out.println("Puedes conducir");\nelse if (edad >= 18) System.out.println("Necesitas el carnet");\nelse System.out.println("Eres menor de edad");',
+               'if (edad >= 18) {\n    if (tieneCarnet) {\n        System.out.println("Puedes conducir");\n    } else {\n        System.out.println("Eres menor de edad");\n    }\n} else {\n    System.out.println("Necesitas el carnet");\n}',
+               'System.out.println("Necesitas el carnet");'] };
+X.l10 = { ok: ['int i = 0;\nwhile (i < limite) {\n    i++;\n    if (i % 3 == 0) continue;\n    System.out.println(i);\n}'],
+          bad: ['for (int i = 1; i <= limite; i++) {\n    if (i % 3 != 0) System.out.println(i);\n}', 'for (int i = 1; i <= limite; i++) {\n    if (i % 3 == 0) break;\n    System.out.println(i);\n}', 'for (int i = 1; i < limite; i++) {\n    if (i % 3 == 0) continue;\n    System.out.println(i);\n}'] };
+X.l11 = { ok: ['int i = 1;\nwhile (i <= filas) {\n    for (int j = 0; j < i; j++) System.out.print("*");\n    System.out.println();\n    i++;\n}'],
+          bad: ['for (int i = 1; i <= filas; i++) {\n    System.out.println("*".repeat(i));\n}', 'for (int i = 1; i <= filas; i++) {\n    for (int j = 1; j <= i; j++) {\n        System.out.println("*");\n    }\n}', 'for (int i = 1; i <= filas; i++) {\n    for (int j = 1; j <= filas; j++) {\n        System.out.print("*");\n    }\n    System.out.println();\n}'] };
+X.l12 = { ok: ['int v = numero;\nint c = 0;\ndo {\n    v *= 2;\n    c++;\n} while (v <= limite);\nSystem.out.println(v + " tras " + c + " duplicaciones");'],
+          bad: ['int v = numero;\nint c = 0;\nwhile (v <= limite) {\n    v *= 2;\n    c++;\n}\nSystem.out.println(v + " tras " + c + " duplicaciones");', 'int v = numero;\nint c = 0;\ndo {\n    v *= 2;\n    c++;\n} while (v < limite);\nSystem.out.println(v + " tras " + c + " duplicaciones");', 'System.out.println("96 tras 5 duplicaciones");'] };
+X.l13 = { ok: ['int c = numero;\nwhile (true) {\n    c++;\n    if (c % divisor == 0) break;\n}\nSystem.out.println(c);'],
+          bad: ['System.out.println((numero / divisor + 1) * divisor);', 'int c = numero;\nwhile (true) {\n    if (c % divisor == 0) break;\n    c++;\n}\nSystem.out.println(c);', 'System.out.println(35);'] };
