@@ -1,0 +1,25 @@
+<div class="overlay" id="welcomeOverlay" hidden>
+  <form class="dialog" id="askDialog" role="dialog" aria-modal="true" aria-labelledby="askTitle">
+    <div class="logo"><svg aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="8 6 2 12 8 18"></polyline><polyline points="16 6 22 12 16 18"></polyline></svg></div>
+    <div>
+      <h2 id="askTitle">Te damos la bienvenida a Java Playground</h2>
+      <p id="askIntro">29 ejercicios de 1.º de DAM para practicar Java, con pistas y soluciones. Tu progreso se guarda en este navegador.</p>
+    </div>
+    <div class="field">
+      <label for="nameInput">¿Cómo te llamas?</label>
+      <input id="nameInput" type="text" maxlength="30" autocomplete="given-name" placeholder="Tu nombre">
+      <small>Solo se usa para saludarte. No se envía a ningún sitio.</small>
+    </div>
+    /*LEVEL_FIELD*/
+    <div style="display:flex;flex-direction:column;gap:6px">
+      <button type="submit" class="btn-pri">Empezar</button>
+      <button type="button" class="btn-text" id="skipName">Prefiero no decirlo</button>
+    </div>
+  </form>
+  <div class="dialog done" id="helloDialog" role="dialog" aria-modal="true" aria-labelledby="helloTitle" hidden>
+    <div class="ok-icon"><svg aria-hidden="true" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
+    <h2 id="helloTitle"></h2>
+    <p id="helloText">Empieza por el primer ejercicio. Si te atascas, tienes pistas que se desbloquean de una en una.</p>
+    <button type="button" class="btn-pri" id="helloGo">Ir al ejercicio 1</button>
+  </div>
+</div>

@@ -1,0 +1,945 @@
+<title>Ejercicios básicos programacion</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
+<script>
+(function () { var t = 'dark'; try { var s = localStorage.getItem('jp-theme'); if (s === 'light' || s === 'dark') t = s; } catch (e) { } document.documentElement.setAttribute('data-theme', t); })();
+</script>
+<style>
+/* Layout: cabecera con progreso, lista de ejercicios a la izquierda y zona de trabajo (ficha, editor, consola, ayudas) a la derecha. */
+:root {
+  --bg: #F3F2EE; --surface: #FFFFFF; --surface-2: #F7F6F2; --line: #E2E0D8;
+  --fg: #1B1D21; --fg-2: #2E3138; --muted: #5B5F68;
+  --accent: #1D4ED8; --accent-soft: #EEF3FE; --accent-ink: #1E2A4A; --ring: #B9BDC6;
+  --ok: #15803D; --ok-soft: #DCFCE7; --ok-ink: #14532D;
+  --warn-soft: #FFF4E5; --warn-ink: #7C2D12; --warn-line: #F2CFA5;
+  --err: #B91C1C; --err-soft: #FDECEC; --err-ink: #7F1D1D;
+  --btn-bg: #1B1D21; --btn-fg: #FFFFFF; --btn2-line: #C9CFDD;
+  --help: #D97706; --help-ink: #1F1300; --help-text: #A15C00;
+  --lv-easy: #15803D; --lv-easy-bg: #DCFCE7; --lv-mid: #92400E; --lv-mid-bg: #FEF3C7; --lv-hard: #B91C1C; --lv-hard-bg: #FEE2E2;
+  --code-bg: #16181D; --code-fg: #E6E8EE; --code-muted: #8A909C; --code-gutter: #5C6270; --code-line: #2A2D35;
+  --code-err-line: rgba(248, 113, 113, 0.16); --run: #3B82F6; --run-ink: #0B1220;
+  --font-ui: 'IBM Plex Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-code: 'JetBrains Mono', ui-monospace, 'Cascadia Code', Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #121316; --surface: #1B1D22; --surface-2: #23262C; --line: #2E3138;
+    --fg: #ECEDEF; --fg-2: #D5D8DE; --muted: #A3A8B2;
+    --accent: #8AB0FF; --accent-soft: #1E2A44; --accent-ink: #DCE6FF; --ring: #5A5F6A;
+    --ok: #4ADE80; --ok-soft: #12351F; --ok-ink: #CFF5DC;
+    --warn-soft: #3A2614; --warn-ink: #FBD9B5; --warn-line: #6B4423;
+    --err: #F87171; --err-soft: #3A1717; --err-ink: #FECACA;
+    --btn-bg: #ECEDEF; --btn-fg: #121316; --btn2-line: #444954;
+    --help: #F5B83D; --help-ink: #1F1300; --help-text: #F5B83D;
+    --lv-easy: #4ADE80; --lv-easy-bg: rgba(74, 222, 128, 0.14); --lv-mid: #F5B83D; --lv-mid-bg: rgba(245, 184, 61, 0.16); --lv-hard: #F87171; --lv-hard-bg: rgba(248, 113, 113, 0.16);
+    --code-bg: #0E0F12; --code-line: #24272E;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #121316; --surface: #1B1D22; --surface-2: #23262C; --line: #2E3138;
+  --fg: #ECEDEF; --fg-2: #D5D8DE; --muted: #A3A8B2;
+  --accent: #8AB0FF; --accent-soft: #1E2A44; --accent-ink: #DCE6FF; --ring: #5A5F6A;
+  --ok: #4ADE80; --ok-soft: #12351F; --ok-ink: #CFF5DC;
+  --warn-soft: #3A2614; --warn-ink: #FBD9B5; --warn-line: #6B4423;
+  --err: #F87171; --err-soft: #3A1717; --err-ink: #FECACA;
+  --btn-bg: #ECEDEF; --btn-fg: #121316; --btn2-line: #444954;
+  --help: #F5B83D; --help-ink: #1F1300; --help-text: #F5B83D;
+  --lv-easy: #4ADE80; --lv-easy-bg: rgba(74, 222, 128, 0.14); --lv-mid: #F5B83D; --lv-mid-bg: rgba(245, 184, 61, 0.16); --lv-hard: #F87171; --lv-hard-bg: rgba(248, 113, 113, 0.16);
+  --code-bg: #0E0F12; --code-line: #24272E;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--fg); font-family: var(--font-ui); font-size: 15px; line-height: 1.5; }
+button { font: inherit; cursor: pointer; }
+button:focus-visible, select:focus-visible, a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+h1, h2 { text-wrap: balance; }
+
+.wrap { max-width: 1280px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+
+/* cabecera */
+.top { background: var(--surface); border-bottom: 1px solid var(--line); }
+.top .wrap { padding-block: 14px; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px 24px; }
+.brand { display: flex; align-items: center; gap: 12px; }
+.logo { width: 38px; height: 38px; border-radius: 10px; background: var(--btn-bg); color: var(--btn-fg); display: grid; place-items: center; flex: none; }
+.brand-name { font-weight: 700; font-size: 17px; letter-spacing: -0.01em; }
+.brand-sub { font-size: 12.5px; color: var(--muted); }
+.progress { display: flex; align-items: center; gap: 12px; flex: 1 1 260px; max-width: 360px; }
+.progress-label { font-size: 13px; color: var(--fg-2); white-space: nowrap; font-variant-numeric: tabular-nums; }
+.bar { flex: 1; height: 8px; background: var(--line); border-radius: 99px; overflow: hidden; }
+.bar > div { height: 100%; background: var(--accent); border-radius: 99px; transition: width .3s ease; }
+.top-right { display: flex; align-items: center; gap: 16px; flex: 1 1 300px; justify-content: flex-end; }
+.theme-btn { width: 40px; height: 40px; flex: none; border-radius: 99px; border: 1px solid var(--line); background: var(--surface-2); color: var(--fg); display: grid; place-items: center; }
+.theme-btn:hover { border-color: var(--btn2-line); }
+.theme-btn svg { display: block; }
+/* bienvenida */
+.overlay { position: fixed; inset: 0; z-index: 50; background: rgba(10, 11, 14, 0.55); display: flex; align-items: center; justify-content: center; padding: max(16px, env(safe-area-inset-top, 0px)) max(16px, env(safe-area-inset-right, 0px)) max(16px, env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px)); }
+.dialog { width: 100%; max-width: 440px; background: var(--surface); color: var(--fg); border: 1px solid var(--line); border-radius: 18px; padding: 30px; box-shadow: 0 24px 60px rgba(0, 0, 0, 0.35); display: flex; flex-direction: column; gap: 18px; max-height: 100%; overflow-y: auto; }
+.dialog h2 { margin: 0 0 6px; font-size: 24px; line-height: 1.2; letter-spacing: -0.015em; }
+.dialog p { margin: 0; color: var(--fg-2); }
+.dialog .logo { width: 48px; height: 48px; border-radius: 12px; }
+.field { display: flex; flex-direction: column; gap: 6px; }
+.field label { font-size: 14px; font-weight: 600; }
+.field input { min-height: 46px; border: 1px solid var(--btn2-line); border-radius: 10px; padding: 0 14px; font: inherit; color: var(--fg); background: var(--surface); }
+.field input:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
+.field small { font-size: 12.5px; color: var(--muted); }
+.dialog .btn-pri { width: 100%; min-height: 46px; }
+.btn-text { min-height: 44px; border: none; background: transparent; color: var(--muted); font-size: 14px; }
+.btn-text:hover { color: var(--fg); }
+.dialog.done { text-align: center; align-items: center; }
+.ok-icon { width: 52px; height: 52px; border-radius: 99px; background: var(--ok-soft); color: var(--ok); display: grid; place-items: center; }
+.welcome { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 14px 24px; }
+.welcome > div:first-child { min-width: 0; flex: 1 1 380px; }
+.welcome h2 { margin: 0 0 4px; font-size: 22px; line-height: 1.2; letter-spacing: -0.015em; }
+.welcome p { margin: 0; color: var(--fg-2); }
+.welcome-actions { display: flex; flex-wrap: wrap; gap: 10px; }
+.name-link { border: none; background: none; padding: 0; margin-left: 8px; font-size: 12.5px; color: var(--accent); text-decoration: underline; text-underline-offset: 2px; }
+.name-link:hover { color: var(--fg); }
+.levels { border: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
+.levels legend { font-size: 14px; font-weight: 600; margin-bottom: 6px; padding: 0; }
+.lvl { display: flex; gap: 10px; align-items: flex-start; border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; cursor: pointer; }
+.lvl:has(input:checked) { border-color: var(--accent); background: var(--accent-soft); }
+.lvl input { margin-top: 4px; accent-color: var(--accent); }
+.lvl b { display: block; font-size: 14px; }
+.lvl small { display: block; font-size: 12.5px; color: var(--muted); }
+.challenge { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px 24px; background: var(--accent-soft); border-color: transparent; }
+.challenge > div:first-child { min-width: 0; flex: 1 1 380px; color: var(--accent-ink); }
+.challenge h2 { margin: 0 0 4px; font-size: 17px; }
+.challenge p { margin: 0; font-size: 14px; }
+.challenge-done { margin-top: 14px; background: #14301F; border: 1px solid #22553A; border-radius: 10px; padding: 14px; color: #DCFCE7; }
+.challenge-done p { margin: 0 0 10px; font-size: 14px; }
+.challenge-done .row { display: flex; flex-wrap: wrap; gap: 8px; }
+.challenge-done button { min-height: 40px; padding: 0 16px; border-radius: 8px; font-size: 14px; font-weight: 600; }
+.challenge-done .go { border: none; background: #4ADE80; color: #0B1F12; }
+.challenge-done .stay { border: 1px solid #2F6B48; background: transparent; color: #DCFCE7; }
+
+/* estructura */
+.layout { padding-block: 24px 48px; display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-start; }
+.side { flex: 1 1 240px; max-width: 290px; background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 14px 10px; position: sticky; top: calc(env(safe-area-inset-top, 0px) + 16px); }
+.main { flex: 999 1 560px; min-width: 0; display: flex; flex-direction: column; gap: 20px; }
+.group-name { font-size: 11.5px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); padding: 8px 8px 4px; }
+.group-head { display: flex; align-items: center; gap: 8px; width: 100%; min-height: 36px; padding: 6px 8px; margin-top: 4px; border: none; border-radius: 8px; background: transparent; color: var(--muted); font-size: 11.5px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; text-align: left; }
+.group-head:hover { background: var(--surface-2); color: var(--fg); }
+.group-head .chev { flex: none; transition: transform .15s ease; }
+.group-head[aria-expanded="false"] .chev { transform: rotate(-90deg); }
+.group-head .gname { flex: 1; }
+.group-count { font-variant-numeric: tabular-nums; letter-spacing: 0; text-transform: none; font-weight: 500; }
+.group-count.full { color: var(--ok); }
+.ex-btn { display: flex; align-items: center; gap: 10px; width: 100%; min-height: 38px; padding: 6px 8px; border: none; border-radius: 8px; background: transparent; color: var(--fg); text-align: left; font-size: 14px; }
+.ex-btn:hover { background: var(--surface-2); }
+.ex-btn[aria-current="true"] { background: var(--accent-soft); font-weight: 600; }
+.dot { width: 20px; height: 20px; border-radius: 99px; border: 2px solid var(--ring); flex: none; display: grid; place-items: center; }
+.ex-btn[aria-current="true"] .dot { border-color: var(--accent); }
+.dot.done { background: var(--ok); border-color: var(--ok); color: var(--surface); }
+.dot.done.help { background: var(--help); border-color: var(--help); color: var(--help-ink); }
+.solved-tag.help { color: var(--help-text); }
+.picker { display: none; }
+.picker label { font-size: 13px; color: var(--muted); display: block; margin-bottom: 4px; }
+.picker select { width: 100%; min-height: 44px; padding: 0 12px; border-radius: 10px; border: 1px solid var(--line); background: var(--surface); color: var(--fg); font: inherit; }
+
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 22px 24px; }
+.crumb { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px; font-size: 13px; color: var(--muted); }
+.chip { font-weight: 600; padding: 2px 10px; border-radius: 99px; font-size: 12px; }
+.chip.Fácil, .lv.Fácil { background: var(--lv-easy-bg); color: var(--lv-easy); }
+.chip.Media, .lv.Media { background: var(--lv-mid-bg); color: var(--lv-mid); }
+.chip.Reto, .lv.Reto { background: var(--lv-hard-bg); color: var(--lv-hard); }
+.lv { flex: none; font-size: 11px; font-weight: 600; padding: 1px 7px; border-radius: 99px; line-height: 1.5; }
+.ex-btn .ex-name { flex: 1; min-width: 0; }
+.practice-btn { min-height: 28px; padding: 0 10px; border-radius: 99px; border: 1px solid var(--line); background: transparent; color: var(--fg-2); font: inherit; font-size: 12.5px; font-weight: 600; cursor: pointer; }
+.practice-btn:hover { color: var(--fg); border-color: var(--fg-2); }
+.practice-btn.confirm { border-color: #F2A65A; color: #F2A65A; }
+.solved-tag { display: inline-flex; align-items: center; gap: 4px; color: var(--ok); font-weight: 600; font-size: 12.5px; }
+.title { margin: 8px 0 10px; font-size: 26px; line-height: 1.2; letter-spacing: -0.015em; }
+.statement { margin: 0 0 18px; color: var(--fg-2); max-width: 70ch; }
+.io { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px; }
+.io > div { background: var(--surface-2); border-radius: 10px; padding: 12px 14px; min-width: 0; }
+.label { font-size: 12px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 4px; }
+.out-info { margin: 10px 0 0; padding-top: 8px; border-top: 1px solid var(--line); font-size: 13px; color: var(--muted); }
+.io pre { margin: 0; font-family: var(--font-code); font-size: 13.5px; white-space: pre-wrap; word-break: break-word; }
+
+/* editor */
+.editor { background: var(--code-bg); border-radius: 14px; overflow: hidden; color: var(--code-fg); }
+.ed-bar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px; padding: 10px 14px; border-bottom: 1px solid var(--code-line); }
+.filename { font-family: var(--font-code); font-size: 13px; color: #C9CDD6; }
+.ed-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+.btn-ghost { min-height: 40px; padding: 0 14px; border-radius: 8px; border: 1px solid #3A3E48; background: transparent; color: var(--code-fg); font-size: 14px; }
+.btn-ghost:hover { background: #22252C; }
+.btn-ghost.confirm { border-color: #F2A65A; color: #FBD9B5; }
+.btn-run { min-height: 40px; padding: 0 18px; border-radius: 8px; border: none; background: var(--run); color: var(--run-ink); font-size: 14px; font-weight: 600; display: inline-flex; align-items: center; gap: 8px; }
+.btn-run:hover { background: #60A5FA; }
+.btn-run kbd { font-family: var(--font-code); font-size: 11px; opacity: .75; }
+.fixed-in { display: flex; background: rgba(96, 165, 250, 0.16); padding-top: 14px; font-family: var(--font-code); font-size: 14px; line-height: 1.7; }
+.fixed-gutter { padding: 0 10px 0 14px; min-width: 52px; box-sizing: border-box; color: var(--code-gutter); text-align: right; user-select: none; white-space: pre; }
+.fixed-gutter div { display: flex; align-items: center; justify-content: flex-end; gap: 4px; height: 1.7em; }
+.fixed-in pre { flex: 1; min-width: 0; margin: 0; padding: 0 16px 0 6px; font: inherit; color: var(--code-fg); white-space: pre; overflow-x: auto; }
+.fixed-in .t { color: #7DD3FC; } .fixed-in .n { color: #FBBF24; } .fixed-in .s { color: #86EFAC; } .fixed-in .c { color: #7C8290; }
+.ac { position: absolute; z-index: 5; margin: 0; padding: 3.5px; list-style: none; min-width: 198px; max-width: 324px; max-height: 198px; overflow-y: auto; background: #1F2229; border: 1px solid #3A3E48; border-radius: 6px; box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35); font-family: var(--font-code); font-size: 11.7px; font-variant-ligatures: none; }
+.ac li { display: flex; justify-content: space-between; gap: 14px; padding: 4.5px 7px; border-radius: 4px; color: var(--code-fg); cursor: pointer; white-space: nowrap; }
+.ac li small { color: var(--code-muted); font-size: 10.8px; }
+.ac li[aria-selected="true"] { background: #2B3A55; }
+.code-area.after-fixed .gutter, .code-area.after-fixed textarea.code { padding-top: 0; }
+/* sin ligaduras: >= y <= se ven como dos símbolos, igual que en el código real */
+textarea.code, pre, code, kbd { font-variant-ligatures: none; font-feature-settings: "liga" 0, "calt" 0; }
+.code-area { display: flex; position: relative; max-height: 460px; }
+.gutter { padding: 14px 10px 14px 14px; box-sizing: border-box; font-family: var(--font-code); font-size: 14px; line-height: 1.7; color: var(--code-gutter); text-align: right; user-select: none; overflow: hidden; min-width: 52px; white-space: pre; }
+.gutter .bad { color: #F87171; font-weight: 600; }
+textarea.code { flex: 1; min-width: 0; min-height: 200px; resize: vertical; border: none; background: transparent; color: var(--code-fg); padding: 14px 16px 14px 6px; font-family: var(--font-code); font-size: 14px; line-height: 1.7; tab-size: 4; white-space: pre; overflow: auto; caret-color: #93C5FD; }
+textarea.code:focus { outline: none; box-shadow: inset 0 0 0 2px #3B82F6; }
+.ed-help { font-size: 12px; color: var(--code-muted); padding: 0 16px 10px; }
+.console { border-top: 1px solid var(--code-line); padding: 12px 16px 16px; }
+.console-head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 8px; }
+.console-title { font-size: 12px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #9AA0AC; }
+.badge { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 600; padding: 4px 10px; border-radius: 99px; }
+.badge.ok { background: #14532D; color: #DCFCE7; }
+.badge.warn { background: #4A2E10; color: #FBD9B5; }
+.badge.err { background: #4C1414; color: #FECACA; }
+.out { margin: 0; font-family: var(--font-code); font-size: 14px; white-space: pre-wrap; word-break: break-word; color: var(--code-fg); max-height: 280px; overflow: auto; }
+.out .e { color: #FCA5A5; }
+.out .m { color: var(--code-muted); }
+.note { white-space: pre-wrap; margin-top: 10px; font-size: 13.5px; color: #FBD9B5; }
+.compare { margin-top: 12px; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; }
+.compare > div { background: #1E2026; border-radius: 8px; padding: 10px 12px; min-width: 0; }
+.compare .label { color: #9AA0AC; }
+.compare pre { margin: 0; font-family: var(--font-code); font-size: 13px; white-space: pre-wrap; word-break: break-word; }
+.alt { margin-top: 14px; background: #1E2026; border: 1px solid #2F3B33; border-radius: 10px; padding: 12px 14px; }
+.alt .label { color: #86EFAC; }
+.alt pre { margin: 6px 0 0; font-family: var(--font-code); font-size: 13px; line-height: 1.6; white-space: pre; overflow-x: auto; color: var(--code-fg); }
+.alt p { margin: 8px 0 0; font-size: 13.5px; color: #C9CDD6; }
+.solution h3 { margin: 14px 0 6px; font-size: 14px; }
+.walk-btn { margin-top: 10px; min-height: 36px; padding: 0 12px; border-radius: 8px; border: 1px solid currentColor; background: transparent; color: inherit; font: inherit; font-size: 13px; font-weight: 600; opacity: .9; }
+.walk-btn:hover { opacity: 1; }
+.walk { margin: 10px 0 0; padding-left: 22px; display: flex; flex-direction: column; gap: 10px; }
+.walk li { padding-left: 2px; }
+.walk code { display: inline-block; vertical-align: top; max-width: 100%; overflow-x: auto; white-space: pre; font-family: var(--font-code); font-size: 12.5px; padding: 2px 7px; border-radius: 6px; background: rgba(127, 127, 127, 0.16); font-variant-ligatures: none; }
+.walk p { margin: 4px 0 0 !important; font-size: 13.5px; line-height: 1.5; }
+
+/* ayudas */
+.helpers { display: grid; grid-template-columns: repeat(auto-fit, minmax(290px, 1fr)); gap: 20px; align-items: start; }
+.helpers h2 { margin: 0; font-size: 17px; }
+.helpers .card { padding: 20px; display: flex; flex-direction: column; gap: 12px; }
+.row-between { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.count { font-size: 13px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.hint { display: flex; gap: 10px; background: var(--accent-soft); border-radius: 10px; padding: 10px 12px; font-size: 14px; color: var(--accent-ink); }
+.hint b { color: var(--accent); flex: none; }
+.hint > div { min-width: 0; }
+.hint-tag { display: block; font-size: 11.5px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--accent); margin-bottom: 2px; }
+.btn-line.strong { border-color: var(--warn-line); }
+.hint pre { margin: 8px 0 0; background: var(--code-bg); color: var(--code-fg); border-radius: 8px; padding: 10px 12px; font-family: var(--font-code); font-size: 13px; line-height: 1.6; white-space: pre; overflow-x: auto; }
+.btn-line { min-height: 44px; width: 100%; border-radius: 10px; border: 1px solid var(--btn2-line); background: var(--surface); color: var(--fg); font-size: 14px; font-weight: 600; text-align: left; padding: 10px 14px; }
+.btn-line:hover { background: var(--surface-2); }
+.btn-line small { display: block; font-weight: 400; font-size: 13px; color: var(--muted); }
+.btn-line.sol { border-color: var(--warn-line); background: var(--warn-soft); color: var(--warn-ink); }
+.btn-line.sol small { color: var(--warn-ink); opacity: .85; }
+.btn-line[disabled] { opacity: .6; cursor: default; }
+.empty-hint { font-size: 14px; color: var(--muted); margin: 0; }
+.solution pre { margin: 0; background: var(--code-bg); color: var(--code-fg); border-radius: 10px; padding: 14px; font-family: var(--font-code); font-size: 13px; line-height: 1.6; white-space: pre; overflow-x: auto; }
+.solution p { margin: 10px 0 0; font-size: 14px; color: var(--fg-2); }
+
+.pager { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px; }
+.btn-sec { min-height: 44px; padding: 0 18px; border-radius: 10px; border: 1px solid var(--btn2-line); background: var(--surface); color: var(--fg); font-size: 14px; font-weight: 600; }
+.btn-pri { min-height: 44px; padding: 0 22px; border-radius: 10px; border: none; background: var(--btn-bg); color: var(--btn-fg); font-size: 14px; font-weight: 600; }
+.btn-sec[disabled], .btn-pri[disabled] { opacity: .45; cursor: default; }
+.foot { font-size: 12.5px; color: var(--muted); }
+
+@media (max-width: 760px) {
+  .side { display: none; }
+  .picker { display: block; }
+  .card { padding: 18px; }
+  .title { font-size: 22px; }
+  .btn-run kbd { display: none; }
+}
+@media (prefers-reduced-motion: reduce) { .bar > div, .group-head .chev { transition: none; } }
+</style>
+
+<header class="top">
+  <div class="wrap">
+    <div class="brand">
+      <div class="logo"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="8 6 2 12 8 18"></polyline><polyline points="16 6 22 12 16 18"></polyline></svg></div>
+      <div>
+        <div class="brand-name">Java Playground</div>
+        <div class="brand-sub" id="brandSub">Ejercicios de 1.º de DAM</div>
+      </div>
+    </div>
+    <div class="top-right">
+      <div class="progress">
+        <div class="progress-label" id="progressLabel">0 de 29 completados</div>
+        <div class="bar" role="progressbar" aria-label="Progreso" aria-valuemin="0" aria-valuemax="29" aria-valuenow="0" id="progressBar"><div id="progressFill" style="width:0%"></div></div>
+      </div>
+      <button type="button" class="theme-btn" id="themeBtn" aria-label="Cambiar a modo claro"></button>
+    </div>
+  </div>
+</header>
+
+<div class="wrap layout">
+  <nav class="side" aria-label="Lista de ejercicios" id="side"></nav>
+
+  <main class="main">
+    /*WELCOME_CARD*/
+    /*LEVEL_CARD*/
+    <div class="picker">
+      <label for="exSelect">Ejercicio</label>
+      <select id="exSelect"></select>
+    </div>
+
+    <section class="card" aria-labelledby="exTitle">
+      <div class="crumb"><span id="exGroup"></span><span aria-hidden="true">/</span><span id="exNum"></span><span class="chip" id="exLevel"></span><span class="solved-tag" id="exSolved" hidden><svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>Completado</span><button type="button" class="practice-btn" id="practiceBtn" hidden>Practicar de nuevo</button></div>
+      <h1 class="title" id="exTitle"></h1>
+      <p class="statement" id="exStatement"></p>
+      <div class="io">
+        <div><div class="label">Entrada</div><pre id="exInput"></pre></div>
+        <div><div class="label">Resultado esperado</div><pre id="exExpected"></pre><p class="out-info" id="exOutInfo" hidden></p></div>
+      </div>
+    </section>
+
+    <section class="editor" aria-label="Editor de código">
+      <div class="ed-bar">
+        <div class="filename">Main.java</div>
+        <div class="ed-actions">
+          <button type="button" class="btn-ghost" id="resetBtn">Reiniciar</button>
+          <button type="button" class="btn-run" id="runBtn"><svg aria-hidden="true" width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><polygon points="6 4 20 12 6 20 6 4"></polygon></svg>Ejecutar <kbd>Ctrl+Enter</kbd></button>
+        </div>
+      </div>
+      <div class="fixed-in" id="fixedIn" hidden>
+        <div class="fixed-gutter" id="fixedGutter" aria-hidden="true"></div>
+        <pre id="fixedCode" aria-label="Datos de entrada, no se pueden cambiar"></pre>
+      </div>
+      <div class="code-area" id="codeArea">
+        <div class="gutter" id="gutter" aria-hidden="true">1</div>
+        <label for="code" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">Tu código</label>
+        <textarea class="code" id="code" spellcheck="false" autocapitalize="off" autocomplete="off" autocorrect="off" wrap="off"></textarea>
+      </div>
+      <div class="ed-help"><span id="fixedHelp" hidden>Las líneas con candado son los datos de entrada: no se pueden cambiar, pero tu programa se prueba también con otros valores. </span>Escribe solo las instrucciones: no hace falta la clase, el main ni el import de Arrays (si los pones, también funciona). /*SNIPPET_HELP*/Tab añade sangría; pulsa Esc y luego Tab para salir del editor.</div>
+      <div class="console" aria-live="polite">
+        <div class="console-head">
+          <div class="console-title">Consola</div>
+          <div id="badge"></div>
+        </div>
+        <pre class="out" id="out"><span class="m">Pulsa Ejecutar para ver la salida de tu programa.</span></pre>
+        <div class="note" id="note" hidden></div>
+        <div class="compare" id="compare" hidden>
+          <div><div class="label">Tu salida</div><pre id="cmpGot"></pre></div>
+          <div><div class="label">Resultado esperado</div><pre id="cmpExp"></pre></div>
+        </div>
+        <div class="alt" id="altBox" hidden>
+          <div class="label">Otra forma de hacerlo</div>
+          <pre id="altCode"></pre>
+          <p id="altWhy"></p>
+        </div>
+      </div>
+    </section>
+
+    <div class="helpers">
+      <section class="card" aria-labelledby="hintsTitle">
+        <div class="row-between"><h2 id="hintsTitle">Pistas</h2><span class="count" id="hintCount"></span></div>
+        <div id="hintList" style="display:flex;flex-direction:column;gap:8px"></div>
+        <button type="button" class="btn-line" id="hintBtn">Mostrar una pista</button>
+      </section>
+
+      <section class="card" aria-labelledby="stuckTitle">
+        <h2 id="stuckTitle">¿Atascado?</h2>
+        <button type="button" class="btn-line sol" id="solBtn">Ver solución<small>Inténtalo antes con las pistas.</small></button>
+        <div class="solution" id="solution" hidden>
+          <pre id="solCode"></pre>
+          <p id="solExplain"></p>
+          <div id="solAlt" hidden>
+            <h3>Otra forma de hacerlo</h3>
+            <pre id="solAltCode"></pre>
+            <p id="solAltWhy"></p>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <div class="pager">
+      <button type="button" class="btn-sec" id="prevBtn">Anterior</button>
+      <button type="button" class="btn-pri" id="nextBtn">Siguiente ejercicio</button>
+    </div>
+    <p class="foot">Tu código y tu progreso se guardan en este navegador. Este playground ejecuta un subconjunto de Java pensado para estos ejercicios (variables, Strings, operaciones, condiciones, bucles y arrays).</p>
+  </main>
+</div>
+
+/*WELCOME_DIALOG*/
+<script>
+/*MINIJAVA*/
+</script>
+<script>
+/*EXERCISES*/
+</script>
+<script>
+(function () {
+  'use strict';
+  var KEY = 'java-playground-v1';
+  var state = { current: 0, code: {}, solved: {}, hints: {} };
+  try { var saved = JSON.parse(localStorage.getItem(KEY) || 'null'); if (saved) state = Object.assign(state, saved); } catch (e) { }
+  if (state.currentId) { var ci = EXERCISES.map(function (x) { return x.id; }).indexOf(state.currentId); if (ci >= 0) state.current = ci; }
+  if (!(state.current >= 0 && state.current < EXERCISES.length)) state.current = 0;
+  function save() { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) { } }
+
+  var $ = function (id) { return document.getElementById(id); };
+  var codeEl = $('code'), gutter = $('gutter');
+  var CHECK = '<svg aria-hidden="true" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>';
+  var errLine = null, resetArmed = false, resetTimer = null;
+  var hooks = { render: [], solved: [] };
+
+  function ex() { return EXERCISES[state.current]; }
+  function norm(s) { return s.replace(/\r/g, '').split('\n').map(function (l) { return l.replace(/\s+$/, ''); }).join('\n').replace(/\n+$/, ''); }
+
+  // ----- lista lateral y selector -----
+  var CHEV = '<svg class="chev" aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>';
+  state.collapsed = state.collapsed || {};
+  function setCollapsed(name, c) {
+    if (c) state.collapsed[name] = true; else delete state.collapsed[name];
+    save(); refreshNav();
+  }
+  function buildNav() {
+    var side = $('side'), sel = $('exSelect'), lastGroup = null;
+    side.textContent = ''; sel.textContent = '';
+    var og = null, items = null;
+    EXERCISES.forEach(function (e, i) {
+      if (e.group !== lastGroup) {
+        var gid = 'grp-' + i;
+        var head = document.createElement('button'); head.type = 'button'; head.className = 'group-head'; head.dataset.group = e.group;
+        head.setAttribute('aria-controls', gid);
+        head.innerHTML = CHEV + '<span class="gname"></span><span class="group-count"></span>';
+        head.querySelector('.gname').textContent = e.group;
+        (function (name) { head.addEventListener('click', function () { setCollapsed(name, !state.collapsed[name]); }); })(e.group);
+        side.appendChild(head);
+        items = document.createElement('div'); items.className = 'group-items'; items.id = gid; items.dataset.group = e.group;
+        side.appendChild(items);
+        og = document.createElement('optgroup'); og.label = e.group; sel.appendChild(og);
+        lastGroup = e.group;
+      }
+      var b = document.createElement('button'); b.type = 'button'; b.className = 'ex-btn'; b.dataset.i = i;
+      var d = document.createElement('span'); d.className = 'dot'; b.appendChild(d);
+      var t = document.createElement('span'); t.className = 'ex-name'; t.textContent = e.title; b.appendChild(t);
+      var lv = document.createElement('span'); lv.className = 'lv ' + e.level; lv.textContent = e.level; b.appendChild(lv);
+      b.addEventListener('click', function () { go(i); });
+      items.appendChild(b);
+      var o = document.createElement('option'); o.value = i; o.textContent = (i + 1) + '. ' + e.title + ' · ' + e.level; og.appendChild(o);
+    });
+    sel.addEventListener('change', function () { go(+sel.value); });
+  }
+  function refreshNav() {
+    var btns = document.querySelectorAll('.ex-btn');
+    btns.forEach(function (b) {
+      var i = +b.dataset.i, e = EXERCISES[i], d = b.querySelector('.dot');
+      b.setAttribute('aria-current', i === state.current ? 'true' : 'false');
+      var done = !!state.solved[e.id], h = helpOf(e);
+      d.className = 'dot' + (done ? ' done' : '') + (done && h ? ' help' : ''); d.innerHTML = done ? CHECK : '';
+      d.title = done ? (h === 'solution' ? 'Completado viendo la solución' : h === 'hints' ? 'Completado con pistas' : 'Completado sin ayuda') : '';
+      b.setAttribute('aria-label', e.title + (done ? ' (' + d.title.toLowerCase() + ')' : ''));
+    });
+    document.querySelectorAll('.group-head').forEach(function (h) {
+      var name = h.dataset.group, list = EXERCISES.filter(function (x) { return x.group === name; });
+      var n = list.filter(function (x) { return state.solved[x.id]; }).length, c = !!state.collapsed[name];
+      h.setAttribute('aria-expanded', c ? 'false' : 'true');
+      h.setAttribute('aria-label', name + ': ' + n + ' de ' + list.length + ' completados, ' + (c ? 'plegada' : 'desplegada'));
+      var cnt = h.querySelector('.group-count'); cnt.textContent = n + '/' + list.length; cnt.className = 'group-count' + (n === list.length ? ' full' : '');
+      $(h.getAttribute('aria-controls')).hidden = c;
+    });
+    var sel = $('exSelect'); sel.value = state.current;
+    Array.prototype.forEach.call(sel.options, function (o) { var e = EXERCISES[+o.value]; o.textContent = (+o.value + 1) + '. ' + e.title + ' · ' + e.level + (state.solved[e.id] ? ' ✓' : ''); });
+    var n = EXERCISES.filter(function (e) { return state.solved[e.id]; }).length;
+    $('progressLabel').innerHTML = '<strong>' + n + '</strong> de ' + EXERCISES.length + ' completados';
+    $('progressFill').style.width = (n / EXERCISES.length * 100) + '%';
+    $('progressBar').setAttribute('aria-valuenow', n);
+    $('progressBar').setAttribute('aria-valuemax', EXERCISES.length);
+  }
+
+  // ----- ejercicio actual -----
+  function render() {
+    var e = ex();
+    $('exGroup').textContent = e.group;
+    $('exNum').textContent = 'Ejercicio ' + (state.current + 1) + ' de ' + EXERCISES.length;
+    var lv = $('exLevel'); lv.textContent = e.level; lv.className = 'chip ' + e.level;
+    paintSolvedTag(e);
+    $('exTitle').textContent = e.title;
+    $('exStatement').textContent = e.statement;
+    $('exInput').textContent = e.input;
+    $('exExpected').textContent = e.expected;
+    $('exOutInfo').textContent = e.outInfo ? 'Qué se muestra: ' + e.outInfo : ''; $('exOutInfo').hidden = !e.outInfo;
+    var hi = hasInput(e);
+    $('fixedIn').hidden = !hi; $('fixedHelp').hidden = !hi; $('codeArea').classList.toggle('after-fixed', hi);
+    $('fixedCode').innerHTML = hi ? highlightJava(e.input) : '';
+    $('fixedGutter').innerHTML = hi ? e.input.split('\n').map(function (l, i) { return '<div>' + LOCK + '<span>' + (i + 1) + '</span></div>'; }).join('') : '';
+    if (hi && state.code[e.id] != null && state.code[e.id].indexOf(e.input) === 0) { state.code[e.id] = state.code[e.id].slice(e.input.length).replace(/^\n+/, ''); save(); }
+    codeEl.value = state.code[e.id] != null ? state.code[e.id] : userStarter(e);
+    errLine = null; updateGutter();
+    clearConsole();
+    renderHints();
+    $('solution').hidden = true; $('solBtn').firstChild.textContent = 'Ver solución';
+    $('solCode').textContent = e.solution; $('solExplain').textContent = e.explanation;
+    $('solAlt').hidden = !e.alt;
+    if (e.alt) { $('solAltCode').textContent = e.alt.code; $('solAltWhy').textContent = e.alt.why; }
+    $('prevBtn').disabled = state.current === 0;
+    $('nextBtn').disabled = state.current === EXERCISES.length - 1;
+    disarmReset();
+    refreshNav();
+    hooks.render.forEach(function (f) { f(); });
+    // si ya está resuelto, mostrar directamente su resultado (se ejecuta en el navegador, no gasta nada)
+    if (state.solved[e.id] && !(state.practice && state.practice[e.id])) runCode(true);
+  }
+  function helpOf(e) { return (state.help && state.help[e.id]) || ''; }
+  function paintSolvedTag(e) {
+    var tag = $('exSolved'), h = helpOf(e);
+    tag.hidden = !state.solved[e.id];
+    tag.className = 'solved-tag' + (h ? ' help' : '');
+    tag.lastChild.textContent = h === 'solution' ? 'Completado viendo la solución' : h === 'hints' ? 'Completado con pistas' : 'Completado';
+    var pb = $('practiceBtn'), practicing = !!(state.practice && state.practice[e.id]);
+    pb.hidden = !state.solved[e.id] || practicing;
+    if (practicing && state.solved[e.id]) tag.lastChild.textContent += ' · practicando de nuevo';
+    disarmPractice();
+  }
+  // ----- practicar de nuevo un ejercicio ya resuelto: código inicial, sin pistas ni solución -----
+  var practiceArmed = false, practiceTimer = null;
+  function disarmPractice() { practiceArmed = false; clearTimeout(practiceTimer); var b = $('practiceBtn'); if (b) { b.textContent = 'Practicar de nuevo'; b.classList.remove('confirm'); } }
+  $('practiceBtn').addEventListener('click', function () {
+    var b = $('practiceBtn');
+    if (!practiceArmed) { practiceArmed = true; b.textContent = 'Se borrará tu código. Pulsa otra vez'; b.classList.add('confirm'); practiceTimer = setTimeout(disarmPractice, 4000); return; }
+    var e = ex();
+    delete state.code[e.id]; state.hints[e.id] = 0;
+    if (state.solSeen) delete state.solSeen[e.id];
+    state.practice = state.practice || {}; state.practice[e.id] = true;
+    save(); render(); codeEl.focus();
+  });
+  function go(i) {
+    if (i < 0 || i >= EXERCISES.length) return;
+    state.current = i; state.currentId = EXERCISES[i].id;
+    if (state.collapsed && state.collapsed[EXERCISES[i].group]) delete state.collapsed[EXERCISES[i].group];
+    save(); render();
+    try { window.scrollTo({ top: 0, behavior: 'smooth' }); } catch (e) { window.scrollTo(0, 0); }
+  }
+
+  // qué tipo de ayuda da cada pista, según cuántas tiene el ejercicio
+  var HINT_KINDS = {
+    3: [['Qué te piden', 'Una idea para entender el problema.'],
+        ['Qué usar y cómo', 'Qué necesitas y cómo organizarlo. Puede nombrar el método.'],
+        ['Código con huecos', 'Ayuda mucho: es casi la solución, con huecos para completar.']],
+    4: [['Qué te piden', 'Una idea para entender el problema.'],
+        ['Qué herramienta buscar', 'Qué tipo de método u operador necesitas, sin decir cuál.'],
+        ['Cómo organizarlo', 'Los pasos y su orden. Puede nombrar el método.'],
+        ['Código con huecos', 'Ayuda mucho: es casi la solución, con huecos para completar.']],
+    5: [['Qué te piden', 'Una idea para entender el problema.'],
+        ['Qué herramienta buscar', 'Qué tipo de método u operador necesitas, sin decir cuál.'],
+        ['Cómo organizarlo', 'Los pasos y su orden. Puede nombrar el método.'],
+        ['Razonamiento paso a paso', 'El razonamiento completo con los valores del ejercicio.'],
+        ['Código con huecos', 'Ayuda mucho: es casi la solución, con huecos para completar.']]
+  };
+  function hintKind(total, i) { var k = HINT_KINDS[total]; return k ? k[i] : ['Pista ' + (i + 1), '']; }
+  function renderHints() {
+    var e = ex(), n = state.hints[e.id] || 0, list = $('hintList');
+    list.textContent = '';
+    if (!n) { var p = document.createElement('p'); p.className = 'empty-hint'; p.textContent = 'Las pistas se desbloquean de una en una, de más general a más concreta. La última es el código con huecos para completar.'; list.appendChild(p); }
+    e.hints.slice(0, n).forEach(function (h, i) {
+      var d = document.createElement('div'); d.className = 'hint';
+      var b = document.createElement('b'); b.textContent = (i + 1) + '.'; d.appendChild(b);
+      var s = document.createElement('div');
+      var tag = document.createElement('span'); tag.className = 'hint-tag'; tag.textContent = hintKind(e.hints.length, i)[0]; s.appendChild(tag);
+      if (typeof h === 'string') s.appendChild(document.createTextNode(h));
+      else {
+        var p = document.createElement('span'); p.textContent = h.t; s.appendChild(p);
+        var pre = document.createElement('pre'); pre.textContent = h.code; s.appendChild(pre);
+      }
+      d.appendChild(s);
+      list.appendChild(d);
+    });
+    $('hintCount').textContent = n + ' de ' + e.hints.length;
+    var btn = $('hintBtn');
+    btn.hidden = n >= e.hints.length;
+    if (n < e.hints.length) {
+      var kind = hintKind(e.hints.length, n), last = n === e.hints.length - 1;
+      btn.textContent = 'Pista ' + (n + 1) + ' de ' + e.hints.length + ': ' + kind[0];
+      var sm = document.createElement('small'); sm.textContent = kind[1]; btn.appendChild(sm);
+      btn.classList.toggle('strong', last);
+    }
+  }
+
+  // ----- editor -----
+  function updateGutter() {
+    var off = fixedCount(ex()), lines = codeEl.value.split('\n').length + off, html = '';
+    for (var i = off + 1; i <= lines; i++) html += (i === errLine ? '<span class="bad">' + i + '</span>' : i) + (i < lines ? '\n' : '');
+    gutter.innerHTML = html;
+    gutter.scrollTop = codeEl.scrollTop;
+  }
+  function insertText(t, a, b) {
+    codeEl.setSelectionRange(a, b);
+    var done = false;
+    try { done = document.execCommand('insertText', false, t); } catch (e) { done = false; }
+    if (!done) { codeEl.setRangeText(t, a, b, 'end'); codeEl.dispatchEvent(new Event('input')); }
+  }
+  var escPressed = false;
+  codeEl.addEventListener('input', function () { state.code[ex().id] = codeEl.value; save(); updateGutter(); });
+  codeEl.addEventListener('scroll', function () { gutter.scrollTop = codeEl.scrollTop; });
+  codeEl.addEventListener('keydown', function (ev) {
+    if ((ev.ctrlKey || ev.metaKey) && ev.key === 'Enter') { ev.preventDefault(); runCode(); return; }
+    if (ev.key === 'Escape') { escPressed = true; return; }
+    if (ev.key === 'Tab' && !escPressed) {
+      ev.preventDefault();
+      var s = codeEl.selectionStart, en = codeEl.selectionEnd, v = codeEl.value;
+      /*SNIPPETS*/
+      if (ev.shiftKey) {
+        var ls = v.lastIndexOf('\n', s - 1) + 1, cut = /^ {1,4}/.exec(v.slice(ls));
+        if (cut) insertText('', ls, ls + cut[0].length);
+      } else insertText('    ', s, en);
+      return;
+    }
+    escPressed = false;
+    if (ev.isComposing || ev.ctrlKey || ev.metaKey || ev.altKey) return;
+    var PAIRS = { '(': ')', '[': ']', '{': '}', '"': '"', "'": "'" };
+    var CLOSERS = { ')': 1, ']': 1, '}': 1, '"': 1, "'": 1 };
+    var cs = codeEl.selectionStart, ce = codeEl.selectionEnd, cv = codeEl.value;
+    var next = cv.charAt(cs), prev = cs > 0 ? cv.charAt(cs - 1) : '';
+    // si el siguiente carácter ya es el cierre que escribes, solo se avanza
+    if (CLOSERS[ev.key] && cs === ce && next === ev.key) {
+      ev.preventDefault(); codeEl.setSelectionRange(cs + 1, cs + 1); return;
+    }
+    // abrir: se escribe también el cierre (o se rodea lo seleccionado)
+    if (PAIRS[ev.key]) {
+      var isQuote = ev.key === '"' || ev.key === "'";
+      if (isQuote && cs === ce && (/[\p{L}\p{N}_\\]/u.test(prev))) return;
+      ev.preventDefault();
+      var inner = cv.slice(cs, ce);
+      insertText(ev.key + inner + PAIRS[ev.key], cs, ce);
+      codeEl.setSelectionRange(cs + 1, cs + 1 + inner.length);
+      return;
+    }
+    // borrar un par vacío: () [] {} "" ''
+    if (ev.key === 'Backspace' && cs === ce && PAIRS[prev] && next === PAIRS[prev]) {
+      ev.preventDefault(); insertText('', cs - 1, cs + 1); return;
+    }
+    if (ev.key === 'Enter' && !ev.shiftKey) {
+      var pos = codeEl.selectionStart, val = codeEl.value;
+      var lineStart = val.lastIndexOf('\n', pos - 1) + 1;
+      var base = /^[ \t]*/.exec(val.slice(lineStart, pos))[0], indent = base;
+      if (/\{\s*$/.test(val.slice(lineStart, pos))) indent += '    ';
+      ev.preventDefault();
+      // Enter entre { y }: el cierre baja a su propia línea
+      if (val.charAt(codeEl.selectionEnd) === '}' && indent !== base) {
+        insertText('\n' + indent + '\n' + base, pos, codeEl.selectionEnd);
+        var caret = pos + 1 + indent.length;
+        codeEl.setSelectionRange(caret, caret);
+        return;
+      }
+      insertText('\n' + indent, pos, codeEl.selectionEnd);
+      return;
+    }
+    if (ev.key === '}') {
+      var p2 = codeEl.selectionStart, v2 = codeEl.value, ls2 = v2.lastIndexOf('\n', p2 - 1) + 1;
+      if (/^ {4,}$/.test(v2.slice(ls2, p2))) { ev.preventDefault(); insertText('}', p2 - 4, p2); }
+    }
+  });
+  codeEl.addEventListener('blur', function () { escPressed = false; });
+
+  // ----- ejecutar y comprobar -----
+  function clearConsole() {
+    $('badge').innerHTML = '';
+    $('out').innerHTML = '<span class="m">Pulsa Ejecutar para ver la salida de tu programa.</span>';
+    $('note').hidden = true; $('compare').hidden = true; $('altBox').hidden = true;
+    var cb = $('challengeDone'); if (cb) cb.hidden = true;
+    document.querySelectorAll('.solved-extra').forEach(function (el) { el.hidden = true; });
+  }
+  function setBadge(kind, text) {
+    var icons = { ok: CHECK, warn: '', err: '' };
+    $('badge').innerHTML = '<span class="badge ' + kind + '">' + icons[kind] + '</span>';
+    $('badge').firstChild.appendChild(document.createTextNode(text));
+  }
+  function stripForReq(src) { return src.replace(/\/\*[\s\S]*?\*\//g, '').replace(/\/\/.*$/gm, '').replace(/"(?:\\.|[^"\\])*"/g, '""'); }
+  function looksHardcoded(e, src) {
+    var exp = norm(e.expected);
+    if (exp.indexOf('\n') >= 0) {
+      var lines = exp.split('\n');
+      return lines.length > 1 && lines.every(function (l) { return src.indexOf('"' + l + '"') >= 0 || (/^\d+$/.test(l) && new RegExp('println\\(\\s*' + l + '\\s*\\)').test(src)); });
+    }
+    var esc = exp.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    // un texto que el programa elige (como "Notable") puede ir entre comillas: solo se vigilan resultados con números o true/false
+    var computed = /\d/.test(exp) || exp === 'true' || exp === 'false';
+    if (computed && src.indexOf('"' + exp + '"') >= 0 && e.starter.indexOf('"' + exp + '"') < 0) return true;
+    if (/^-?[\d.]+$/.test(exp) && new RegExp('(^|[^\\w.])' + esc + '(?![\\w.])').test(src.replace(/"(?:\\.|[^"\\])*"/g, '""')) && e.starter.indexOf(exp) < 0) return true;
+    return false;
+  }
+  // ----- comprobación flexible: mismos datos y en el mismo orden, aunque cambie el formato -----
+  // datos de una salida: números, palabras y símbolos que forman parte del resultado (como los * de una tarjeta oculta)
+  function tokens(s) { return s.toLowerCase().match(/-?\d+(?:\.\d+)?|\p{L}+|[*#@$%&+_~^<>|]+/gu) || []; }
+  function sameTok(a, b) { var na = /^-?\d/.test(a), nb = /^-?\d/.test(b); return na && nb ? Number(a) === Number(b) : a === b; }
+  function isSubseq(need, have) {
+    var j = 0;
+    for (var i = 0; i < have.length && j < need.length; i++) if (sameTok(need[j], have[i])) j++;
+    return j === need.length;
+  }
+  // printf y String.format escriben la coma decimal en español (24,19): se acepta como 24.19
+  function decimalDot(s) { return s.replace(/(\d),(\d)/g, '$1.$2'); }
+  // un dato no puede llevar pegado un signo que no lleva en el resultado esperado (".png" no vale por "png")
+  function punctOK(output, expected) {
+    var TK = /-?\d+(?:\.\d+)?|\p{L}+/gu, NOT_P = /[\p{L}\p{N}]/gu, map = {};
+    expected.toLowerCase().split(/\s+/).forEach(function (ch) {
+      var p = ch.replace(NOT_P, '');
+      (ch.match(TK) || []).forEach(function (tk) { map[tk] = (map[tk] || '') + p; });
+    });
+    return decimalDot(output).toLowerCase().split(/\s+/).every(function (ch) {
+      var p = ch.replace(NOT_P, '');
+      if (!p) return true;
+      return (ch.match(TK) || []).every(function (tk) {
+        if (!Object.prototype.hasOwnProperty.call(map, tk)) return true;
+        for (var i = 0; i < p.length; i++) if (map[tk].indexOf(p[i]) < 0) return false;
+        return true;
+      });
+    });
+  }
+  // vale con otro formato solo si están todos los datos, en orden, y lo único que sobra son palabras de adorno
+  // (como "Resultado:"). No puede sobrar ningún número o símbolo, ni ninguna palabra que sea una posible respuesta
+  // (por ejemplo, escribir "Aprobado Notable" para acertar siempre).
+  function looseMatch(output, expected, vocab) {
+    var need = tokens(expected), have = tokens(decimalDot(output)), j = 0;
+    if (!need.length || !punctOK(output, expected)) return false;
+    for (var i = 0; i < have.length; i++) {
+      if (j < need.length && sameTok(need[j], have[i])) { j++; continue; }
+      var h = have[i];
+      if (!/^\p{L}+$/u.test(h) || (vocab && vocab[h])) return false;
+    }
+    if (j < need.length) return false;
+    // si se espera true o false, no vale que salga también el contrario
+    if (need.indexOf('true') >= 0 && need.indexOf('false') < 0 && have.indexOf('false') >= 0) return false;
+    if (need.indexOf('false') >= 0 && need.indexOf('true') < 0 && have.indexOf('true') >= 0) return false;
+    return true;
+  }
+  function looksHardcodedLoose(e, src) {
+    var starterToks = tokens(e.starter);
+    var nums = tokens(e.expected).filter(function (x) { return /^-?\d/.test(x) && !starterToks.some(function (y) { return sameTok(x, y); }); });
+    var bools = tokens(e.expected).filter(function (x) { return x === 'true' || x === 'false'; });
+    var lits = (src.replace(/\/\*[\s\S]*?\*\//g, '').replace(/\/\/.*$/gm, '').match(/"(?:\\.|[^"\\])*"/g) || [])
+      .filter(function (l) { return e.starter.indexOf(l) < 0; });
+    return lits.some(function (l) {
+      var lt = tokens(l);
+      if (nums.length && isSubseq(nums, lt)) return true;
+      return !nums.length && bools.length && isSubseq(bools, lt);
+    });
+  }
+  // pista según la diferencia de formato (sin dar la solución)
+  function formatHint(got, exp) {
+    if (decimalDot(got) === exp) return 'Solo cambia la coma decimal. printf y String.format escriben los decimales con coma porque usan la configuración en español; println escribe el número con punto.';
+    var gl = got.split('\n'), el = exp.split('\n');
+    var noSpace = function (s) { return s.replace(/\s+/g, ''); };
+    if (gl.length !== el.length && noSpace(got) === noSpace(exp)) return 'Solo cambian los saltos de línea. Recuerda que println salta de línea al terminar y print no.';
+    if (gl.length !== el.length) return 'Revisa los saltos de línea: el resultado esperado tiene ' + el.length + (el.length === 1 ? ' línea' : ' líneas') + ' y tu salida ' + gl.length + '.';
+    if (noSpace(got) === noSpace(exp)) return 'Solo cambian los espacios. Fíjate en los textos que concatenas con +: ¿dónde va cada espacio? Cada número necesita un espacio delante o detrás para no quedar pegado al texto.';
+    if (got.toLowerCase() === exp.toLowerCase()) return 'Solo cambian las mayúsculas y minúsculas. Revisa cómo has escrito los textos entre comillas.';
+    if (noSpace(got).toLowerCase() === noSpace(exp).toLowerCase()) return 'Cambian los espacios y las mayúsculas. Revisa los textos entre comillas que concatenas con +.';
+    if (got.indexOf(exp) >= 0 || got.toLowerCase().indexOf(exp.toLowerCase()) >= 0) return 'Tu salida tiene texto de más. El ejercicio pide mostrar solo el resultado, sin frases alrededor.';
+    var letters = function (s) { return s.toLowerCase().replace(/[^\p{L}\p{N}]+/gu, ''); };
+    if (letters(got) === letters(exp)) return 'Cambian los signos o la separación entre los datos (espacios, comas, dos puntos…). Compáralo con el resultado esperado.';
+    return 'Tienes texto de más o de menos alrededor de los datos. Compara tu salida con el resultado esperado, línea a línea.';
+  }
+  // pista automática cuando la salida no coincide (no cuenta como pista usada)
+  function diagnose(got, exp) {
+    var gl = got.split('\n'), el = exp.split('\n');
+    if (el.length > 1 && gl.length !== el.length) {
+      if (gl.length === el.length - 1) return 'Se esperaban ' + el.length + ' líneas y tienes ' + gl.length + ': puede que a tu bucle le falte una vuelta. Revisa los límites (< o <=) y desde dónde empieza.';
+      if (gl.length === el.length + 1) return 'Se esperaban ' + el.length + ' líneas y tienes ' + gl.length + ': puede que a tu bucle le sobre una vuelta. Revisa los límites (< o <=) y desde dónde empieza.';
+      return 'Se esperaban ' + el.length + ' líneas y tienes ' + gl.length + '. Revisa cuántas veces se repite tu bucle o cuántos println haces.';
+    }
+    var gt = tokens(got), et = tokens(exp);
+    var isN = function (x) { return /^-?\d/.test(x); };
+    var gn = gt.filter(isN).map(Number), en = et.filter(isN).map(Number);
+    if (et.length === 1 && (et[0] === 'true' || et[0] === 'false') && gt.length === 1 && (gt[0] === 'true' || gt[0] === 'false') && gt[0] !== et[0])
+      return 'Tu resultado es el contrario del esperado. Revisa la condición: los operadores (&&, ||) y las comparaciones (> o >=, < o <=).';
+    if (en.length && gn.length === en.length) {
+      var sortN = function (a) { return a.slice().sort(function (x, y) { return x - y; }).join(','); };
+      if (sortN(gn) === sortN(en) && gn.join(',') !== en.join(',')) return 'Tienes los números correctos, pero en otro orden.';
+      for (var i = 0; i < en.length; i++) {
+        var e = en[i], g = gn[i];
+        if (g === e) continue;
+        if (!Number.isInteger(e) && Number.isInteger(g) && Math.trunc(e) === g) return 'Se esperaba un número con decimales y el tuyo no los tiene. Revisa si alguna operación pierde los decimales antes de guardar el resultado.';
+        if (g === -e) return 'El signo de tu resultado es el contrario del esperado.';
+        if (Number.isInteger(e) && Number.isInteger(g) && Math.abs(g - e) === 1) return 'Te has pasado o te has quedado corto por 1. Revisa los límites (< o <=) o desde dónde empiezas a contar.';
+        if (e !== 0 && Math.abs(g - e) / Math.abs(e) < 0.01) return 'Tu número se acerca mucho, pero no es exacto. Revisa el redondeo o el orden de las operaciones.';
+        return '';
+      }
+    }
+    return '';
+  }
+  // ----- datos de entrada fijos y pruebas ocultas -----
+  var LOCK = '<svg aria-hidden="true" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="11" width="16" height="10" rx="2"></rect><path d="M8 11V7a4 4 0 0 1 8 0v4"></path></svg>';
+  // colores de código para las líneas con candado (tipos en azul, números en amarillo, textos en verde)
+  function highlightJava(src) {
+    var esc = function (t) { return t.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); };
+    return src.replace(/\/\/.*|"(?:\\.|[^"\\])*"|'(?:\\.|[^'\\])'|[A-Za-z_]\w*|\d+(?:\.\d+)?|[^"'\/\w]+|[\s\S]/g, function (t) {
+      var c = /^\/\//.test(t) ? 'c' : /^["']/.test(t) ? 's' : /^\d/.test(t) ? 'n' : /^(int|long|double|boolean|char|String|true|false)$/.test(t) ? 't' : '';
+      return c ? '<span class="' + c + '">' + esc(t) + '</span>' : esc(t);
+    });
+  }
+  function fixedCount(e) { return hasInput(e) ? e.input.split('\n').length : 0; }
+  function hasInput(e) { return !!e.input && e.input.indexOf('(sin datos') !== 0; }
+  function userStarter(e) { return hasInput(e) && e.starter.indexOf(e.input) === 0 ? e.starter.slice(e.input.length).replace(/^\n+/, '') : e.starter; }
+  function solutionBody(e) { return hasInput(e) && e.solution.indexOf(e.input) === 0 ? e.solution.slice(e.input.length) : e.solution; }
+  // une los datos fijos con el código del alumno; los números de línea siguen siendo los de su editor
+  function assemble(input, code) {
+    if (!input) return { src: code, off: 0 };
+    var m = /\bmain\s*\([^)]*\)[^{]*\{/.exec(code);
+    if (/\bclass\b/.test(code) && m) {
+      var at = m.index + m[0].length;
+      return { src: code.slice(0, at) + ' ' + input.replace(/\s*\n\s*/g, ' ') + ' ' + code.slice(at), off: 0 };
+    }
+    return { src: input + '\n' + code, off: input.split('\n').length };
+  }
+  function exec(src) {
+    try { return MiniJava.run(src); } catch (err) { return { ok: false, kind: 'limit', output: '', error: 'Algo ha fallado al ejecutar tu código en el playground.' }; }
+  }
+  function runWith(e, input, code) {
+    var a = assemble(input, code), r = exec(a.src);
+    if (!r.ok && r.line) r.line = Math.max(1, r.line - a.off);
+    return r;
+  }
+  function inputVars(e) { return (e.input.match(/\b([a-zA-Z_]\w*)\s*=/g) || []).map(function (x) { return x.replace(/\s*=$/, ''); }); }
+  // palabras que pueden ser respuesta en este ejercicio (salen en algún resultado esperado)
+  function answerVocab(e) {
+    if (e._vocab) return e._vocab;
+    var v = Object.create(null), outs = [e.expected];
+    (e.tests || []).forEach(function (t) { var w = exec(t + '\n' + solutionBody(e)); if (w.ok) outs.push(w.output); });
+    outs.forEach(function (o) { tokens(o).forEach(function (t) { if (/^\p{L}+$/u.test(t)) v[t] = true; }); });
+    return (e._vocab = v);
+  }
+  // devuelve null si pasa todas, o el primer fallo
+  function hiddenTests(e, code) {
+    var tests = e.tests || [];
+    for (var i = 0; i < tests.length; i++) {
+      var want = exec(tests[i] + '\n' + solutionBody(e));
+      if (!want.ok) continue;
+      var r = runWith(e, tests[i], code);
+      var ok = r.ok && (norm(r.output) === norm(want.output) || looseMatch(r.output, want.output.replace(/\n$/, ''), answerVocab(e)));
+      if (!ok) return { input: tests[i], r: r, expected: want.output.replace(/\n$/, '') };
+    }
+    return null;
+  }
+  var lastRun = null;
+  function runCode(auto) {
+    auto = auto === true;
+    var e = ex(), src = codeEl.value, input = hasInput(e) ? e.input : '', r;
+    // si se pegan también las declaraciones de entrada tal cual, se quitan (ya están fijas)
+    if (input && src.indexOf(input) >= 0) src = src.replace(input, '');
+    r = runWith(e, input, src);
+    // los números de línea cuentan también las líneas con candado, como en el editor
+    if (!r.ok && r.line) r.line += fixedCount(e);
+    lastRun = r;
+    var out = $('out'); out.textContent = '';
+    $('note').hidden = true; $('compare').hidden = true; $('altBox').hidden = true;
+    var cb2 = $('challengeDone'); if (cb2) cb2.hidden = true;
+    document.querySelectorAll('.solved-extra').forEach(function (el) { el.hidden = true; });
+    errLine = r.ok ? null : (r.line || null); updateGutter();
+    if (r.output) out.appendChild(document.createTextNode(r.output));
+    if (!r.ok) {
+      var span = document.createElement('span'); span.className = 'e';
+      if (r.kind === 'compile') { span.textContent = 'Main.java:' + r.line + ': error: ' + r.error; setBadge('err', 'Error de compilación en la línea ' + r.line); }
+      else if (r.kind === 'runtime') { span.textContent = r.error + '\n\tat Main.main(Main.java:' + r.line + ')'; setBadge('err', 'Error al ejecutar (línea ' + r.line + ')'); }
+      else { span.textContent = r.error; setBadge('err', 'Ejecución detenida'); }
+      if (r.output && !/\n$/.test(r.output)) out.appendChild(document.createTextNode('\n'));
+      out.appendChild(span);
+      if (r.kind === 'compile' && input && /is already defined/.test(r.error)) {
+        var dup = inputVars(e).filter(function (v) { return r.error.indexOf('variable ' + v + ' ') === 0; })[0];
+        if (dup) showNote('La variable ' + dup + ' ya está declarada en los datos de entrada fijos (las líneas con candado). Borra tu declaración y usa la que ya existe.');
+      }
+      return;
+    }
+    if (!r.output) { out.innerHTML = '<span class="m">(El programa no ha mostrado nada. ¿Te falta un System.out.println?)</span>'; }
+    var got = norm(r.output), exp = norm(e.expected);
+    var exact = got === exp, loose = !exact && looseMatch(r.output, e.expected, answerVocab(e));
+    var fail;
+    if (exact || loose) {
+      var clean = stripForReq(src);
+      var missing = e.req.filter(function (q) { return !q.re.test(clean); });
+      if (looksHardcoded(e, src) || looksHardcodedLoose(e, src)) {
+        setBadge('warn', 'Salida correcta, pero…');
+        showNote('Parece que has escrito el resultado a mano. El programa tiene que calcularlo a partir de los datos de entrada.');
+      } else if (missing.length) {
+        setBadge('warn', 'Salida correcta, pero…');
+        showNote('Este ejercicio pide ' + missing.map(function (q) { return q.msg; }).join(' y ') + '. Revisa las pistas.');
+      } else if ((fail = hiddenTests(e, src))) {
+        setBadge('warn', 'Funciona con el ejemplo, pero no con otros datos');
+        var why = fail.r.ok ? 'Con estos datos tu programa muestra otra cosa:' : (fail.r.kind === 'runtime' ? 'Con estos datos tu programa falla al ejecutarse (' + fail.r.error + '):' : 'Con estos datos tu programa no termina bien:');
+        showNote('Tu programa se ha probado con otros valores de entrada. ' + why + '\n\n' + fail.input + '\n\nRevisa los casos límite (por ejemplo, < o <=) y que tu código use las variables, no los valores del ejemplo.');
+        $('cmpGot').textContent = fail.r.ok ? (fail.r.output ? fail.r.output.replace(/\n$/, '') : '(nada)') : (fail.r.output || '') + (fail.r.output ? '\n' : '') + fail.r.error;
+        $('cmpExp').textContent = fail.expected; $('compare').hidden = false;
+      } else {
+        var nt = (e.tests || []).length;
+        setBadge('ok', (exact ? '¡Correcto!' : '¡Correcto! Con otro formato.') + (nt ? ' Funciona con el ejemplo y con ' + nt + ' pruebas más' : (exact ? ' Coincide con el resultado esperado' : '')));
+        if (loose) {
+          showNote('Los datos son correctos, pero el formato no es exactamente el pedido. Pista: ' + formatHint(got, exp));
+          $('cmpGot').textContent = r.output.replace(/\n$/, ''); $('cmpExp').textContent = e.expected; $('compare').hidden = false;
+        }
+        if (!state.solved[e.id]) {
+          state.solved[e.id] = true; state.help = state.help || {};
+          var used = state.solSeen && state.solSeen[e.id] ? 'solution' : ((state.hints[e.id] || 0) > 0 ? 'hints' : '');
+          if (used) state.help[e.id] = used;
+          save();
+        } else if (state.practice && state.practice[e.id]) {
+          // al repetirlo sin ayuda, la marca pasa a verde; si se usó ayuda, se queda como estaba
+          delete state.practice[e.id];
+          var usedNow = state.solSeen && state.solSeen[e.id] ? 'solution' : ((state.hints[e.id] || 0) > 0 ? 'hints' : '');
+          if (!usedNow && state.help) delete state.help[e.id];
+          save();
+        }
+        paintSolvedTag(e); refreshNav();
+        if (e.alt && !(e.alt.unless && e.alt.unless.test(clean))) {
+          $('altCode').textContent = e.alt.code; $('altWhy').textContent = e.alt.why; $('altBox').hidden = false;
+        }
+        hooks.solved.forEach(function (f) { f(e, auto); });
+      }
+    } else {
+      setBadge('warn', 'La salida no coincide');
+      $('cmpGot').textContent = r.output ? r.output.replace(/\n$/, '') : '(nada)';
+      $('cmpExp').textContent = e.expected;
+      $('compare').hidden = false;
+      if (got.toLowerCase() === exp.toLowerCase()) showNote('Casi: revisa las mayúsculas y minúsculas.');
+      else if (got.replace(/\s+/g, '') === exp.replace(/\s+/g, '')) showNote('Casi: revisa los espacios o los saltos de línea.');
+      else { var dg = r.output ? diagnose(got, exp) : ''; if (dg) showNote(dg); }
+    }
+  }
+  function showNote(t) { var n = $('note'); n.textContent = t; n.hidden = false; }
+
+  $('runBtn').addEventListener('click', function () { runCode(); });
+  function disarmReset() { resetArmed = false; clearTimeout(resetTimer); var b = $('resetBtn'); b.textContent = 'Reiniciar'; b.classList.remove('confirm'); }
+  $('resetBtn').addEventListener('click', function () {
+    var b = $('resetBtn');
+    if (!resetArmed) { resetArmed = true; b.textContent = '¿Borrar tu código? Pulsa otra vez'; b.classList.add('confirm'); resetTimer = setTimeout(disarmReset, 4000); return; }
+    disarmReset();
+    var e = ex(); delete state.code[e.id]; save();
+    codeEl.value = userStarter(e); errLine = null; updateGutter(); clearConsole(); codeEl.focus();
+  });
+  $('hintBtn').addEventListener('click', function () {
+    var e = ex(); state.hints[e.id] = Math.min((state.hints[e.id] || 0) + 1, e.hints.length); save(); renderHints();
+  });
+  $('solBtn').addEventListener('click', function () {
+    var s = $('solution'); s.hidden = !s.hidden;
+    if (!s.hidden) { state.solSeen = state.solSeen || {}; state.solSeen[ex().id] = true; save(); }
+    $('solBtn').firstChild.textContent = s.hidden ? 'Ver solución' : 'Ocultar solución';
+  });
+  $('prevBtn').addEventListener('click', function () { go(state.current - 1); });
+  $('nextBtn').addEventListener('click', function () { go(state.current + 1); });
+
+  // ----- tema claro / oscuro -----
+  var SUN = '<svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4.5"></circle><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"></path></svg>';
+  var MOON = '<svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"></path></svg>';
+  function currentTheme() { return document.documentElement.getAttribute('data-theme') === 'light' ? 'light' : 'dark'; }
+  function paintThemeBtn() {
+    var dark = currentTheme() === 'dark', b = $('themeBtn');
+    b.innerHTML = dark ? SUN : MOON;
+    b.setAttribute('aria-label', dark ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro');
+    b.title = dark ? 'Modo claro' : 'Modo oscuro';
+  }
+  $('themeBtn').addEventListener('click', function () {
+    var next = currentTheme() === 'dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', next);
+    try { localStorage.setItem('jp-theme', next); } catch (e) { }
+    paintThemeBtn();
+  });
+  paintThemeBtn();
+
+  buildNav();
+  render();
+  /*WELCOME_JS*/
+  /*LEVEL_JS*/
+  /*REFSOL_JS*/
+
+})();
+</script>
