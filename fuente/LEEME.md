@@ -47,7 +47,8 @@ fuente/
 │   ├── trampas.js       busca agujeros en la comprobación flexible
 │   ├── java_real.js     compara el intérprete con Java real (javac)
 │   └── java_real_casos.js  programas sueltos para esa comparación
-└── salida/              (generado, no se sube) pruebas.html = lo que se publica en el artefacto experimental
+└── salida/              (generado, no se sube) pruebas.html = la experimental en un solo archivo (para las pruebas);
+                         partes/ = la misma experimental en varios archivos, que es lo que se publica en el artefacto
 ```
 
 ## Comandos
@@ -63,8 +64,15 @@ NODE_PATH=$(npm root -g) node pruebas/trampas.js     # debe decir "sin problemas
 node pruebas/java_real.js                            # debe decir "diferencias con Java real: 0"
 ```
 
-- **Publicar la experimental:** publicar `fuente/salida/pruebas.html` en el artefacto
-  privado «Ejercicios programacion (pruebas)» (herramienta Artifact, con la `url` que está en la memoria del proyecto).
+- **Publicar la experimental:** se publica `fuente/salida/partes/` en el artefacto privado
+  «Ejercicios programacion (pruebas)» (herramienta Artifact, con la `url` que está en la memoria del proyecto).
+  Va en varios archivos para no tener que leer la página entera (unas 3.500 líneas) antes de publicar desde un hilo nuevo:
+  1. `Artifact` con `action: "list"`, `scope: "files"` y la `url`: ver la lista de archivos publicados.
+  2. `Artifact` con `action: "read"`, la `url` y `path: "index.html"`: leer solo el HTML pequeño (unas 170 líneas).
+  3. Publicar con `file_path: fuente/salida/partes/index.html`, la `url` y
+     `files: {"estilos.css", "minijava.js", "ejercicios.js", "app.js"}` (cada uno desde `fuente/salida/partes/`).
+     Se pueden mandar solo los que hayan cambiado; los que no se mandan se quedan como estaban.
+  No leer nunca `salida/pruebas.html` ni la página publicada entera: no hace falta.
 - **Push a main:** `python3 build.py merge` (escribe `../index.html` sin la etiqueta), y después
   `git add index.html fuente && git commit -m "…" && git push origin main`. GitHub Pages tarda 1-2 minutos.
 

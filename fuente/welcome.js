@@ -15,6 +15,7 @@
       editing = edit;
       $('askTitle').textContent = edit ? (state.name ? 'Cambiar tu nombre' : '¿Cómo te llamas?') : 'Te damos la bienvenida a Java Playground';
       $('askIntro').hidden = edit;
+      $('askIntro').textContent = EXERCISES.length + ' ejercicios de 1.º de DAM para practicar Java, con pistas y soluciones. Tu progreso se guarda en este navegador.';
       if (LEVELS) $('levelField').hidden = edit;
       $('nameInput').value = edit ? (state.name || '') : '';
       $('skipName').textContent = edit ? 'Cancelar' : 'Prefiero no decirlo';
