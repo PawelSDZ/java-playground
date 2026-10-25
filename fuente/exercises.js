@@ -685,7 +685,7 @@ var EXERCISES = [
     ],
     solution: 'int filas = 4;\nfor (int i = 1; i <= filas; i++) {\n    for (int j = 1; j <= i; j++) {\n        System.out.print("*");\n    }\n    System.out.println();\n}',
     explanation: 'El bucle de fuera recorre las filas: i vale 1, 2, 3 y 4. Por cada fila, el de dentro da i vueltas y escribe un * con print, que no salta de línea. Cuando termina, println() salta a la fila siguiente. La clave es que el límite del bucle de dentro (j <= i) cambia en cada fila: por eso cada una tiene un asterisco más.',
-    req: [{ re: /\b(for|while)\s*\([^{}]*\)\s*\{[^}]*\b(for|while)\s*\(/, msg: 'poner un bucle dentro de otro' }]
+    req: [{ re: /\b(for|while)\b[\s\S]*\b(for|while)\b/, msg: 'poner un bucle dentro de otro' }]
   },
   {
     id: 'l12', group: 'Bucles', title: 'Duplicar hasta superar', level: 'Media',
@@ -722,12 +722,69 @@ var EXERCISES = [
     solution: 'int numero = 30;\nint divisor = 7;\nint candidato = numero + 1;\nwhile (true) {\n    if (candidato % divisor == 0) {\n        break;\n    }\n    candidato++;\n}\nSystem.out.println(candidato);',
     explanation: 'while (true) es un bucle infinito controlado: no para por su condición, sino con break. Prueba 31, 32, 33 y 34 (ninguno es múltiplo de 7) y en 35 el resto es 0, así que break sale del bucle sin llegar a candidato++. Se empieza en numero + 1 porque tiene que ser mayor: con numero = 7 la respuesta es 14, no 7.',
     req: [{ re: /\bwhile\s*\(\s*true\s*\)/, msg: 'usar un bucle while (true)' }, { re: /\bbreak\s*;/, msg: 'salir del bucle con break' }]
+  },
+  {
+    id: 'l14', group: 'Bucles', title: 'Tablas del 1 al N', level: 'Media',
+    statement: 'Muestra las tablas de multiplicar del 1 hasta el número de tablas, cada una del 1 hasta el límite, con el formato del resultado esperado. Usa un bucle dentro de otro.',
+    input: 'int tablas = 3;\nint hasta = 4;',
+    tests: ["int tablas = 1;\nint hasta = 1;", "int tablas = 2;\nint hasta = 5;", "int tablas = 4;\nint hasta = 2;"],
+    expected: '1 x 1 = 1\n1 x 2 = 2\n1 x 3 = 3\n1 x 4 = 4\n2 x 1 = 2\n2 x 2 = 4\n2 x 3 = 6\n2 x 4 = 8\n3 x 1 = 3\n3 x 2 = 6\n3 x 3 = 9\n3 x 4 = 12',
+    outInfo: 'Una línea por multiplicación con el formato "2 x 3 = 6": números (int) unidos con " x " y " = ".',
+    starter: 'int tablas = 3;\nint hasta = 4;\n\n// Tu código aquí\n',
+    hints: [
+      "Es como «Tabla de multiplicar», pero repetido para cada tabla: primero toda la del 1, luego toda la del 2 y luego toda la del 3.",
+      "Necesitas dos contadores: uno para la tabla y otro para el número por el que multiplicas. Esta vez los dos salen en lo que se muestra, no solo sirven para contar vueltas.",
+      "El bucle de fuera recorre las tablas (i de 1 a tablas). Dentro, otro bucle recorre j de 1 a hasta y muestra i, \" x \", j, \" = \" y la multiplicación.",
+      { t: "Completa los huecos:", code: "for (int i = 1; i <= ___; i++) {\n    for (int j = 1; j <= ___; j++) {\n        System.out.println(___ + \" x \" + ___ + \" = \" + i * j);\n    }\n}" }
+    ],
+    solution: 'int tablas = 3;\nint hasta = 4;\nfor (int i = 1; i <= tablas; i++) {\n    for (int j = 1; j <= hasta; j++) {\n        System.out.println(i + " x " + j + " = " + i * j);\n    }\n}',
+    explanation: 'El bucle de fuera elige la tabla (i = 1, 2 y 3) y, por cada una, el de dentro da todas sus vueltas (j = 1, 2, 3 y 4). Por eso sale entera la tabla del 1 antes de empezar la del 2. Las dos variables se usan en lo que se muestra: i es la tabla y j el número por el que se multiplica.',
+    req: [{ re: /\b(for|while)\b[\s\S]*\b(for|while)\b/, msg: 'poner un bucle dentro de otro' }]
+  },
+  {
+    id: 'l15', group: 'Bucles', title: 'Triángulo invertido', level: 'Media',
+    statement: 'Dibuja un triángulo de asteriscos al revés: la primera fila tiene tantos * como filas, y cada fila tiene uno menos que la anterior. Usa un bucle dentro de otro.',
+    input: 'int filas = 4;',
+    tests: ["int filas = 1;", "int filas = 2;", "int filas = 6;"],
+    expected: '****\n***\n**\n*',
+    outInfo: 'Tantas líneas como filas, cada una con asteriscos (*) seguidos y sin espacios.',
+    starter: 'int filas = 4;\n\n// Tu código aquí\n',
+    hints: [
+      "Es el «Triángulo de asteriscos» al revés: con 4 filas, la fila 1 tiene 4 asteriscos, la 2 tiene 3, la 3 tiene 2 y la 4 tiene 1.",
+      "El bucle de fuera puede seguir contando las filas hacia delante. Lo que cambia es el límite del bucle de dentro: busca una cuenta con filas e i que dé 4, 3, 2 y 1.",
+      "Prueba la cuenta fila a fila: con filas = 4, la fila i = 1 necesita 4 asteriscos y la i = 4 necesita 1. filas - i da 3 y 0, así que le falta sumar 1: filas - i + 1.",
+      { t: "Completa los huecos:", code: "for (int i = 1; i <= filas; i++) {\n    for (int j = 1; j <= ___ - ___ + 1; j++) {\n        System.out.print(\"*\");\n    }\n    System.out.___();\n}" }
+    ],
+    solution: 'int filas = 4;\nfor (int i = 1; i <= filas; i++) {\n    for (int j = 1; j <= filas - i + 1; j++) {\n        System.out.print("*");\n    }\n    System.out.println();\n}',
+    explanation: 'El bucle de fuera recorre las filas (i = 1, 2, 3 y 4) y el de dentro da filas - i + 1 vueltas: 4, 3, 2 y 1. Comprobar la cuenta con la primera y la última fila es la forma de no equivocarse por 1: sin el + 1, la primera fila tendría 3 asteriscos y la última ninguno.',
+    req: [{ re: /\b(for|while)\b[\s\S]*\b(for|while)\b/, msg: 'poner un bucle dentro de otro' }],
+    alt: { unless: /--/, code: 'for (int i = filas; i >= 1; i--) {\n    for (int j = 1; j <= i; j++) {\n        System.out.print("*");\n    }\n    System.out.println();\n}', why: 'Otra forma: el bucle de fuera cuenta hacia atrás (4, 3, 2, 1) y así el de dentro puede usar j <= i, como en el triángulo normal. Las dos sirven; la del ejercicio practica calcular el límite a partir de la fila.' }
+  },
+  {
+    id: 'l16', group: 'Bucles', title: 'Pirámide centrada', level: 'Reto',
+    statement: 'Dibuja una pirámide centrada de asteriscos: cada fila tiene 2 asteriscos más que la anterior (1, 3, 5…) y espacios delante para que quede centrada. La última fila no lleva espacios. Usa, dentro del bucle de las filas, un bucle para los espacios y otro para los asteriscos.',
+    input: 'int filas = 4;',
+    tests: ["int filas = 1;", "int filas = 2;", "int filas = 6;"],
+    expected: '   *\n  ***\n *****\n*******',
+    outInfo: 'Tantas líneas como filas: primero los espacios y después los asteriscos (*). Los espacios del principio cuentan, y no hay espacios al final.',
+    exact: true,
+    starter: 'int filas = 4;\n\n// Tu código aquí\n',
+    hints: [
+      "Mira cada fila por partes: con 4 filas, la fila 1 tiene 3 espacios y 1 asterisco, la 2 tiene 2 espacios y 3 asteriscos, la 3 tiene 1 y 5, y la 4 tiene 0 y 7.",
+      "Por cada fila hacen falta dos cuentas: cuántos espacios y cuántos asteriscos. Cada una sale de una operación con filas e i, igual que en el «Triángulo invertido».",
+      "Dentro del bucle de las filas pon dos bucles seguidos (no uno dentro del otro): el primero escribe los espacios con print y el segundo los asteriscos. Al final de la fila, println().",
+      "Los espacios bajan de 1 en 1 empezando en filas - 1: filas - i. Los asteriscos son los impares 1, 3, 5, 7: el doble de la fila menos 1, es decir, 2 * i - 1. Compruébalo con i = 1 y con i = 4.",
+      { t: "Completa los huecos:", code: "for (int i = 1; i <= filas; i++) {\n    for (int j = 1; j <= ___; j++) {\n        System.out.print(\" \");\n    }\n    for (int j = 1; j <= ___; j++) {\n        System.out.print(\"*\");\n    }\n    System.out.println();\n}" }
+    ],
+    solution: 'int filas = 4;\nfor (int i = 1; i <= filas; i++) {\n    for (int j = 1; j <= filas - i; j++) {\n        System.out.print(" ");\n    }\n    for (int j = 1; j <= 2 * i - 1; j++) {\n        System.out.print("*");\n    }\n    System.out.println();\n}',
+    explanation: 'Por cada fila i, el primer bucle escribe filas - i espacios (3, 2, 1 y 0) y el segundo 2 * i - 1 asteriscos (1, 3, 5 y 7). Los dos van uno detrás de otro dentro del bucle de las filas, y println() cierra la fila. Como el segundo bucle empieza cuando termina el primero, se puede volver a llamar j a su variable.',
+    req: [{ re: /\b(for|while)\b[\s\S]*\b(for|while)\b[\s\S]*\b(for|while)\b/, msg: 'poner, dentro del bucle de las filas, un bucle para los espacios y otro para los asteriscos' }]
   }
 ];
 // Orden: de lo más básico a lo que necesita lo anterior, y de fácil a difícil dentro de cada sección
 (function () {
   var ORDER = ['a1', 'a4', 'a2', 'a3', 'b1', 'b2', 'b3', 'b4', 'b7', 'b6', 'b5', 's1', 's2', 's5', 's7', 's3', 's4', 's6',
-    'l1', 'l2', 'l3', 'l4', 'l10', 'l7', 'l6', 'l9', 'l12', 'l13', 'l11', 'l5', 'l8', 'r2', 'r3', 'r5', 'r6', 'r4', 'r7', 'r1', 'r8', 'r9'];
+    'l1', 'l2', 'l3', 'l4', 'l10', 'l7', 'l6', 'l9', 'l12', 'l13', 'l11', 'l14', 'l15', 'l5', 'l16', 'l8', 'r2', 'r3', 'r5', 'r6', 'r4', 'r7', 'r1', 'r8', 'r9'];
   EXERCISES.sort(function (x, y) { return ORDER.indexOf(x.id) - ORDER.indexOf(y.id); });
 })();
 if (typeof module !== 'undefined') module.exports = EXERCISES;

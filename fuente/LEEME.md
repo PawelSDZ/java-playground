@@ -84,6 +84,7 @@ node pruebas/java_real.js                            # debe decir "diferencias c
   explanation: '…',
   req: [{ re: /\b(for|while)\s*\(/, msg: 'usar un bucle' }],   // msg completa «Este ejercicio pide …»
   alt: { unless: /toCharArray/, code: '…', why: '…' }          // opcional: se muestra si su código no encaja con unless
+  exact: true                            // opcional: sin comprobación flexible (cuando los espacios forman parte del dibujo)
 }
 ```
 

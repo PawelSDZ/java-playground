@@ -1,4 +1,22 @@
 W = {
+'l14': [
+ ('for (int i = 1; i <= tablas; i++) {', 'El bucle de fuera elige la tabla: i vale 1, 2 y 3.'),
+ ('for (int j = 1; j <= hasta; j++) {', 'Por cada tabla, el de dentro da todas sus vueltas: j vale 1, 2, 3 y 4. Después, el de fuera pasa a la tabla siguiente y j vuelve a empezar en 1.'),
+ ('System.out.println(i + " x " + j + " = " + i * j);', 'Las dos variables salen en la línea: i es la tabla y j el número por el que se multiplica. Con i = 2 y j = 3 muestra "2 x 3 = 6".'),
+],
+'l15': [
+ ('for (int i = 1; i <= filas; i++) {', 'El bucle de fuera recorre las filas hacia delante: i vale 1, 2, 3 y 4.'),
+ ('for (int j = 1; j <= filas - i + 1; j++) {', 'El límite sale de la fila: 4 - 1 + 1 = 4 vueltas en la primera, 4 - 4 + 1 = 1 en la última. Sin el + 1 faltaría un asterisco en cada fila.'),
+ ('System.out.print("*");', 'print escribe el * sin saltar de línea.'),
+ ('System.out.println();', 'Cuando la fila está completa, salta a la siguiente.'),
+],
+'l16': [
+ ('for (int i = 1; i <= filas; i++) {', 'El bucle de fuera recorre las filas: i vale 1, 2, 3 y 4.'),
+ ('for (int j = 1; j <= filas - i; j++) {', 'Primer bucle de dentro: los espacios. filas - i da 3, 2, 1 y 0, así que la última fila empieza sin espacios.'),
+ ('System.out.print(" ");', 'Escribe un espacio sin saltar de línea.'),
+ ('for (int j = 1; j <= 2 * i - 1; j++) {', 'Segundo bucle de dentro, después del primero: los asteriscos. 2 * i - 1 da los impares 1, 3, 5 y 7. Puede volver a usar el nombre j porque el primer bucle ya ha terminado.'),
+ ('System.out.println();', 'Cierra la fila cuando ya están los espacios y los asteriscos.'),
+],
 'b7': [
  ('if (edad >= 18) {', 'El if de fuera mira la edad. 20 >= 18 es true, así que entra en su bloque.'),
  ('if (tieneCarnet) {', 'El if de dentro solo se evalúa si es mayor de edad. tieneCarnet ya es un boolean, así que no hace falta == true. Vale false: no entra.'),

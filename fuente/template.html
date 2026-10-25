@@ -807,7 +807,7 @@ textarea.code:focus { outline: none; box-shadow: inset 0 0 0 2px #3B82F6; }
       var want = exec(tests[i] + '\n' + solutionBody(e));
       if (!want.ok) continue;
       var r = runWith(e, tests[i], code);
-      var ok = r.ok && (norm(r.output) === norm(want.output) || looseMatch(r.output, want.output.replace(/\n$/, ''), answerVocab(e)));
+      var ok = r.ok && (norm(r.output) === norm(want.output) || (!e.exact && looseMatch(r.output, want.output.replace(/\n$/, ''), answerVocab(e))));
       if (!ok) return { input: tests[i], r: r, expected: want.output.replace(/\n$/, '') };
     }
     return null;
@@ -843,7 +843,7 @@ textarea.code:focus { outline: none; box-shadow: inset 0 0 0 2px #3B82F6; }
     }
     if (!r.output) { out.innerHTML = '<span class="m">(El programa no ha mostrado nada. ¿Te falta un System.out.println?)</span>'; }
     var got = norm(r.output), exp = norm(e.expected);
-    var exact = got === exp, loose = !exact && looseMatch(r.output, e.expected, answerVocab(e));
+    var exact = got === exp, loose = !exact && !e.exact && looseMatch(r.output, e.expected, answerVocab(e));
     var fail;
     if (exact || loose) {
       var clean = stripForReq(src);
