@@ -7,7 +7,7 @@
     codeEl.setAttribute('aria-autocomplete', 'list'); codeEl.setAttribute('aria-controls', 'acList');
     var items = [], sel = 0, from = 0, suppress = false;
 
-    var TYPES = 'int|long|double|boolean|char|String|StringBuilder';
+    var TYPES = 'int|long|double|boolean|char|String|StringBuilder|Scanner';
     // variables declaradas (datos de entrada + tu código), con su tipo
     function declared(text) {
       var vars = {}, m;
@@ -57,7 +57,7 @@
       return out;
     }
     function membersOf(target, vars) {
-      if (target === 'System') return [{ name: 'out', label: 'out', ret: 'PrintStream', call: false }];
+      if (target === 'System') return [{ name: 'out', label: 'out', ret: 'PrintStream', call: false }, { name: 'in', label: 'in', ret: 'InputStream', call: false }];
       if (target === 'System.out') return [
         { name: 'println', label: 'println(valor)', ret: 'void', call: true, args: true },
         { name: 'print', label: 'print(valor)', ret: 'void', call: true, args: true },
@@ -65,6 +65,7 @@
       var t = vars[target];
       if (t === 'String') return fromTable(API.STRING_METHODS);
       if (t === 'StringBuilder') return fromTable(API.SB_METHODS);
+      if (t === 'Scanner') return fromTable(API.SCANNER_METHODS);
       if (t && /\[\]$/.test(t)) return [{ name: 'length', label: 'length', ret: 'int', call: false }];
       if (!t && (API.STATIC[target] || API.STATIC_FIELDS[target])) return staticMembers(target);
       return [];

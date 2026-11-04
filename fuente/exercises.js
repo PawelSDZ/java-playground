@@ -779,12 +779,71 @@ var EXERCISES = [
     solution: 'int filas = 4;\nfor (int i = 1; i <= filas; i++) {\n    for (int j = 1; j <= filas - i; j++) {\n        System.out.print(" ");\n    }\n    for (int j = 1; j <= 2 * i - 1; j++) {\n        System.out.print("*");\n    }\n    System.out.println();\n}',
     explanation: 'Por cada fila i, el primer bucle escribe filas - i espacios (3, 2, 1 y 0) y el segundo 2 * i - 1 asteriscos (1, 3, 5 y 7). Los dos van uno detrás de otro dentro del bucle de las filas, y println() cierra la fila. Como el segundo bucle empieza cuando termina el primero, se puede volver a llamar j a su variable.',
     req: [{ re: /\b(for|while)\b[\s\S]*\b(for|while)\b[\s\S]*\b(for|while)\b/, msg: 'poner, dentro del bucle de las filas, un bucle para los espacios y otro para los asteriscos' }]
+  },
+  {
+    id: 'l17', group: 'Bucles', title: 'Sumar hasta el 0', level: 'Media',
+    statement: 'Pide números por teclado con Scanner, cada uno con el mensaje "Número: ", hasta que se escriba un 0. Al terminar, muestra la suma de todos con el mensaje "Total: ". Cuando el programa se pare a esperar, escribe tu respuesta en la consola y pulsa Enter.',
+    input: '(sin datos fijos: se escriben en la consola cuando el programa los pide)',
+    stdin: ['5', '3', '0'],
+    tests: [['0'], ['-2', '10', '4', '0'], ['7', '0'], ['1', '1', '1', '1', '0']],
+    expected: 'Número: 5\nNúmero: 3\nNúmero: 0\nTotal: 8',
+    outInfo: 'Un "Número: " por cada dato (lo que escribes queda en la misma línea) y al final una línea con "Total: " y la suma (int). El ejemplo es escribiendo 5, 3 y 0.',
+    starter: 'Scanner teclado = new Scanner(System.in);\n\n// Tu código aquí\n',
+    hints: [
+      "No sabes cuántos números van a escribir: el programa tiene que repetir «pedir, leer y sumar» hasta que llegue un 0. Como mínimo hay que pedir uno, así que el bucle da al menos una vuelta.",
+      "El mensaje se escribe con print (no println) para que lo que se teclea quede en la misma línea. Para leer un número entero, busca en el Scanner el método que lee el siguiente int.",
+      "Un bucle do-while: dentro, muestra el mensaje, lee el número con teclado.nextInt() y súmalo al total. La condición es que el número no sea 0. El 0 también se suma, pero no cambia nada.",
+      { t: "Completa los huecos:", code: "int total = 0;\nint numero;\ndo {\n    System.out.___(\"Número: \");\n    numero = teclado.___();\n    total += numero;\n} while (numero ___ 0);\nSystem.out.println(\"Total: \" + total);" }
+    ],
+    solution: 'Scanner teclado = new Scanner(System.in);\nint total = 0;\nint numero;\ndo {\n    System.out.print("Número: ");\n    numero = teclado.nextInt();\n    total += numero;\n} while (numero != 0);\nSystem.out.println("Total: " + total);',
+    explanation: 'El do-while pide un número en cada vuelta: muestra "Número: " con print, se queda esperando hasta que escribes y pulsas Enter, y nextInt() devuelve lo que has escrito como int. Se suma al total y se repite mientras no sea 0. Con 5, 3 y 0: 5 + 3 + 0 = 8. Es do-while porque hay que pedir al menos un número antes de poder comprobar nada.',
+    req: [{ re: /\.nextInt\s*\(\s*\)/, msg: 'leer los números con el método de Scanner que lee un int' }, { re: /\b(for|while)\s*\(|\bdo\s*\{/, msg: 'usar un bucle' }]
+  },
+  {
+    id: 'l18', group: 'Bucles', title: 'Contraseña con 3 intentos', level: 'Media',
+    statement: 'Pide la contraseña con el mensaje "Contraseña: " y léela con Scanner. Si no coincide con la clave, muestra "Incorrecta" y vuelve a pedirla, como mucho 3 veces. Al final muestra "Acceso concedido" si ha acertado o "Cuenta bloqueada" si ha fallado las 3. Hazlo sin break: que la condición del bucle diga cuándo parar.',
+    input: '(sin datos fijos: se escriben en la consola cuando el programa los pide)',
+    stdin: ['hola', 'java123'],
+    tests: [['java123'], ['a', 'b', 'c'], ['Java123', 'java 123', 'java123'], ['x', 'java123'], ['1', '2', '3', 'java123']],
+    expected: 'Contraseña: hola\nIncorrecta\nContraseña: java123\nAcceso concedido',
+    outInfo: 'Por cada intento, "Contraseña: " con lo que escribes y, si falla, "Incorrecta". Al final, "Acceso concedido" o "Cuenta bloqueada". El ejemplo es escribiendo hola y java123.',
+    starter: 'Scanner teclado = new Scanner(System.in);\nString clave = "java123";\n\n// Tu código aquí\n',
+    hints: [
+      "El bucle tiene dos motivos para parar: que acierte o que gaste los 3 intentos. Los dos tienen que estar en la condición.",
+      "Lleva un contador de intentos y un boolean que diga si ya ha acertado. Para leer una línea entera de texto, busca en el Scanner el método que lee la línea.",
+      "Para comparar el texto escrito con la clave no sirve ==: hay un método de String que compara el contenido.",
+      "Repite mientras intentos < 3 y todavía no haya acertado. Dentro: pide, lee, suma un intento y, si coincide, pon el boolean a true; si no, muestra \"Incorrecta\". Después del bucle, un if con el boolean decide el mensaje final.",
+      { t: "Completa los huecos:", code: "int intentos = 0;\nboolean acertada = false;\nwhile (intentos < 3 ___ !acertada) {\n    System.out.print(\"Contraseña: \");\n    String escrita = teclado.___();\n    intentos++;\n    if (escrita.___(clave)) {\n        acertada = true;\n    } else {\n        System.out.println(\"Incorrecta\");\n    }\n}\nif (___) {\n    System.out.println(\"Acceso concedido\");\n} else {\n    System.out.println(\"Cuenta bloqueada\");\n}" }
+    ],
+    solution: 'Scanner teclado = new Scanner(System.in);\nString clave = "java123";\nint intentos = 0;\nboolean acertada = false;\nwhile (intentos < 3 && !acertada) {\n    System.out.print("Contraseña: ");\n    String escrita = teclado.nextLine();\n    intentos++;\n    if (escrita.equals(clave)) {\n        acertada = true;\n    } else {\n        System.out.println("Incorrecta");\n    }\n}\nif (acertada) {\n    System.out.println("Acceso concedido");\n} else {\n    System.out.println("Cuenta bloqueada");\n}',
+    explanation: 'La condición del while junta los dos motivos para seguir: quedan intentos (intentos < 3) y todavía no ha acertado (!acertada). Con hola: no coincide, muestra "Incorrecta" y repite. Con java123: equals da true, acertada pasa a true y el bucle para solo, sin break. Después, el if mira acertada para elegir el mensaje. Se compara con equals porque == mira si son el mismo objeto, no si el texto es igual: con lo que se lee del teclado, == daría false aunque escribas bien la clave.',
+    req: [{ re: /\.nextLine\s*\(\s*\)/, msg: 'leer cada intento con el método de Scanner que lee una línea' }, { re: /\.equals\s*\(/, msg: 'comparar el texto con el método de String que compara el contenido' }, { re: /\b(for|while)\s*\(|\bdo\s*\{/, msg: 'usar un bucle' }]
+  },
+  {
+    id: 'l19', group: 'Bucles', title: 'Calculadora con menú', level: 'Reto',
+    statement: 'Haz una calculadora que repite un menú hasta que se elige 0. Pide la opción con "Opción: " (1 sumar, 2 restar, 3 multiplicar, 0 salir). Con 1, 2 o 3 pide dos números con "Primer número: " y "Segundo número: " y muestra "Resultado: " con la operación, eligiéndola con un switch. Con otra opción que no sea 0, muestra "Opción no válida". Al salir, muestra "Adiós".',
+    input: '(sin datos fijos: se escriben en la consola cuando el programa los pide)',
+    stdin: ['1', '4', '5', '3', '2', '6', '7', '0'],
+    tests: [['0'], ['2', '3', '10', '0'], ['5', '-1', '1', '-4', '4', '0'], ['3', '0', '9', '1', '1', '1', '2', '7', '7', '0']],
+    expected: 'Opción: 1\nPrimer número: 4\nSegundo número: 5\nResultado: 9\nOpción: 3\nPrimer número: 2\nSegundo número: 6\nResultado: 12\nOpción: 7\nOpción no válida\nOpción: 0\nAdiós',
+    outInfo: 'Lo que pide el programa con lo que escribes al lado; tras cada operación, "Resultado: " y el número (int); con una opción que no existe, "Opción no válida"; al final, "Adiós". El ejemplo es escribiendo 1, 4, 5, 3, 2, 6, 7 y 0.',
+    starter: 'Scanner teclado = new Scanner(System.in);\n\n// Tu código aquí\n',
+    hints: [
+      "Piensa en tres piezas, una dentro de otra: un bucle que repite el menú, una decisión sobre si la opción es una operación, y un switch que elige cuál.",
+      "El menú se muestra al menos una vez, así que encaja un do-while que repite mientras la opción no sea 0. La opción hay que declararla fuera del bucle, porque la condición la usa.",
+      "Los dos números solo se piden si la opción está entre 1 y 3: compruébalo con un if antes de leerlos. Si no lo está y tampoco es 0, es una opción no válida.",
+      "Dentro de ese if, después de leer los dos números, un switch con case 1, case 2 y case 3 calcula y muestra el resultado. Cada case termina con break para no seguir con el siguiente. \"Adiós\" va después del bucle.",
+      { t: "Completa los huecos:", code: "int opcion;\ndo {\n    System.out.print(\"Opción: \");\n    opcion = teclado.nextInt();\n    if (opcion >= 1 ___ opcion <= 3) {\n        System.out.print(\"Primer número: \");\n        int a = teclado.nextInt();\n        System.out.print(\"Segundo número: \");\n        int b = teclado.nextInt();\n        switch (___) {\n            case 1:\n                System.out.println(\"Resultado: \" + (a + b));\n                ___;\n            case 2:\n                System.out.println(\"Resultado: \" + (a - b));\n                break;\n            case 3:\n                System.out.println(\"Resultado: \" + (a * b));\n                break;\n        }\n    } else if (opcion ___ 0) {\n        System.out.println(\"Opción no válida\");\n    }\n} while (opcion != 0);\nSystem.out.println(\"Adiós\");" }
+    ],
+    solution: 'Scanner teclado = new Scanner(System.in);\nint opcion;\ndo {\n    System.out.print("Opción: ");\n    opcion = teclado.nextInt();\n    if (opcion >= 1 && opcion <= 3) {\n        System.out.print("Primer número: ");\n        int a = teclado.nextInt();\n        System.out.print("Segundo número: ");\n        int b = teclado.nextInt();\n        switch (opcion) {\n            case 1:\n                System.out.println("Resultado: " + (a + b));\n                break;\n            case 2:\n                System.out.println("Resultado: " + (a - b));\n                break;\n            case 3:\n                System.out.println("Resultado: " + (a * b));\n                break;\n        }\n    } else if (opcion != 0) {\n        System.out.println("Opción no válida");\n    }\n} while (opcion != 0);\nSystem.out.println("Adiós");',
+    explanation: 'Son tres estructuras anidadas. El do-while repite el menú y para cuando la opción es 0. Dentro, el if separa las opciones que son operaciones (de 1 a 3), las únicas que necesitan pedir los dos números. El switch elige la operación, y el break de cada case evita que siga con el siguiente. Si la opción no está entre 1 y 3 y tampoco es 0, el else if avisa de que no es válida. Con el 0 no se muestra nada dentro, la condición del do-while da false y se muestra "Adiós".',
+    req: [{ re: /\.nextInt\s*\(\s*\)/, msg: 'leer la opción y los números con el método de Scanner que lee un int' }, { re: /\bswitch\s*\(/, msg: 'elegir la operación con un switch' }, { re: /\b(for|while)\s*\(|\bdo\s*\{/, msg: 'usar un bucle que repita el menú' }]
   }
 ];
 // Orden: de lo más básico a lo que necesita lo anterior, y de fácil a difícil dentro de cada sección
 (function () {
   var ORDER = ['a1', 'a4', 'a2', 'a3', 'b1', 'b2', 'b3', 'b4', 'b7', 'b6', 'b5', 's1', 's2', 's5', 's7', 's3', 's4', 's6',
-    'l1', 'l2', 'l3', 'l4', 'l10', 'l7', 'l6', 'l9', 'l12', 'l13', 'l11', 'l14', 'l15', 'l5', 'l16', 'l8', 'r2', 'r3', 'r5', 'r6', 'r4', 'r7', 'r1', 'r8', 'r9'];
+    'l1', 'l2', 'l3', 'l4', 'l10', 'l7', 'l6', 'l9', 'l12', 'l17', 'l18', 'l13', 'l11', 'l14', 'l15', 'l5', 'l16', 'l19', 'l8', 'r2', 'r3', 'r5', 'r6', 'r4', 'r7', 'r1', 'r8', 'r9'];
   EXERCISES.sort(function (x, y) { return ORDER.indexOf(x.id) - ORDER.indexOf(y.id); });
 })();
 if (typeof module !== 'undefined') module.exports = EXERCISES;

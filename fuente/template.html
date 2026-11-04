@@ -198,6 +198,9 @@ textarea.code:focus { outline: none; box-shadow: inset 0 0 0 2px #3B82F6; }
 .out { margin: 0; font-family: var(--font-code); font-size: 14px; white-space: pre-wrap; word-break: break-word; color: var(--code-fg); max-height: 280px; overflow: auto; }
 .out .e { color: #FCA5A5; }
 .out .m { color: var(--code-muted); }
+.out .in { color: #93C5FD; }
+.out input.stdin { font: inherit; color: #93C5FD; background: none; border: none; border-bottom: 1px dashed var(--code-muted); padding: 0; width: 16ch; max-width: 100%; caret-color: #93C5FD; }
+.out input.stdin:focus { outline: none; border-bottom-color: #93C5FD; }
 .note { white-space: pre-wrap; margin-top: 10px; font-size: 13.5px; color: #FBD9B5; }
 .compare { margin-top: 12px; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; }
 .compare > div { background: #1E2026; border-radius: 8px; padding: 10px 12px; min-width: 0; }
@@ -310,7 +313,7 @@ textarea.code:focus { outline: none; box-shadow: inset 0 0 0 2px #3B82F6; }
         <label for="code" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">Tu código</label>
         <textarea class="code" id="code" spellcheck="false" autocapitalize="off" autocomplete="off" autocorrect="off" wrap="off"></textarea>
       </div>
-      <div class="ed-help"><span id="fixedHelp" hidden>Las líneas con candado son los datos de entrada: no se pueden cambiar, pero tu programa se prueba también con otros valores. </span>Escribe solo las instrucciones: no hace falta la clase, el main ni el import de Arrays (si los pones, también funciona). /*SNIPPET_HELP*/Tab añade sangría; pulsa Esc y luego Tab para salir del editor.</div>
+      <div class="ed-help"><span id="fixedHelp" hidden>Las líneas con candado son los datos de entrada: no se pueden cambiar, pero tu programa se prueba también con otros valores. </span>Escribe solo las instrucciones: no hace falta la clase, el main ni los import de Arrays o Scanner (si los pones, también funciona). /*SNIPPET_HELP*/Tab añade sangría; pulsa Esc y luego Tab para salir del editor.</div>
       <div class="console" aria-live="polite">
         <div class="console-head">
           <div class="console-title">Consola</div>
@@ -479,7 +482,8 @@ textarea.code:focus { outline: none; box-shadow: inset 0 0 0 2px #3B82F6; }
     refreshNav();
     hooks.render.forEach(function (f) { f(); });
     // si ya está resuelto, mostrar directamente su resultado (se ejecuta en el navegador, no gasta nada)
-    if (state.solved[e.id] && !(state.practice && state.practice[e.id])) runCode(true);
+    // (los de Scanner no: se quedarían esperando a que escribas)
+    if (state.solved[e.id] && !(state.practice && state.practice[e.id]) && !isScan(e)) runCode(true);
   }
   function helpOf(e) { return (state.help && state.help[e.id]) || ''; }
   function paintSolvedTag(e) {
@@ -783,11 +787,28 @@ textarea.code:focus { outline: none; box-shadow: inset 0 0 0 2px #3B82F6; }
     }
     return { src: input + '\n' + code, off: input.split('\n').length };
   }
-  function exec(src) {
-    try { return MiniJava.run(src); } catch (err) { return { ok: false, kind: 'limit', output: '', error: 'Algo ha fallado al ejecutar tu código en el playground.' }; }
+  // ejercicios con Scanner: lo que se escribe en la consola (stdin) son líneas de texto
+  function isScan(e) { return !!e.stdin; }
+  function exec(src, stdin, interactive) {
+    try { return MiniJava.run(src, { input: stdin, interactive: interactive }); } catch (err) { return { ok: false, kind: 'limit', output: '', error: 'Algo ha fallado al ejecutar tu código en el playground.' }; }
   }
-  function runWith(e, input, code) {
-    var a = assemble(input, code), r = exec(a.src);
+  // la salida con lo escrito en el teclado intercalado, como se ve en una consola de verdad
+  function transcript(r) {
+    var s = '', at = 0;
+    (r.echo || []).forEach(function (x) { s += r.output.slice(at, x.at) + x.text + '\n'; at = x.at; });
+    return s + r.output.slice(at);
+  }
+  function paintOut(out, r) {
+    var at = 0;
+    (r.echo || []).forEach(function (x) {
+      out.appendChild(document.createTextNode(r.output.slice(at, x.at)));
+      var sp = document.createElement('span'); sp.className = 'in'; sp.textContent = x.text + '\n'; out.appendChild(sp);
+      at = x.at;
+    });
+    if (at < r.output.length) out.appendChild(document.createTextNode(r.output.slice(at)));
+  }
+  function runWith(e, input, code, stdin, interactive) {
+    var a = assemble(input, code), r = exec(a.src, stdin, interactive);
     if (!r.ok && r.line) r.line = Math.max(1, r.line - a.off);
     return r;
   }
@@ -796,29 +817,39 @@ textarea.code:focus { outline: none; box-shadow: inset 0 0 0 2px #3B82F6; }
   function answerVocab(e) {
     if (e._vocab) return e._vocab;
     var v = Object.create(null), outs = [e.expected];
-    (e.tests || []).forEach(function (t) { var w = exec(t + '\n' + solutionBody(e)); if (w.ok) outs.push(w.output); });
+    (e.tests || []).forEach(function (t) { var w = testRun(e, t); if (w.ok) outs.push(transcript(w)); });
     outs.forEach(function (o) { tokens(o).forEach(function (t) { if (/^\p{L}+$/u.test(t)) v[t] = true; }); });
     return (e._vocab = v);
   }
+  // la solución con una prueba oculta: otras declaraciones de entrada o, con Scanner, otras líneas escritas
+  function testRun(e, t) { return isScan(e) ? exec(solutionBody(e), t) : exec(t + '\n' + solutionBody(e)); }
   // devuelve null si pasa todas, o el primer fallo
   function hiddenTests(e, code) {
     var tests = e.tests || [];
     for (var i = 0; i < tests.length; i++) {
-      var want = exec(tests[i] + '\n' + solutionBody(e));
+      var want = testRun(e, tests[i]);
       if (!want.ok) continue;
-      var r = runWith(e, tests[i], code);
-      var ok = r.ok && (norm(r.output) === norm(want.output) || (!e.exact && looseMatch(r.output, want.output.replace(/\n$/, ''), answerVocab(e))));
-      if (!ok) return { input: tests[i], r: r, expected: want.output.replace(/\n$/, '') };
+      var r = isScan(e) ? runWith(e, '', code, tests[i]) : runWith(e, tests[i], code);
+      var got = transcript(r), exp = transcript(want).replace(/\n$/, '');
+      var ok = r.ok && (norm(got) === norm(exp) || (!e.exact && looseMatch(got, exp, answerVocab(e))));
+      if (!ok) return { input: isScan(e) ? 'Escribiendo en la consola: ' + tests[i].join(', ') : tests[i], r: r, got: got, expected: exp };
     }
     return null;
   }
   var lastRun = null;
-  function runCode(auto) {
+  // ejercicio con Scanner en marcha: el código que se ejecutó y lo que se ha escrito hasta ahora.
+  // El intérprete no puede quedarse a medias: con cada línea nueva se vuelve a ejecutar desde el principio.
+  var scanRun = null;
+  function runCode(auto, more) {
     auto = auto === true;
     var e = ex(), src = codeEl.value, input = hasInput(e) ? e.input : '', r;
     // si se pegan también las declaraciones de entrada tal cual, se quitan (ya están fijas)
     if (input && src.indexOf(input) >= 0) src = src.replace(input, '');
-    r = runWith(e, input, src);
+    if (isScan(e)) {
+      if (!more) scanRun = { id: e.id, src: src, lines: [] };
+      src = scanRun.src;
+      r = runWith(e, input, src, scanRun.lines, true);
+    } else r = runWith(e, input, src);
     // los números de línea cuentan también las líneas con candado, como en el editor
     if (!r.ok && r.line) r.line += fixedCount(e);
     lastRun = r;
@@ -827,7 +858,23 @@ textarea.code:focus { outline: none; box-shadow: inset 0 0 0 2px #3B82F6; }
     var cb2 = $('challengeDone'); if (cb2) cb2.hidden = true;
     document.querySelectorAll('.solved-extra').forEach(function (el) { el.hidden = true; });
     errLine = r.ok ? null : (r.line || null); updateGutter();
-    if (r.output) out.appendChild(document.createTextNode(r.output));
+    paintOut(out, r);
+    if (r.kind === 'input') {
+      $('badge').innerHTML = '';
+      var box = document.createElement('input');
+      box.className = 'stdin'; box.setAttribute('aria-label', 'Escribe tu respuesta y pulsa Enter');
+      box.spellcheck = false; box.autocomplete = 'off';
+      box.addEventListener('keydown', function (ev) {
+        if (ev.key !== 'Enter') return;
+        ev.preventDefault();
+        if (!scanRun || scanRun.id !== ex().id) return;
+        scanRun.lines.push(box.value);
+        runCode(false, true);
+      });
+      out.appendChild(box);
+      if (!auto) box.focus();
+      return;
+    }
     if (!r.ok) {
       var span = document.createElement('span'); span.className = 'e';
       if (r.kind === 'compile') { span.textContent = 'Main.java:' + r.line + ': error: ' + r.error; setBadge('err', 'Error de compilación en la línea ' + r.line); }
@@ -842,13 +889,24 @@ textarea.code:focus { outline: none; box-shadow: inset 0 0 0 2px #3B82F6; }
       return;
     }
     if (!r.output) { out.innerHTML = '<span class="m">(El programa no ha mostrado nada. ¿Te falta un System.out.println?)</span>'; }
-    var got = norm(r.output), exp = norm(e.expected);
-    var exact = got === exp, loose = !exact && !e.exact && looseMatch(r.output, e.expected, answerVocab(e));
+    // con Scanner, lo esperado es lo que haría la solución con lo mismo que has escrito tú
+    var gotText = transcript(r), expected = e.expected;
+    if (isScan(e)) {
+      var want = exec(solutionBody(e), scanRun.lines);
+      if (!want.ok) {
+        setBadge('warn', 'La salida no coincide');
+        showNote('Con lo que has escrito, el programa tendría que seguir pidiendo datos. Revisa cuándo termina tu bucle.');
+        return;
+      }
+      expected = transcript(want).replace(/\n$/, '');
+    }
+    var got = norm(gotText), exp = norm(expected);
+    var exact = got === exp, loose = !exact && !e.exact && looseMatch(gotText, expected, answerVocab(e));
     var fail;
     if (exact || loose) {
       var clean = stripForReq(src);
       var missing = e.req.filter(function (q) { return !q.re.test(clean); });
-      if (looksHardcoded(e, src) || looksHardcodedLoose(e, src)) {
+      if (!isScan(e) && (looksHardcoded(e, src) || looksHardcodedLoose(e, src))) {
         setBadge('warn', 'Salida correcta, pero…');
         showNote('Parece que has escrito el resultado a mano. El programa tiene que calcularlo a partir de los datos de entrada.');
       } else if (missing.length) {
@@ -858,14 +916,14 @@ textarea.code:focus { outline: none; box-shadow: inset 0 0 0 2px #3B82F6; }
         setBadge('warn', 'Funciona con el ejemplo, pero no con otros datos');
         var why = fail.r.ok ? 'Con estos datos tu programa muestra otra cosa:' : (fail.r.kind === 'runtime' ? 'Con estos datos tu programa falla al ejecutarse (' + fail.r.error + '):' : 'Con estos datos tu programa no termina bien:');
         showNote('Tu programa se ha probado con otros valores de entrada. ' + why + '\n\n' + fail.input + '\n\nRevisa los casos límite (por ejemplo, < o <=) y que tu código use las variables, no los valores del ejemplo.');
-        $('cmpGot').textContent = fail.r.ok ? (fail.r.output ? fail.r.output.replace(/\n$/, '') : '(nada)') : (fail.r.output || '') + (fail.r.output ? '\n' : '') + fail.r.error;
+        $('cmpGot').textContent = fail.r.ok ? (fail.got ? fail.got.replace(/\n$/, '') : '(nada)') : (fail.got || '') + (fail.got ? '\n' : '') + (fail.r.error || 'El programa se ha quedado esperando a que escribas más.');
         $('cmpExp').textContent = fail.expected; $('compare').hidden = false;
       } else {
         var nt = (e.tests || []).length;
         setBadge('ok', (exact ? '¡Correcto!' : '¡Correcto! Con otro formato.') + (nt ? ' Funciona con el ejemplo y con ' + nt + ' pruebas más' : (exact ? ' Coincide con el resultado esperado' : '')));
         if (loose) {
           showNote('Los datos son correctos, pero el formato no es exactamente el pedido. Pista: ' + formatHint(got, exp));
-          $('cmpGot').textContent = r.output.replace(/\n$/, ''); $('cmpExp').textContent = e.expected; $('compare').hidden = false;
+          $('cmpGot').textContent = gotText.replace(/\n$/, ''); $('cmpExp').textContent = expected; $('compare').hidden = false;
         }
         if (!state.solved[e.id]) {
           state.solved[e.id] = true; state.help = state.help || {};
@@ -887,8 +945,8 @@ textarea.code:focus { outline: none; box-shadow: inset 0 0 0 2px #3B82F6; }
       }
     } else {
       setBadge('warn', 'La salida no coincide');
-      $('cmpGot').textContent = r.output ? r.output.replace(/\n$/, '') : '(nada)';
-      $('cmpExp').textContent = e.expected;
+      $('cmpGot').textContent = gotText ? gotText.replace(/\n$/, '') : '(nada)';
+      $('cmpExp').textContent = expected;
       $('compare').hidden = false;
       if (got.toLowerCase() === exp.toLowerCase()) showNote('Casi: revisa las mayúsculas y minúsculas.');
       else if (got.replace(/\s+/g, '') === exp.replace(/\s+/g, '')) showNote('Casi: revisa los espacios o los saltos de línea.');

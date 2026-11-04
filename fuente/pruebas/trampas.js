@@ -11,7 +11,7 @@ const { chromium } = require('playwright');
   let html = fs.readFileSync(src, 'utf8');
   const hook = 'var lastRun = null;';
   if (!html.includes(hook)) throw new Error('No encuentro el punto de enganche en la página');
-  html = html.replace(hook, hook + ' window.__t = { looseMatch: looseMatch, answerVocab: answerVocab, exec: exec, solutionBody: solutionBody };');
+  html = html.replace(hook, hook + ' window.__t = { looseMatch: looseMatch, answerVocab: answerVocab, exec: exec, solutionBody: solutionBody, testRun: testRun, transcript: transcript };');
   fs.writeFileSync(tmp, html);
   const b = await chromium.launch(); const p = await b.newPage();
   await p.addInitScript(() => { localStorage.setItem('java-playground-v1', JSON.stringify({ name: 'P', welcomed: true, level: 'all' })); });
@@ -20,9 +20,10 @@ const { chromium } = require('playwright');
     const T = window.__t, out = [];
     EXERCISES.forEach(e => {
       const v = T.answerVocab(e);
-      const exps = [e.expected].concat((e.tests || []).map(t => T.exec(t + '\n' + T.solutionBody(e)).output.replace(/\n$/, '')));
+      const exps = [e.expected].concat((e.tests || []).map(t => T.transcript(T.testRun(e, t)).replace(/\n$/, '')));
       exps.forEach(x => {
-        if (!T.looseMatch('Resultado: ' + x, x, v)) out.push(e.id + ' rechaza una etiqueta delante: ' + x);
+        // (con Scanner el enunciado dicta todos los textos, y «Resultado» puede ser ya uno de ellos)
+        if (!e.stdin && !T.looseMatch('Resultado: ' + x, x, v)) out.push(e.id + ' rechaza una etiqueta delante: ' + x);
         if (T.looseMatch(x + ' 0', x, v) && !/\b0$/.test(x)) out.push(e.id + ' acepta un número de más: ' + x);
         if (/[*]/.test(x) && T.looseMatch(x.replace(/\*/g, ''), x, v)) out.push(e.id + ' acepta sin los símbolos: ' + x);
       });

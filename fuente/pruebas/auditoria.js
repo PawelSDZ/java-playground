@@ -12,7 +12,7 @@ const ESPERADAS = ['r5|INCORRECTA ACEPTADA', 'r1|VÁLIDA RECHAZADA'];
   const errs = []; p.on('pageerror', e => errs.push(e.message));
   await p.goto('file://' + path.join(__dirname, '..', 'salida', 'pruebas_completa.html')); await p.waitForTimeout(400);
   await p.click('#skipName');
-  const ex = await p.evaluate(() => EXERCISES.map(e => ({ id: e.id, title: e.title, starter: e.starter, solution: e.solution })));
+  const ex = await p.evaluate(() => EXERCISES.map(e => ({ id: e.id, title: e.title, starter: e.starter, solution: e.solution, stdin: e.stdin })));
   let problems = 0, expected = 0, total = 0;
   const fallo = (id, tipo, msg) => {
     if (ESPERADAS.includes(id + '|' + tipo)) { expected++; return; }
@@ -23,6 +23,12 @@ const ESPERADAS = ['r5|INCORRECTA ACEPTADA', 'r1|VÁLIDA RECHAZADA'];
     await p.evaluate(i => { document.querySelector('.ex-btn[data-i="' + i + '"]').click(); }, i);
     const tryCode = async (code) => {
       await p.fill('#code', code); await p.click('#runBtn');
+      // ejercicios con Scanner: se escribe en la consola lo del ejemplo mientras el programa lo pida
+      for (const line of e.stdin || []) {
+        if (!(await p.$('#out input.stdin'))) break;
+        await p.fill('#out input.stdin', line); await p.press('#out input.stdin', 'Enter');
+      }
+      if (await p.$('#out input.stdin')) return { badge: 'SE QUEDA ESPERANDO', note: '' };
       return { badge: (await p.textContent('#badge')).trim(), note: (await p.textContent('#note')).trim() };
     };
     const r0 = await tryCode(e.solution); total++;

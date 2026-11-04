@@ -1,8 +1,8 @@
 /* MiniJava: intérprete de un subconjunto de Java para el playground.
    Soporta: int, long, double, boolean, char, String; operadores; if/else; while; do-while; for;
    break/continue; switch (clásico, con flechas y como expresión); métodos de String (también con
-   expresiones regulares: replaceAll, replaceFirst, matches, split); StringBuilder; Math, Integer,
-   Double, Character, String.valueOf;
+   expresiones regulares: replaceAll, replaceFirst, matches, split); StringBuilder; Scanner (System.in);
+   Math, Integer, Double, Character, String.valueOf;
    System.out.println/print/printf y String.format. */
 var MiniJava = (function () {
   'use strict';
@@ -11,6 +11,7 @@ var MiniJava = (function () {
   function CompileError(msg, line) { this.kind = 'compile'; this.message = msg; this.line = line; }
   function JavaException(cls, msg, line) { this.kind = 'runtime'; this.cls = cls; this.message = msg; this.line = line; }
   function Limit(msg) { this.kind = 'limit'; this.message = msg; }
+  function NeedInput() { }
   function cerr(msg, line) { throw new CompileError(msg, line); }
 
   // ---------- lexer ----------
@@ -167,8 +168,7 @@ var MiniJava = (function () {
       if (t.v === 'float') cerr('El tipo float no está soportado en este playground: usa double', t.line);
       if (t.v === 'byte' || t.v === 'short') cerr('El tipo ' + t.v + ' no está soportado en este playground: usa int', t.line);
       if (t.v === 'var') cerr('var no está soportado en este playground: escribe el tipo (int, String...)', t.line);
-      if (t.k === 'id' && t.v === 'Scanner') cerr('Leer datos del teclado (Scanner) no está soportado en este playground: los datos de entrada ya vienen en variables', t.line);
-      if (t.k === 'id' && t.v !== 'String' && t.v !== 'StringBuilder') cerr('cannot find symbol\n  símbolo: class ' + t.v + '\n(este playground solo admite int, long, double, boolean, char, String y StringBuilder)', t.line);
+      if (t.k === 'id' && t.v !== 'String' && t.v !== 'StringBuilder' && t.v !== 'Scanner') cerr('cannot find symbol\n  símbolo: class ' + t.v + '\n(este playground solo admite int, long, double, boolean, char, String, StringBuilder y Scanner)', t.line);
       var ty = t.v;
       while (this.is('[') && this.is(']', 1)) { this.next(); this.next(); ty += '[]'; }
       if (this.is('[')) cerr("']' expected", t.line);
@@ -405,14 +405,13 @@ var MiniJava = (function () {
       if (t.k === 'kw' && t.v === 'switch') { this.p--; return this.switchNode(true); }
       if (t.k === 'kw' && t.v === 'new') {
         var bt = this.next();
-        if (bt.k === 'id' && (bt.v === 'StringBuilder' || bt.v === 'String') && this.is('(')) {
+        if (bt.k === 'id' && (bt.v === 'StringBuilder' || bt.v === 'String' || bt.v === 'Scanner') && this.is('(')) {
           this.next(); var cargs = [];
           if (!this.is(')')) { cargs.push(this.expr()); while (this.accept(',')) cargs.push(this.expr()); }
           this.expect(')');
           return { k: 'NewObj', cls: bt.v, args: cargs, line: t.line };
         }
         if (!((bt.k === 'kw' && PRIMS.indexOf(bt.v) >= 0) || (bt.k === 'id' && bt.v === 'String'))) {
-          if (bt.k === 'id' && bt.v === 'Scanner') cerr('Leer datos del teclado (Scanner) no está soportado en este playground: los datos de entrada ya vienen en variables', bt.line);
           cerr('En este playground, new solo se puede usar para crear arrays (por ejemplo: new int[5]), un StringBuilder o un String', bt.line);
         }
         if (!this.is('[')) cerr("'[' expected (en este playground new solo crea arrays)", bt.line);
@@ -440,7 +439,7 @@ var MiniJava = (function () {
   function isNum(t) { return own(NUM, t); }
   function isArr(t) { return typeof t === 'string' && t.slice(-2) === '[]'; }
   function elemT(t) { return t.slice(0, -2); }
-  function isRef(t) { return t === 'String' || t === 'StringBuilder' || t === 'null' || isArr(t); }
+  function isRef(t) { return t === 'String' || t === 'StringBuilder' || t === 'Scanner' || t === 'null' || isArr(t); }
   function promote(a, b) {
     if (a === 'double' || b === 'double') return 'double';
     if (a === 'long' || b === 'long') return 'long';
@@ -457,7 +456,7 @@ var MiniJava = (function () {
   }
   function assignable(to, from, node) {
     if (to === from) return true;
-    if ((to === 'String' || to === 'StringBuilder' || isArr(to)) && from === 'null') return true;
+    if ((to === 'String' || to === 'StringBuilder' || to === 'Scanner' || isArr(to)) && from === 'null') return true;
     if (isNum(to) && isNum(from)) {
       if (NUM[from] <= NUM[to] && !(to === 'char')) return true;
       if (to === 'char' && from === 'int' && isConst(node)) {
@@ -528,6 +527,13 @@ var MiniJava = (function () {
     isEmpty: [[[], 'boolean']],
     setLength: [[['int'], 'void']],
     equals: [[['Object'], 'boolean']]
+  };
+  var SCANNER_METHODS = {
+    nextInt: [[[], 'int']],
+    nextDouble: [[[], 'double']],
+    next: [[[], 'String']],
+    nextLine: [[[], 'String']],
+    close: [[[], 'void']]
   };
   var STATIC = {
     Math: {
@@ -602,9 +608,14 @@ var MiniJava = (function () {
         checkSub(node.then, scope, ctx);
         if (node.els) checkSub(node.els, scope, ctx);
         return;
-      case 'While': case 'DoWhile':
+      case 'While':
         needBool(node.cond, scope, ctx);
         ctx.loops++; checkSub(node.body, scope, ctx); ctx.loops--;
+        return;
+      case 'DoWhile':
+        // el cuerpo va antes que la condición: lo que se asigna dentro ya vale en ella
+        ctx.loops++; checkSub(node.body, scope, ctx); ctx.loops--;
+        needBool(node.cond, scope, ctx);
         return;
       case 'For': {
         var fs = new Scope(scope);
@@ -759,6 +770,7 @@ var MiniJava = (function () {
         if (isStaticClass(n.target, scope)) {
           var cls = n.target.name;
           if (cls === 'System' && (n.name === 'out' || n.name === 'err')) return 'PrintStream';
+          if (cls === 'System' && n.name === 'in') return 'InputStream';
           var f = own(STATIC_FIELDS, cls) && own(STATIC_FIELDS[cls], n.name) && STATIC_FIELDS[cls][n.name];
           if (!f) cerr('cannot find symbol\n  símbolo: variable ' + n.name + '\n  ubicación: class ' + cls, n.line);
           return f;
@@ -779,6 +791,10 @@ var MiniJava = (function () {
       case 'Call': return typeCall(n, scope, ctx);
       case 'NewObj': {
         var nat = n.args.map(function (a) { return typeOf(a, scope, ctx); });
+        if (n.cls === 'Scanner') {
+          if (nat.length === 1 && nat[0] === 'InputStream') return 'Scanner';
+          cerr('no suitable constructor found for Scanner(' + nat.join(',') + ')\n(en este playground un Scanner solo puede leer del teclado: new Scanner(System.in))', n.line);
+        }
         if (n.cls === 'StringBuilder') {
           if (nat.length === 0 || (nat.length === 1 && (nat[0] === 'String' || nat[0] === 'int' || nat[0] === 'char' || nat[0] === 'StringBuilder'))) return 'StringBuilder';
         } else if (nat.length === 1 && (nat[0] === 'char[]' || nat[0] === 'String' || nat[0] === 'StringBuilder')) return 'String';
@@ -934,6 +950,11 @@ var MiniJava = (function () {
       var sm = own(SB_METHODS, n.name) && SB_METHODS[n.name];
       if (!sm) cerr('cannot find symbol\n  símbolo: method ' + n.name + '(' + argT.join(',') + ')\n  ubicación: class StringBuilder', n.line);
       return pickOverload(sm, argT, n.args, n.name, n.line, 'StringBuilder')[1];
+    }
+    if (tt === 'Scanner') {
+      var scm = own(SCANNER_METHODS, n.name) && SCANNER_METHODS[n.name];
+      if (!scm) cerr('cannot find symbol\n  símbolo: method ' + n.name + '(' + argT.join(',') + ')\n  ubicación: class Scanner', n.line);
+      return pickOverload(scm, argT, n.args, n.name, n.line, 'Scanner')[1];
     }
     if (tt === 'null') cerr('<null> cannot be dereferenced', n.line);
     if (isArr(tt)) cerr('cannot find symbol\n  símbolo: method ' + n.name + '(' + argT.join(',') + ')' + (n.name === 'length' ? '\n(en un array, length no lleva paréntesis: escribe .length)' : '\n(los arrays no tienen ese método; mira la clase Arrays)'), n.line);
@@ -1117,6 +1138,38 @@ var MiniJava = (function () {
     list.push(s.slice(index));
     if (limit === 0) while (list.length && list[list.length - 1] === '') list.pop();
     return list;
+  }
+  // Scanner: todos leen de la misma entrada (rt.input), línea a línea, como el teclado.
+  // Los tokens (nextInt, next...) no se comen el salto de línea; nextLine lee hasta él.
+  function callScanner(o, name, rt, line) {
+    needObj(o, line);
+    var inp = rt.input;
+    if (name === 'close') return undefined;
+    if (name === 'nextLine') {
+      if (inp.pos >= inp.buf.length) rt.readLine(line, 'No line found');
+      var nl = inp.buf.indexOf('\n', inp.pos), ln = inp.buf.slice(inp.pos, nl);
+      inp.pos = nl + 1;
+      return new JStr(ln);
+    }
+    for (;;) {
+      while (inp.pos < inp.buf.length && /\s/.test(inp.buf[inp.pos])) inp.pos++;
+      if (inp.pos < inp.buf.length) break;
+      rt.readLine(line, null);
+    }
+    var end = inp.pos;
+    while (!/\s/.test(inp.buf[end])) end++;
+    var tok = inp.buf.slice(inp.pos, end), v;
+    if (name === 'nextInt') {
+      if (!/^[+-]?\d+$/.test(tok)) throw new JavaException('java.util.InputMismatchException', null, line);
+      v = Number(tok);
+      if (v > 2147483647 || v < -2147483648) throw new JavaException('java.util.InputMismatchException', 'For input string: "' + tok + '"', line);
+    } else if (name === 'nextDouble') {
+      // el teclado en español usa coma decimal (3,5); también se acepta el punto
+      if (!/^[+-]?(\d+([.,]\d*)?|[.,]\d+)$/.test(tok)) throw new JavaException('java.util.InputMismatchException', null, line);
+      v = Number(tok.replace(',', '.'));
+    } else v = new JStr(tok);
+    inp.pos = end;
+    return v;
   }
   function callSB(o, name, args, argT, line) {
     needObj(o, line);
@@ -1376,6 +1429,7 @@ var MiniJava = (function () {
       case 'ArrayLit': return evalLit(n, env, rt);
       case 'NewObj': {
         var na = n.args.map(function (a) { return evalExpr(a, env, rt); }), nt0 = n.args.length ? n.args[0].type : null;
+        if (n.cls === 'Scanner') return { scanner: true };
         if (n.cls === 'StringBuilder') {
           if (nt0 === 'String' || nt0 === 'StringBuilder') { needObj(na[0], n.line); return new JSB(na[0].s); }
           if (nt0 === 'int' && na[0] < 0) throw new JavaException('java.lang.NegativeArraySizeException', String(na[0]), n.line);
@@ -1478,6 +1532,7 @@ var MiniJava = (function () {
         if (n.target.k === 'Name' && !env.lookup(n.target.name) && own(STATIC, n.target.name)) return callStatic(n.target.name, n.name, args, argT, n.line, n);
         var obj = evalExpr(n.target, env, rt);
         if (n.target.type === 'StringBuilder') return callSB(obj, n.name, args, argT, n.line);
+        if (n.target.type === 'Scanner') return callScanner(obj, n.name, rt, n.line);
         return callString(obj, n.name, args, argT, n.line);
       }
     }
@@ -1599,7 +1654,20 @@ var MiniJava = (function () {
     opts = opts || {};
     var out = '', steps = 0, maxSteps = opts.maxSteps || 2000000, maxOut = opts.maxOut || 100000;
     interned = {}; hashSeed = 0; cellCount = 0;
+    var echo = [];
     var rt = {
+      // lo que se escribe en el teclado: opts.input es la lista de líneas; si se acaban y el programa pide
+      // más, en modo interactivo se para (kind: 'input') y si no, falla como Java sin más entrada
+      input: { buf: '', pos: 0, lines: (opts.input || []).slice() },
+      readLine: function (line, msg) {
+        if (!this.input.lines.length) {
+          if (opts.interactive) throw new NeedInput();
+          throw new JavaException('java.util.NoSuchElementException', msg, line);
+        }
+        var l = this.input.lines.shift();
+        echo.push({ at: out.length, text: l });
+        this.input.buf += l + '\n';
+      },
       write: function (s) { out += s; if (out.length > maxOut) throw new Limit('El programa ha escrito demasiado texto en la consola: puede que tengas un bucle infinito.'); },
       tick: function () { if (++steps > maxSteps) throw new Limit('El programa está tardando demasiado: puede que tengas un bucle infinito (revisa la condición y la actualización del bucle).'); }
     };
@@ -1613,14 +1681,15 @@ var MiniJava = (function () {
     }
     try {
       exec(ast, new Env(null), rt);
-      return { ok: true, output: out };
+      return { ok: true, output: out, echo: echo };
     } catch (e) {
-      if (e instanceof JavaException) return { ok: false, kind: 'runtime', output: out, error: 'Exception in thread "main" ' + e.cls + (e.message !== null ? ': ' + e.message : ''), line: e.line };
-      if (e instanceof Limit) return { ok: false, kind: 'limit', output: out, error: e.message };
+      if (e instanceof NeedInput) return { ok: false, kind: 'input', output: out, echo: echo };
+      if (e instanceof JavaException) return { ok: false, kind: 'runtime', output: out, echo: echo, error: 'Exception in thread "main" ' + e.cls + (e.message !== null ? ': ' + e.message : ''), line: e.line };
+      if (e instanceof Limit) return { ok: false, kind: 'limit', output: out, echo: echo, error: e.message };
       if (e instanceof RangeError) return { ok: false, kind: 'limit', output: out, error: 'El programa es demasiado complejo para este playground.' };
       throw e;
     }
   }
-  return { run: run, formatDouble: fmtDouble, api: { STRING_METHODS: STRING_METHODS, SB_METHODS: SB_METHODS, STATIC: STATIC, STATIC_FIELDS: STATIC_FIELDS } };
+  return { run: run, formatDouble: fmtDouble, api: { STRING_METHODS: STRING_METHODS, SB_METHODS: SB_METHODS, SCANNER_METHODS: SCANNER_METHODS, STATIC: STATIC, STATIC_FIELDS: STATIC_FIELDS } };
 })();
 if (typeof module !== 'undefined') module.exports = MiniJava;

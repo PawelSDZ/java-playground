@@ -68,7 +68,7 @@ node pruebas/java_real.js                            # debe decir "diferencias c
   «Ejercicios programacion (pruebas)» (herramienta Artifact, con la `url` que está en la memoria del proyecto).
   Va en varios archivos para no tener que leer la página entera (unas 3.500 líneas) antes de publicar desde un hilo nuevo:
   1. `Artifact` con `action: "list"`, `scope: "files"` y la `url`: ver la lista de archivos publicados.
-  2. `Artifact` con `action: "read"`, la `url` y `path: "index.html"`: leer solo el HTML pequeño (unas 170 líneas).
+  2. `Artifact` con `action: "read"` y la `url` (sin `path`): devuelve solo el HTML pequeño (unas 170 líneas) y cuenta como versión vista; con `path` no cuenta y el primer publish se rechaza.
   3. Publicar con `file_path: fuente/salida/partes/index.html`, la `url` y
      `files: {"estilos.css", "minijava.js", "ejercicios.js", "app.js"}` (cada uno desde `fuente/salida/partes/`).
      Se pueden mandar solo los que hayan cambiado; los que no se mandan se quedan como estaban.
@@ -93,6 +93,8 @@ node pruebas/java_real.js                            # debe decir "diferencias c
   req: [{ re: /\b(for|while)\s*\(/, msg: 'usar un bucle' }],   // msg completa «Este ejercicio pide …»
   alt: { unless: /toCharArray/, code: '…', why: '…' }          // opcional: se muestra si su código no encaja con unless
   exact: true                            // opcional: sin comprobación flexible (cuando los espacios forman parte del dibujo)
+  stdin: ['5', '3', '0']                 // opcional, ejercicios con Scanner: lo que se escribe en el ejemplo. Entonces input es
+                                         // '(sin datos fijos…)', tests son listas de líneas y expected incluye lo escrito
 }
 ```
 
@@ -117,7 +119,10 @@ Soporta: int, long, double, boolean, char, String, StringBuilder, arrays (tambi�
 con flechas y como expresión, con yield), for, for-each, while, do-while, break/continue, métodos de String
 (incluidas expresiones regulares: replaceAll, replaceFirst, matches, split), Math, Integer, Double, Character,
 Arrays (toString, deepToString, sort, fill, equals, copyOf, copyOfRange), printf/String.format con coma decimal.
-No soporta: clases propias, métodos aparte de main, Scanner, colecciones (ArrayList…), excepciones.
+Scanner(System.in) con nextInt, nextDouble, next, nextLine y close: lee de `opts.input` (lista de líneas); con
+`opts.interactive`, si se acaban las líneas se para y devuelve `kind: 'input'` (la página pone un hueco en la consola y,
+con cada línea escrita, vuelve a ejecutar desde el principio). `echo` dice dónde va cada línea escrita en la salida.
+No soporta: clases propias, métodos aparte de main, colecciones (ArrayList…), excepciones.
 Mensajes de error al estilo de javac. Si se amplía, añadir casos a `pruebas/java_real_casos.js`.
 
 ## Diferencias conocidas (aceptadas a propósito)

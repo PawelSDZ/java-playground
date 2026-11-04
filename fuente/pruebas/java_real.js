@@ -16,6 +16,7 @@ const sinEntrada = e => !e.input || e.input.indexOf('(sin datos') === 0;
 
 E.forEach(e => {
   const cuerpo = sinEntrada(e) ? e.solution : e.solution.slice(e.input.length);
+  if (e.stdin) { [e.stdin].concat(e.tests).forEach(t => casos.push([e.id + ' (escribiendo ' + t.join(', ') + ')', e.solution, t])); return; }
   const entradas = sinEntrada(e) ? [''] : [e.input].concat(e.tests || []);
   entradas.forEach(inp => {
     casos.push([e.id, inp + cuerpo]);
@@ -27,12 +28,12 @@ E.forEach(e => {
 SUELTOS.forEach((c, i) => casos.push(['suelto ' + i, c.replace(/java\.util\.Arrays/g, 'Arrays')]));
 
 let diferencias = 0;
-casos.forEach(([id, codigo], i) => {
-  const r = MJ.run(codigo);
+casos.forEach(([id, codigo, teclado], i) => {
+  const r = MJ.run(codigo, { input: teclado });
   const dir = path.join(dirBase, 'c' + i); fs.mkdirSync(dir);
-  fs.writeFileSync(path.join(dir, 'Main.java'), 'import java.util.Arrays;\npublic class Main { public static void main(String[] args) {\n' + codigo + '\n}}');
+  fs.writeFileSync(path.join(dir, 'Main.java'), 'import java.util.Arrays;\nimport java.util.Scanner;\npublic class Main { public static void main(String[] args) {\n' + codigo + '\n}}');
   let j;
-  try { j = execSync('javac -encoding UTF-8 Main.java 2>&1 && java -Dfile.encoding=UTF-8 -Dstdout.encoding=UTF-8 Main 2>&1', { cwd: dir, encoding: 'utf8' }); }
+  try { j = execSync('javac -encoding UTF-8 Main.java 2>&1 && java -Dfile.encoding=UTF-8 -Dstdout.encoding=UTF-8 Main 2>&1', { cwd: dir, encoding: 'utf8', input: teclado ? teclado.join('\n') + '\n' : '' }); }
   catch (err) { j = 'ERROR JAVA ' + (err.stdout || ''); }
   j = j.replace(/Picked up JAVA_TOOL_OPTIONS.*\n/g, '');
   const m = r.ok ? r.output : 'ERROR PÁGINA ' + r.error;
