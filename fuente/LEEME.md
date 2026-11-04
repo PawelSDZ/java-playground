@@ -40,12 +40,17 @@ fuente/
 ├── walk_data.py         pasos de cada ejercicio: (trozo de código, explicación)
 ├── generar_walk.py      vuelca walk_data.py dentro de walk.js
 ├── autocomplete.js      sugerencias de variables y de métodos tras el punto
+├── teoria_temas.js     apartado Teoría: formato de los bloques (texto, sintaxis, ejemplos ejecutables, notas…)
+├── teoria_1.js … teoria_4.js  los temas, por bloques del índice; el orden está en teoria_archivos.js
+├── teoria.js/.css/.html  pestañas Ejercicios/Teoría, índice de temas y ejemplos ejecutables
+├── buscar.js            búsqueda de la cabecera (temas por apartado; ejercicios por título y por lo que usa la solución)
 ├── build.py             monta la experimental (y con «merge», la main en ../index.html)
 ├── pruebas/
 │   ├── auditoria.js     solución oficial + casos buenos/malos de cada ejercicio, en la página real
 │   ├── casos.js         los casos de la auditoría (ok = deben aceptarse, bad = no deben colar)
 │   ├── trampas.js       busca agujeros en la comprobación flexible
 │   ├── java_real.js     compara el intérprete con Java real (javac)
+│   ├── teoria.js        ejecuta todos los ejemplos de Teoría y los compara con Java real
 │   └── java_real_casos.js  programas sueltos para esa comparación
 └── salida/              (generado, no se sube) pruebas.html = la experimental en un solo archivo (para las pruebas);
                          partes/ = la misma experimental en varios archivos, que es lo que se publica en el artefacto
@@ -62,6 +67,7 @@ node --check salida/scripts_pruebas.js
 NODE_PATH=$(npm root -g) node pruebas/auditoria.js   # debe acabar con "problemas: 0"
 NODE_PATH=$(npm root -g) node pruebas/trampas.js     # debe decir "sin problemas"
 node pruebas/java_real.js                            # debe decir "diferencias con Java real: 0"
+node pruebas/teoria.js                               # ejemplos de Teoría contra Java real: "problemas: 0"
 ```
 
 - **Publicar la experimental:** se publica `fuente/salida/partes/` en el artefacto privado
@@ -70,7 +76,7 @@ node pruebas/java_real.js                            # debe decir "diferencias c
   1. `Artifact` con `action: "list"`, `scope: "files"` y la `url`: ver la lista de archivos publicados.
   2. `Artifact` con `action: "read"` y la `url` (sin `path`): devuelve solo el HTML pequeño (unas 170 líneas) y cuenta como versión vista; con `path` no cuenta y el primer publish se rechaza.
   3. Publicar con `file_path: fuente/salida/partes/index.html`, la `url` y
-     `files: {"estilos.css", "minijava.js", "ejercicios.js", "app.js"}` (cada uno desde `fuente/salida/partes/`).
+     `files: {"estilos.css", "minijava.js", "ejercicios.js", "app.js", "teoria.js"}` (cada uno desde `fuente/salida/partes/`).
      Se pueden mandar solo los que hayan cambiado; los que no se mandan se quedan como estaban.
   No leer nunca `salida/pruebas.html` ni la página publicada entera: no hace falta.
 - **Push a main:** `python3 build.py merge` (escribe `../index.html` sin la etiqueta), y después
@@ -137,3 +143,4 @@ Mensajes de error al estilo de javac. Si se amplía, añadir casos a `pruebas/ja
 - Icono de la pestaña y vista previa al compartir el enlace (Open Graph).
 - Guardar el progreso fuera del navegador (copia descargable, o login con Supabase/Firebase).
 - Más adelante: sección de SQL (SQLite en el navegador) y orientación a objetos en el intérprete.
+- Teoría, cuando se vea en clase: métodos, clases y objetos, ArrayList, excepciones y ficheros (hará falta ampliar el intérprete).

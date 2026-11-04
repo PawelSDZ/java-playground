@@ -178,6 +178,12 @@ var MiniJava = (function () {
       var t = this.peek();
       if (this.is('{')) return this.block();
       if (this.is(';')) { this.next(); return { k: 'Empty', line: t.line }; }
+      // etiqueta (fuera: for ...), para break fuera; o continue fuera;
+      if (t.k === 'id' && this.is(':', 1)) {
+        this.next(); this.next();
+        var lb = this.statement(); lb.lbl = t.v;
+        return { k: 'Labeled', label: t.v, body: lb, line: t.line };
+      }
       if (this.is('if')) {
         this.next(); this.expect('('); var c = this.expr(); this.expect(')');
         var th = this.statement(), el = null;
@@ -217,8 +223,10 @@ var MiniJava = (function () {
         this.expect(')');
         return { k: 'For', init: init, cond: cond, upd: upd, body: this.statement(), line: t.line };
       }
-      if (this.is('break')) { this.next(); this.expect(';'); return { k: 'Break', line: t.line }; }
-      if (this.is('continue')) { this.next(); this.expect(';'); return { k: 'Continue', line: t.line }; }
+      if (this.is('break') || this.is('continue')) {
+        this.next(); var bl = this.peek().k === 'id' ? this.next().v : null; this.expect(';');
+        return { k: t.v === 'break' ? 'Break' : 'Continue', label: bl, line: t.line };
+      }
       if (this.is('return')) {
         this.next();
         if (!this.is(';')) cerr('incompatible types: unexpected return value', t.line);
@@ -533,6 +541,12 @@ var MiniJava = (function () {
     nextDouble: [[[], 'double']],
     next: [[[], 'String']],
     nextLine: [[[], 'String']],
+    nextLong: [[[], 'long']],
+    nextBoolean: [[[], 'boolean']],
+    hasNext: [[[], 'boolean']],
+    hasNextInt: [[[], 'boolean']],
+    hasNextDouble: [[[], 'boolean']],
+    hasNextLine: [[[], 'boolean']],
     close: [[[], 'void']]
   };
   var STATIC = {
@@ -635,7 +649,16 @@ var MiniJava = (function () {
         ctx.loops++; checkSub(node.body, es, ctx); ctx.loops--;
         return;
       }
-      case 'Break': if (!ctx.loops && !ctx.sw) cerr('break outside switch or loop', node.line); return;
+      case 'Break':
+        if (node.label) { if (!findLabel(ctx, node.label)) cerr('undefined label: ' + node.label, node.line); return; }
+        if (!ctx.loops && !ctx.sw) cerr('break outside switch or loop', node.line); return;
+      case 'Labeled': {
+        if (findLabel(ctx, node.label)) cerr('label ' + node.label + ' already in use', node.line);
+        ctx.labels = (ctx.labels || []).concat([{ name: node.label, loop: /^(While|DoWhile|For|ForEach)$/.test(node.body.k) }]);
+        check(node.body, scope, ctx);
+        ctx.labels = ctx.labels.slice(0, -1);
+        return;
+      }
       case 'Switch': checkSwitch(node, scope, ctx, false); return;
       case 'Yield':
         if (!ctx.yields) cerr('yield outside of switch expression', node.line);
@@ -643,9 +666,12 @@ var MiniJava = (function () {
         if (yt === 'void') cerr("'void' type not allowed here", node.line);
         ctx.yields.push(node.e);
         return;
-      case 'Continue': if (!ctx.loops) cerr('continue outside of loop', node.line); return;
+      case 'Continue':
+        if (node.label) { var cl = findLabel(ctx, node.label); if (!cl) cerr('undefined label: ' + node.label, node.line); if (!cl.loop) cerr('not a loop label: ' + node.label, node.line); return; }
+        if (!ctx.loops) cerr('continue outside of loop', node.line); return;
     }
   }
+  function findLabel(ctx, name) { return (ctx.labels || []).filter(function (l) { return l.name === name; })[0] || null; }
   function containsYield(st) {
     if (!st || typeof st !== 'object') return false;
     if (st.k === 'Yield') return true;
@@ -1145,20 +1171,33 @@ var MiniJava = (function () {
     needObj(o, line);
     var inp = rt.input;
     if (name === 'close') return undefined;
+    if (name === 'hasNextLine') {
+      if (inp.pos >= inp.buf.length) { if (!inp.lines.length && !rt.interactive) return false; rt.readLine(line, null); }
+      return true;
+    }
     if (name === 'nextLine') {
       if (inp.pos >= inp.buf.length) rt.readLine(line, 'No line found');
       var nl = inp.buf.indexOf('\n', inp.pos), ln = inp.buf.slice(inp.pos, nl);
       inp.pos = nl + 1;
       return new JStr(ln);
     }
+    var p0 = inp.pos;
     for (;;) {
-      while (inp.pos < inp.buf.length && /\s/.test(inp.buf[inp.pos])) inp.pos++;
-      if (inp.pos < inp.buf.length) break;
+      while (p0 < inp.buf.length && /\s/.test(inp.buf[p0])) p0++;
+      if (p0 < inp.buf.length) break;
+      // hasNext… sin más entrada (y sin teclado esperando) dice false en vez de fallar
+      if (/^has/.test(name) && !inp.lines.length && !rt.interactive) return false;
       rt.readLine(line, null);
     }
-    var end = inp.pos;
+    var end = p0;
     while (!/\s/.test(inp.buf[end])) end++;
-    var tok = inp.buf.slice(inp.pos, end), v;
+    var tok = inp.buf.slice(p0, end), v;
+    var isInt = /^[+-]?\d+$/.test(tok) && Math.abs(Number(tok)) <= 2147483648 && Number(tok) !== 2147483648;
+    var isDbl = /^[+-]?(\d+([.,]\d*)?|[.,]\d+)$/.test(tok);
+    if (name === 'hasNext') return true;
+    if (name === 'hasNextInt') return isInt;
+    if (name === 'hasNextDouble') return isDbl;
+    inp.pos = p0;
     if (name === 'nextInt') {
       if (!/^[+-]?\d+$/.test(tok)) throw new JavaException('java.util.InputMismatchException', null, line);
       v = Number(tok);
@@ -1167,6 +1206,12 @@ var MiniJava = (function () {
       // el teclado en español usa coma decimal (3,5); también se acepta el punto
       if (!/^[+-]?(\d+([.,]\d*)?|[.,]\d+)$/.test(tok)) throw new JavaException('java.util.InputMismatchException', null, line);
       v = Number(tok.replace(',', '.'));
+    } else if (name === 'nextLong') {
+      if (!/^[+-]?\d+$/.test(tok) || Math.abs(Number(tok)) > 9223372036854775807) throw new JavaException('java.util.InputMismatchException', null, line);
+      v = Number(tok);
+    } else if (name === 'nextBoolean') {
+      if (!/^(true|false)$/i.test(tok)) throw new JavaException('java.util.InputMismatchException', null, line);
+      v = tok.toLowerCase() === 'true';
     } else v = new JStr(tok);
     inp.pos = end;
     return v;
@@ -1592,14 +1637,14 @@ var MiniJava = (function () {
         while (evalExpr(st.cond, env, rt)) {
           rt.tick();
           var w = exec(st.body, new Env(env), rt);
-          if (w === BREAK) break; if (w && w !== CONTINUE) return w;
+          if (w === BREAK) break; if (w && w !== CONTINUE && !(w.cont && w.cont === st.lbl)) return w;
         }
         return null;
       case 'DoWhile':
         do {
           rt.tick();
           var dw = exec(st.body, new Env(env), rt);
-          if (dw === BREAK) break; if (dw && dw !== CONTINUE) return dw;
+          if (dw === BREAK) break; if (dw && dw !== CONTINUE && !(dw.cont && dw.cont === st.lbl)) return dw;
         } while (evalExpr(st.cond, env, rt));
         return null;
       case 'For': {
@@ -1608,7 +1653,7 @@ var MiniJava = (function () {
         while (!st.cond || evalExpr(st.cond, fe, rt)) {
           rt.tick();
           var f = exec(st.body, new Env(fe), rt);
-          if (f === BREAK) break; if (f && f !== CONTINUE) return f;
+          if (f === BREAK) break; if (f && f !== CONTINUE && !(f.cont && f.cont === st.lbl)) return f;
           st.upd.forEach(function (u) { evalExpr(u, fe, rt); });
         }
         return null;
@@ -1622,7 +1667,7 @@ var MiniJava = (function () {
           var le = new Env(env);
           le.v[st.name] = arr.a[k] === null ? null : convert(arr.a[k], iet, st.type);
           var fr = exec(st.body, le, rt);
-          if (fr === BREAK) break; if (fr && fr !== CONTINUE) return fr;
+          if (fr === BREAK) break; if (fr && fr !== CONTINUE && !(fr.cont && fr.cont === st.lbl)) return fr;
         }
         return null;
       }
@@ -1643,8 +1688,9 @@ var MiniJava = (function () {
         return null;
       }
       case 'Yield': return { yld: true, v: evalExpr(st.e, env, rt), t: st.e.type };
-      case 'Break': return BREAK;
-      case 'Continue': return CONTINUE;
+      case 'Break': return st.label ? { brk: st.label } : BREAK;
+      case 'Continue': return st.label ? { cont: st.label } : CONTINUE;
+      case 'Labeled': { var lr = exec(st.body, env, rt); return lr && lr.brk === st.label ? null : lr; }
       case 'Return': return RETURN;
     }
   }
@@ -1656,6 +1702,7 @@ var MiniJava = (function () {
     interned = {}; hashSeed = 0; cellCount = 0;
     var echo = [];
     var rt = {
+      interactive: !!opts.interactive,
       // lo que se escribe en el teclado: opts.input es la lista de líneas; si se acaban y el programa pide
       // más, en modo interactivo se para (kind: 'input') y si no, falla como Java sin más entrada
       input: { buf: '', pos: 0, lines: (opts.input || []).slice() },

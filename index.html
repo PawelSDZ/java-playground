@@ -126,6 +126,8 @@ h1, h2 { text-wrap: balance; }
 /* estructura */
 .layout { padding-block: 24px 48px; display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-start; }
 .side { flex: 1 1 240px; max-width: 290px; background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 14px 10px; position: sticky; top: calc(env(safe-area-inset-top, 0px) + 16px); }
+/* la lista tiene su propio scroll: se recorre sin mover la página */
+.side { max-height: calc(100vh - env(safe-area-inset-top, 0px) - 32px); overflow-y: auto; overscroll-behavior: contain; box-sizing: border-box; scrollbar-width: thin; }
 .main { flex: 999 1 560px; min-width: 0; display: flex; flex-direction: column; gap: 20px; }
 .group-name { font-size: 11.5px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); padding: 8px 8px 4px; }
 .group-head { display: flex; align-items: center; gap: 8px; width: 100%; min-height: 36px; padding: 6px 8px; margin-top: 4px; border: none; border-radius: 8px; background: transparent; color: var(--muted); font-size: 11.5px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; text-align: left; }
@@ -254,6 +256,64 @@ textarea.code:focus { outline: none; box-shadow: inset 0 0 0 2px #3B82F6; }
 .btn-sec[disabled], .btn-pri[disabled] { opacity: .45; cursor: default; }
 .foot { font-size: 12.5px; color: var(--muted); }
 
+/* pestañas Ejercicios / Teoría */
+.tabs { display: flex; gap: 4px; padding: 4px; border-radius: 12px; background: var(--surface-2); border: 1px solid var(--line); }
+.tabs button { min-height: 36px; padding: 0 16px; border: none; border-radius: 8px; background: transparent; color: var(--muted); font: inherit; font-size: 14px; font-weight: 600; }
+.tabs button:hover { color: var(--fg); }
+.tabs button[aria-current="page"] { background: var(--surface); color: var(--fg); box-shadow: 0 1px 2px rgba(0, 0, 0, 0.12); }
+/* teoría */
+.teo-soon { font-size: 12.5px; color: var(--muted); padding: 10px 8px 4px; margin: 0; }
+.teo { line-height: 1.65; color: var(--fg-2); }
+.teo .title { color: var(--fg); }
+.teo-intro { font-size: 16.5px; color: var(--muted); margin: 0 0 8px; }
+.teo h2 { font-size: 19px; color: var(--fg); margin: 30px 0 8px; padding-top: 18px; border-top: 1px solid var(--line); letter-spacing: -0.01em; }
+.teo p, .teo ul { margin: 0 0 12px; }
+.teo li { margin-bottom: 6px; }
+.teo code { font-family: var(--font-code); font-size: .9em; background: var(--surface-2); border: 1px solid var(--line); border-radius: 5px; padding: 1px 5px; }
+.teo-code { margin: 0; padding: 14px 16px; font-family: var(--font-code); font-size: 14px; line-height: 1.7; white-space: pre; overflow-x: auto; color: var(--code-fg); tab-size: 4; }
+.teo-code .t { color: #7DD3FC; } .teo-code .n { color: #FBBF24; } .teo-code .s { color: #86EFAC; } .teo-code .c { color: #7C8290; } .teo-code .k { color: #C4B5FD; }
+textarea.teo-code { display: block; width: 100%; box-sizing: border-box; border: none; background: transparent; resize: vertical; caret-color: #93C5FD; }
+textarea.teo-code:focus { outline: none; box-shadow: inset 0 0 0 2px #3B82F6; }
+.teo-syntax { margin: 0 0 14px; border-left: 4px solid var(--accent); background: var(--surface-2); border-radius: 0 10px 10px 0; padding: 10px 0 2px; }
+.teo-syntax .label { padding: 0 16px; }
+.teo-syntax .teo-code { color: var(--fg); padding-top: 4px; }
+.teo-syntax .teo-code .t, .teo-syntax .teo-code .k { color: var(--accent); font-weight: 600; } .teo-syntax .teo-code .c { color: var(--muted); }
+.teo-ex { margin: 0 0 16px; background: var(--code-bg); border-radius: 12px; overflow: hidden; }
+.teo-ex-bar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px; padding: 8px 10px 8px 16px; border-bottom: 1px solid var(--code-line); font-size: 12px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #9AA0AC; }
+.teo-ex-bar > div { display: flex; gap: 8px; }
+.teo-ex-bar button { min-height: 34px; text-transform: none; letter-spacing: 0; }
+.teo-ex .out { border-top: 1px solid var(--code-line); padding: 12px 16px; }
+.teo-note { margin: 0 0 14px; padding: 12px 16px; border-radius: 10px; border: 1px solid; }
+.teo-note b { margin-right: 4px; }
+.teo-note.tip { background: var(--accent-soft); border-color: transparent; color: var(--accent-ink); }
+.teo-note.warn { background: var(--warn-soft); border-color: var(--warn-line); color: var(--warn-ink); }
+.teo-table { overflow-x: auto; margin: 0 0 12px; }
+.teo-table table { border-collapse: collapse; min-width: 100%; font-size: 14px; }
+.teo-table th, .teo-table td { text-align: left; vertical-align: top; padding: 8px 12px; border-bottom: 1px solid var(--line); }
+.teo-table td:first-child, .teo-table th { white-space: nowrap; }
+.teo-table th { font-size: 12.5px; color: var(--muted); font-weight: 600; background: var(--surface-2); }
+.teo-practice-list { display: flex; flex-wrap: wrap; gap: 8px; }
+.teo-practice-list .btn-line { width: auto; display: inline-flex; align-items: center; gap: 8px; }
+@media (max-width: 760px) { .tabs { order: 3; flex: 1 1 100%; } .tabs button { flex: 1; } }
+.teo-links { display: flex; flex-wrap: wrap; gap: 8px; margin: -6px 0 18px; }
+.teo-link { display: inline-flex; align-items: center; gap: 7px; min-height: 34px; padding: 0 12px; border-radius: 99px; border: 1px solid var(--line); background: var(--surface-2); color: var(--accent); font: inherit; font-size: 13.5px; font-weight: 600; }
+.teo-link:hover { border-color: var(--accent); }
+/* búsqueda de la cabecera */
+.search { position: relative; flex: 1 1 260px; max-width: 380px; }
+.search input { width: 100%; box-sizing: border-box; min-height: 40px; padding: 0 12px 0 36px; border-radius: 10px; border: 1px solid var(--line); background: var(--surface-2); color: var(--fg); font: inherit; font-size: 14px; }
+.search input:focus { outline: 2px solid var(--accent); outline-offset: 1px; background: var(--surface); }
+.search > svg { position: absolute; left: 11px; top: 50%; transform: translateY(-50%); color: var(--muted); pointer-events: none; }
+.search-results { position: absolute; z-index: 30; left: 0; right: 0; top: calc(100% + 6px); min-width: min(420px, calc(100vw - 32px)); max-height: min(70vh, 520px); overflow-y: auto; background: var(--surface); border: 1px solid var(--line); border-radius: 12px; box-shadow: 0 12px 36px rgba(0, 0, 0, 0.25); padding: 6px; }
+.sr-group { font-size: 11.5px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); padding: 8px 10px 4px; }
+.sr-item { display: flex; flex-direction: column; gap: 2px; width: 100%; padding: 8px 10px; border: none; border-radius: 8px; background: transparent; color: var(--fg); text-align: left; font: inherit; }
+.sr-item:hover, .sr-item[aria-selected="true"] { background: var(--accent-soft); }
+.sr-title { font-size: 14px; font-weight: 600; display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
+.sr-sub { font-weight: 500; color: var(--muted); }
+.sr-snip { font-size: 12.5px; color: var(--muted); }
+.sr-empty { margin: 0; padding: 12px; font-size: 14px; color: var(--muted); }
+@media (max-width: 760px) { .search { order: 4; flex: 1 1 100%; max-width: none; } .search-results { min-width: 0; } }
+.teo-norun { font-size: 11.5px; letter-spacing: 0; text-transform: none; font-weight: 500; color: var(--code-muted); }
+#teoSide .group-count { color: var(--muted); }
 @media (max-width: 760px) {
   .side { display: none; }
   .picker { display: block; }
@@ -273,6 +333,15 @@ textarea.code:focus { outline: none; box-shadow: inset 0 0 0 2px #3B82F6; }
         <div class="brand-sub" id="brandSub">Ejercicios de 1.º de DAM</div>
       </div>
     </div>
+    <nav class="tabs" aria-label="Secciones">
+      <button type="button" data-view="ej" aria-current="page">Ejercicios</button>
+      <button type="button" data-view="teo">Teoría</button>
+    </nav>
+    <div class="search" role="search">
+      <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.5-3.5"></path></svg>
+      <input id="searchInput" type="search" placeholder="Buscar: for, println, arrays…" aria-label="Buscar en teoría y ejercicios" aria-controls="searchResults" autocomplete="off" spellcheck="false">
+      <div class="search-results" id="searchResults" role="listbox" hidden></div>
+    </div>
     <div class="top-right">
       <div class="progress">
         <div class="progress-label" id="progressLabel">0 de 29 completados</div>
@@ -283,7 +352,7 @@ textarea.code:focus { outline: none; box-shadow: inset 0 0 0 2px #3B82F6; }
   </div>
 </header>
 
-<div class="wrap layout">
+<div class="wrap layout" id="ejView">
   <nav class="side" aria-label="Lista de ejercicios" id="side"></nav>
 
   <main class="main">
@@ -316,6 +385,7 @@ textarea.code:focus { outline: none; box-shadow: inset 0 0 0 2px #3B82F6; }
       <div class="crumb"><span id="exGroup"></span><span aria-hidden="true">/</span><span id="exNum"></span><span class="chip" id="exLevel"></span><span class="solved-tag" id="exSolved" hidden><svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>Completado</span><button type="button" class="practice-btn" id="practiceBtn" hidden>Practicar de nuevo</button></div>
       <h1 class="title" id="exTitle"></h1>
       <p class="statement" id="exStatement"></p>
+      <div class="teo-links" id="exTeoria" hidden></div>
       <div class="io">
         <div><div class="label">Entrada</div><pre id="exInput"></pre></div>
         <div><div class="label">Resultado esperado</div><pre id="exExpected"></pre><p class="out-info" id="exOutInfo" hidden></p></div>
@@ -387,6 +457,20 @@ textarea.code:focus { outline: none; box-shadow: inset 0 0 0 2px #3B82F6; }
     </div>
     <p class="foot">Tu código y tu progreso se guardan en este navegador. Este playground ejecuta un subconjunto de Java pensado para estos ejercicios (variables, Strings, operaciones, condiciones, bucles y arrays).</p>
   </main>
+</div>
+<div class="wrap layout" id="teoView" hidden>
+  <nav class="side" aria-label="Temas de teoría" id="teoSide"></nav>
+  <div class="main">
+    <div class="picker">
+      <label for="teoSelect">Tema</label>
+      <select id="teoSelect"></select>
+    </div>
+    <article class="card teo" id="teoArticle"></article>
+    <div class="pager">
+      <button type="button" class="btn-sec" id="teoPrev">Anterior</button>
+      <button type="button" class="btn-pri" id="teoNext">Siguiente</button>
+    </div>
+  </div>
 </div>
 
 <div class="overlay" id="welcomeOverlay" hidden>
@@ -600,6 +684,12 @@ var MiniJava = (function () {
       var t = this.peek();
       if (this.is('{')) return this.block();
       if (this.is(';')) { this.next(); return { k: 'Empty', line: t.line }; }
+      // etiqueta (fuera: for ...), para break fuera; o continue fuera;
+      if (t.k === 'id' && this.is(':', 1)) {
+        this.next(); this.next();
+        var lb = this.statement(); lb.lbl = t.v;
+        return { k: 'Labeled', label: t.v, body: lb, line: t.line };
+      }
       if (this.is('if')) {
         this.next(); this.expect('('); var c = this.expr(); this.expect(')');
         var th = this.statement(), el = null;
@@ -639,8 +729,10 @@ var MiniJava = (function () {
         this.expect(')');
         return { k: 'For', init: init, cond: cond, upd: upd, body: this.statement(), line: t.line };
       }
-      if (this.is('break')) { this.next(); this.expect(';'); return { k: 'Break', line: t.line }; }
-      if (this.is('continue')) { this.next(); this.expect(';'); return { k: 'Continue', line: t.line }; }
+      if (this.is('break') || this.is('continue')) {
+        this.next(); var bl = this.peek().k === 'id' ? this.next().v : null; this.expect(';');
+        return { k: t.v === 'break' ? 'Break' : 'Continue', label: bl, line: t.line };
+      }
       if (this.is('return')) {
         this.next();
         if (!this.is(';')) cerr('incompatible types: unexpected return value', t.line);
@@ -955,6 +1047,12 @@ var MiniJava = (function () {
     nextDouble: [[[], 'double']],
     next: [[[], 'String']],
     nextLine: [[[], 'String']],
+    nextLong: [[[], 'long']],
+    nextBoolean: [[[], 'boolean']],
+    hasNext: [[[], 'boolean']],
+    hasNextInt: [[[], 'boolean']],
+    hasNextDouble: [[[], 'boolean']],
+    hasNextLine: [[[], 'boolean']],
     close: [[[], 'void']]
   };
   var STATIC = {
@@ -1057,7 +1155,16 @@ var MiniJava = (function () {
         ctx.loops++; checkSub(node.body, es, ctx); ctx.loops--;
         return;
       }
-      case 'Break': if (!ctx.loops && !ctx.sw) cerr('break outside switch or loop', node.line); return;
+      case 'Break':
+        if (node.label) { if (!findLabel(ctx, node.label)) cerr('undefined label: ' + node.label, node.line); return; }
+        if (!ctx.loops && !ctx.sw) cerr('break outside switch or loop', node.line); return;
+      case 'Labeled': {
+        if (findLabel(ctx, node.label)) cerr('label ' + node.label + ' already in use', node.line);
+        ctx.labels = (ctx.labels || []).concat([{ name: node.label, loop: /^(While|DoWhile|For|ForEach)$/.test(node.body.k) }]);
+        check(node.body, scope, ctx);
+        ctx.labels = ctx.labels.slice(0, -1);
+        return;
+      }
       case 'Switch': checkSwitch(node, scope, ctx, false); return;
       case 'Yield':
         if (!ctx.yields) cerr('yield outside of switch expression', node.line);
@@ -1065,9 +1172,12 @@ var MiniJava = (function () {
         if (yt === 'void') cerr("'void' type not allowed here", node.line);
         ctx.yields.push(node.e);
         return;
-      case 'Continue': if (!ctx.loops) cerr('continue outside of loop', node.line); return;
+      case 'Continue':
+        if (node.label) { var cl = findLabel(ctx, node.label); if (!cl) cerr('undefined label: ' + node.label, node.line); if (!cl.loop) cerr('not a loop label: ' + node.label, node.line); return; }
+        if (!ctx.loops) cerr('continue outside of loop', node.line); return;
     }
   }
+  function findLabel(ctx, name) { return (ctx.labels || []).filter(function (l) { return l.name === name; })[0] || null; }
   function containsYield(st) {
     if (!st || typeof st !== 'object') return false;
     if (st.k === 'Yield') return true;
@@ -1567,20 +1677,33 @@ var MiniJava = (function () {
     needObj(o, line);
     var inp = rt.input;
     if (name === 'close') return undefined;
+    if (name === 'hasNextLine') {
+      if (inp.pos >= inp.buf.length) { if (!inp.lines.length && !rt.interactive) return false; rt.readLine(line, null); }
+      return true;
+    }
     if (name === 'nextLine') {
       if (inp.pos >= inp.buf.length) rt.readLine(line, 'No line found');
       var nl = inp.buf.indexOf('\n', inp.pos), ln = inp.buf.slice(inp.pos, nl);
       inp.pos = nl + 1;
       return new JStr(ln);
     }
+    var p0 = inp.pos;
     for (;;) {
-      while (inp.pos < inp.buf.length && /\s/.test(inp.buf[inp.pos])) inp.pos++;
-      if (inp.pos < inp.buf.length) break;
+      while (p0 < inp.buf.length && /\s/.test(inp.buf[p0])) p0++;
+      if (p0 < inp.buf.length) break;
+      // hasNext… sin más entrada (y sin teclado esperando) dice false en vez de fallar
+      if (/^has/.test(name) && !inp.lines.length && !rt.interactive) return false;
       rt.readLine(line, null);
     }
-    var end = inp.pos;
+    var end = p0;
     while (!/\s/.test(inp.buf[end])) end++;
-    var tok = inp.buf.slice(inp.pos, end), v;
+    var tok = inp.buf.slice(p0, end), v;
+    var isInt = /^[+-]?\d+$/.test(tok) && Math.abs(Number(tok)) <= 2147483648 && Number(tok) !== 2147483648;
+    var isDbl = /^[+-]?(\d+([.,]\d*)?|[.,]\d+)$/.test(tok);
+    if (name === 'hasNext') return true;
+    if (name === 'hasNextInt') return isInt;
+    if (name === 'hasNextDouble') return isDbl;
+    inp.pos = p0;
     if (name === 'nextInt') {
       if (!/^[+-]?\d+$/.test(tok)) throw new JavaException('java.util.InputMismatchException', null, line);
       v = Number(tok);
@@ -1589,6 +1712,12 @@ var MiniJava = (function () {
       // el teclado en español usa coma decimal (3,5); también se acepta el punto
       if (!/^[+-]?(\d+([.,]\d*)?|[.,]\d+)$/.test(tok)) throw new JavaException('java.util.InputMismatchException', null, line);
       v = Number(tok.replace(',', '.'));
+    } else if (name === 'nextLong') {
+      if (!/^[+-]?\d+$/.test(tok) || Math.abs(Number(tok)) > 9223372036854775807) throw new JavaException('java.util.InputMismatchException', null, line);
+      v = Number(tok);
+    } else if (name === 'nextBoolean') {
+      if (!/^(true|false)$/i.test(tok)) throw new JavaException('java.util.InputMismatchException', null, line);
+      v = tok.toLowerCase() === 'true';
     } else v = new JStr(tok);
     inp.pos = end;
     return v;
@@ -2014,14 +2143,14 @@ var MiniJava = (function () {
         while (evalExpr(st.cond, env, rt)) {
           rt.tick();
           var w = exec(st.body, new Env(env), rt);
-          if (w === BREAK) break; if (w && w !== CONTINUE) return w;
+          if (w === BREAK) break; if (w && w !== CONTINUE && !(w.cont && w.cont === st.lbl)) return w;
         }
         return null;
       case 'DoWhile':
         do {
           rt.tick();
           var dw = exec(st.body, new Env(env), rt);
-          if (dw === BREAK) break; if (dw && dw !== CONTINUE) return dw;
+          if (dw === BREAK) break; if (dw && dw !== CONTINUE && !(dw.cont && dw.cont === st.lbl)) return dw;
         } while (evalExpr(st.cond, env, rt));
         return null;
       case 'For': {
@@ -2030,7 +2159,7 @@ var MiniJava = (function () {
         while (!st.cond || evalExpr(st.cond, fe, rt)) {
           rt.tick();
           var f = exec(st.body, new Env(fe), rt);
-          if (f === BREAK) break; if (f && f !== CONTINUE) return f;
+          if (f === BREAK) break; if (f && f !== CONTINUE && !(f.cont && f.cont === st.lbl)) return f;
           st.upd.forEach(function (u) { evalExpr(u, fe, rt); });
         }
         return null;
@@ -2044,7 +2173,7 @@ var MiniJava = (function () {
           var le = new Env(env);
           le.v[st.name] = arr.a[k] === null ? null : convert(arr.a[k], iet, st.type);
           var fr = exec(st.body, le, rt);
-          if (fr === BREAK) break; if (fr && fr !== CONTINUE) return fr;
+          if (fr === BREAK) break; if (fr && fr !== CONTINUE && !(fr.cont && fr.cont === st.lbl)) return fr;
         }
         return null;
       }
@@ -2065,8 +2194,9 @@ var MiniJava = (function () {
         return null;
       }
       case 'Yield': return { yld: true, v: evalExpr(st.e, env, rt), t: st.e.type };
-      case 'Break': return BREAK;
-      case 'Continue': return CONTINUE;
+      case 'Break': return st.label ? { brk: st.label } : BREAK;
+      case 'Continue': return st.label ? { cont: st.label } : CONTINUE;
+      case 'Labeled': { var lr = exec(st.body, env, rt); return lr && lr.brk === st.label ? null : lr; }
       case 'Return': return RETURN;
     }
   }
@@ -2078,6 +2208,7 @@ var MiniJava = (function () {
     interned = {}; hashSeed = 0; cellCount = 0;
     var echo = [];
     var rt = {
+      interactive: !!opts.interactive,
       // lo que se escribe en el teclado: opts.input es la lista de líneas; si se acaban y el programa pide
       // más, en modo interactivo se para (kind: 'input') y si no, falla como Java sin más entrada
       input: { buf: '', pos: 0, lines: (opts.input || []).slice() },
@@ -3024,7 +3155,7 @@ var EXERCISES = [
     sel.addEventListener('change', function () { go(+sel.value); });
   }
   function refreshNav() {
-    var btns = document.querySelectorAll('.ex-btn');
+    var btns = document.querySelectorAll('#side .ex-btn');
     btns.forEach(function (b) {
       var i = +b.dataset.i, e = EXERCISES[i], d = b.querySelector('.dot');
       b.setAttribute('aria-current', i === state.current ? 'true' : 'false');
@@ -3603,6 +3734,13 @@ var EXERCISES = [
   });
   paintThemeBtn();
 
+  // para el apartado de Teoría: abrir un ejercicio desde «Practícalo»
+  window.JP = {
+    goExercise: function (id) { for (var i = 0; i < EXERCISES.length; i++) if (EXERCISES[i].id === id) return go(i); },
+    current: function () { return ex(); },
+    onRender: function (f) { hooks.render.push(f); }
+  };
+
   buildNav();
   render();
   // ----- bienvenida personalizada -----
@@ -3904,6 +4042,1638 @@ var EXERCISES = [
     hooks.render.push(close);
   })();
 
+})();
+</script>
+<script>
+// Apartado de Teoría: cada tema es una lista de bloques que pinta teoria.js.
+// Los temas están en teoria_1.js … teoria_4.js (uno por bloque del índice), en orden.
+//   { h: 'Título de sección' }                 { p: 'Párrafo: `código` y **negrita**' }
+//   { syntax: 'código' }                       (sintaxis general, sin botón de ejecutar)
+//   { code: 'código' }                         (ejemplo que se puede ejecutar y editar; con Scanner pide datos en la consola)
+//       stdin: ['…']   lo que se escribe en las pruebas automáticas (pruebas/teoria.js)
+//       error: true    el ejemplo muestra un error a propósito;  random: true  la salida cambia cada vez
+//   { java: 'código' }                         (código que no se puede ejecutar aquí: programa con import, float, var…)
+//   { note: 'texto', kind: 'tip' | 'warn' }   { list: ['…', '…'] }
+//   { table: [['cabecera', …], ['fila', …], …] }
+//   { practice: ['l4', 'l13'] }                (ejercicios de la página para practicarlo)
+var TEORIA = [];
+// Teoría, bloque 1: Primeros pasos
+TEORIA.push(
+  {
+    id: 'estructura', group: 'Primeros pasos', title: 'Estructura de un programa',
+    intro: 'Las partes que tiene todo programa en Java y cómo se pone en marcha.',
+    blocks: [
+      { h: 'El primer programa' },
+      { p: 'Todo programa de Java vive dentro de una **clase**, y empieza a ejecutarse por el método **main**. Este es el programa más pequeño que muestra algo por pantalla:' },
+      { code: 'public class Main {\n    public static void main(String[] args) {\n        System.out.println("Hola, mundo");\n    }\n}' },
+      { p: 'En este playground puedes escribir solo las instrucciones de dentro del `main` (como en los ejercicios): la página pone la clase y el `main` por ti. Si los escribes completos, también funciona.' },
+
+      { h: 'Las partes, una a una' },
+      { table: [['Parte', 'Qué es'],
+        ['`public class Main`', 'Declara una clase llamada Main. El archivo tiene que llamarse igual que la clase pública: `Main.java`.'],
+        ['`{ … }`', 'Las llaves marcan dónde empieza y dónde acaba un bloque: la clase, el método, un if, un bucle…'],
+        ['`public static void main(String[] args)`', 'El método principal. Java empieza a ejecutar por aquí, siempre con esta cabecera exacta.'],
+        ['`System.out.println(…);`', 'Una instrucción: muestra un texto en la consola y salta de línea.'],
+        ['`;`', 'Cada instrucción termina en punto y coma.']] },
+      { note: 'Java distingue mayúsculas y minúsculas: `Main`, `main` y `MAIN` son tres nombres distintos. `system.out.println` no compila: es `System`.', kind: 'warn' },
+
+      { h: 'Instrucciones y bloques' },
+      { p: 'Las instrucciones se ejecutan de arriba abajo, una detrás de otra:' },
+      { code: 'System.out.println("Primero");\nSystem.out.println("Segundo");\nSystem.out.println("Tercero");' },
+      { p: 'La sangría (los espacios al principio de la línea) no cambia lo que hace el programa, pero se usa siempre para que se vea qué está dentro de cada bloque. Lo habitual son 4 espacios por nivel.' },
+
+      { h: 'Comentarios' },
+      { p: 'Los comentarios son notas para las personas que leen el código: Java los ignora.' },
+      { code: '// Comentario de una línea: desde las dos barras hasta el final\nSystem.out.println("Hola"); // también puede ir al final de una línea\n\n/* Comentario de varias líneas:\n   todo lo que hay entre los dos símbolos */\nSystem.out.println("Adiós");' },
+      { p: 'Hay un tercer tipo, `/** … */`, el comentario de documentación (Javadoc), que se pone encima de clases y métodos para generar su documentación.' },
+      { note: 'Comentar una línea de código (poner `//` delante) es un truco muy útil para probar qué pasa sin ella, sin tener que borrarla.', kind: 'tip' },
+
+      { h: 'import: usar clases de otros paquetes' },
+      { p: 'Las clases de Java están organizadas en **paquetes**. Las de `java.lang` (como `String`, `Math` o `System`) se pueden usar directamente; las demás hay que importarlas al principio del archivo:' },
+      { java: 'import java.util.Scanner;   // una clase concreta\nimport java.util.Arrays;\nimport java.util.*;         // todas las clases del paquete java.util\n\npublic class Main {\n    public static void main(String[] args) {\n        // ...\n    }\n}' },
+      { p: 'En este playground los `import` de `Scanner` y `Arrays` no hacen falta (si los pones, también funciona).' },
+
+      { h: 'Compilar y ejecutar' },
+      { p: 'Java no ejecuta directamente el archivo `.java`. Primero lo **compila** (lo traduce a *bytecode*, un archivo `.class`) y después la **máquina virtual de Java** (JVM) ejecuta ese bytecode. Por eso el mismo `.class` funciona en Windows, Linux o Mac.' },
+      { java: 'javac Main.java     // compila: crea Main.class (o muestra los errores)\njava Main           // ejecuta la clase Main' },
+      { p: 'Los errores de compilación (falta un `;`, una variable no existe, los tipos no encajan…) impiden ejecutar el programa. Los errores de ejecución (dividir entre 0, salirse de un array…) aparecen cuando el programa ya está funcionando.' },
+      { code: 'System.out.println("Antes del error");\nSystem.out.println(10 / 0);\nSystem.out.println("Esto ya no se ve");', error: true },
+
+      { h: 'Errores típicos' },
+      { list: [
+        'Olvidar el `;` al final de una instrucción: `error: \';\' expected`.',
+        'Llaves sin cerrar o de más: el error suele aparecer al final del archivo (`reached end of file while parsing`).',
+        'Escribir mal mayúsculas: `string` en vez de `String`, `system` en vez de `System`.',
+        'Que el nombre del archivo no coincida con el de la clase pública.'
+      ] },
+
+      { h: 'Resumen' },
+      { list: [
+        'Un programa es una clase con un método `main`, que es donde empieza a ejecutarse.',
+        'Las instrucciones terminan en `;` y los bloques van entre llaves.',
+        'Los comentarios (`//`, `/* */`, `/** */`) no se ejecutan.',
+        'Las clases que no son de `java.lang` se importan con `import`.',
+        'Primero se compila (`javac`) y luego se ejecuta (`java`).'
+      ] },
+      { practice: ['a1'] }
+    ]
+  },
+  {
+    id: 'consola', group: 'Primeros pasos', title: 'Mostrar por consola',
+    intro: 'println, print y printf: cómo sacar textos y valores por pantalla, y con qué formato.',
+    blocks: [
+      { h: 'println y print' },
+      { p: '`System.out.println(valor)` muestra el valor y **salta de línea** al final. `System.out.print(valor)` lo muestra **sin** saltar, así que lo siguiente sale en la misma línea.' },
+      { code: 'System.out.println("Uno");\nSystem.out.println("Dos");\nSystem.out.print("Tres ");\nSystem.out.print("Cuatro");\nSystem.out.println();   // sin nada: solo salta de línea\nSystem.out.println("Cinco");' },
+      { p: 'Se puede mostrar cualquier tipo de valor: textos, números, booleanos, caracteres, el resultado de una operación…' },
+      { code: 'System.out.println(42);\nSystem.out.println(3.5);\nSystem.out.println(true);\nSystem.out.println(\'A\');\nSystem.out.println(7 * 6);' },
+
+      { h: 'Unir textos y valores con +' },
+      { p: 'Con `+` se une (concatena) un texto con otros textos o valores:' },
+      { code: 'String nombre = "Ana";\nint edad = 20;\nSystem.out.println("Me llamo " + nombre + " y tengo " + edad + " años");' },
+      { note: 'El `+` se evalúa de izquierda a derecha. Mientras haya solo números, suma; en cuanto aparece un texto, todo lo que viene después se une como texto. Usa paréntesis para sumar antes de unir.', kind: 'warn' },
+      { code: 'System.out.println("Total: " + 2 + 3);    // une: Total: 23\nSystem.out.println("Total: " + (2 + 3));  // suma primero: Total: 5\nSystem.out.println(2 + 3 + " es el total"); // suma y luego une: 5 es el total' },
+
+      { h: 'Caracteres especiales (secuencias de escape)' },
+      { p: 'Dentro de un texto, la barra invertida `\\` introduce caracteres especiales:' },
+      { table: [['Secuencia', 'Qué hace'], ['`\\n`', 'Salto de línea'], ['`\\t`', 'Tabulador'], ['`\\"`', 'Comillas dobles dentro del texto'], ['`\\\'`', 'Comilla simple (en un char)'], ['`\\\\`', 'Una barra invertida']] },
+      { code: 'System.out.println("Línea 1\\nLínea 2");\nSystem.out.println("Nombre\\tEdad");\nSystem.out.println("Ana\\t20");\nSystem.out.println("Dijo \\"hola\\"");\nSystem.out.println("C:\\\\Usuarios");' },
+
+      { h: 'printf: salida con formato' },
+      { p: '`System.out.printf(formato, valores…)` escribe un texto en el que cada **especificador** (`%d`, `%s`…) se sustituye por el siguiente valor. No salta de línea: para eso se pone `%n` (o `\\n`).' },
+      { table: [['Especificador', 'Para', 'Ejemplo'], ['`%d`', 'enteros (int, long)', '`printf("%d", 7)` → 7'], ['`%f`', 'decimales (double)', '`printf("%f", 2.5)` → 2,500000'], ['`%.2f`', 'decimales con 2 cifras (redondea)', '`printf("%.2f", 3.14159)` → 3,14'], ['`%s`', 'textos (y cualquier valor)', '`printf("%s", "hola")` → hola'], ['`%c`', 'un carácter', '`printf("%c", \'x\')` → x'], ['`%b`', 'boolean', '`printf("%b", true)` → true'], ['`%n`', 'salto de línea', ''], ['`%%`', 'el símbolo %', '`printf("50%%")` → 50%']] },
+      { code: 'String producto = "Café";\ndouble precio = 1.456;\nint unidades = 3;\nSystem.out.printf("%s: %d x %.2f euros%n", producto, unidades, precio);\nSystem.out.printf("Total: %.2f euros%n", unidades * precio);' },
+      { note: 'Los decimales salen con coma (1,46) porque Java usa el idioma del sistema, y en español el separador decimal es la coma. `println` siempre usa punto.', kind: 'tip' },
+
+      { h: 'Anchura y alineación' },
+      { p: 'Un número entre el `%` y la letra indica la anchura mínima: rellena con espacios. Con `-` se alinea a la izquierda, y con `0` se rellena con ceros:' },
+      { code: 'System.out.printf("[%5d]%n", 42);     // derecha, 5 huecos\nSystem.out.printf("[%-5d]%n", 42);    // izquierda\nSystem.out.printf("[%05d]%n", 42);    // con ceros\nSystem.out.printf("[%8.2f]%n", 3.14159);\nSystem.out.printf("%-8s%5s%n", "Nombre", "Nota");\nSystem.out.printf("%-8s%5.1f%n", "Ana", 8.25);\nSystem.out.printf("%-8s%5.1f%n", "Luis", 10.0);' },
+
+      { h: 'String.format' },
+      { p: '`String.format` funciona igual que `printf`, pero en vez de mostrar el texto lo **devuelve** para guardarlo en una variable:' },
+      { code: 'double media = 7.6666;\nString texto = String.format("Media: %.1f", media);\nSystem.out.println(texto);' },
+
+      { h: 'Errores típicos' },
+      { list: [
+        'Pasar varios valores a `println` separados por comas: `println("a", 3)` no compila; se unen con `+`.',
+        'Olvidar los paréntesis al sumar dentro de un texto: `"Total: " + 2 + 3` da `Total: 23`.',
+        'Usar `%d` con un double (o `%f` con un int): falla al ejecutarse con `IllegalFormatConversionException`.',
+        'Olvidar el `%n` en `printf`: lo siguiente sale pegado en la misma línea.'
+      ] },
+      { code: 'System.out.printf("%d%n", 2.5);', error: true },
+
+      { h: 'Resumen' },
+      { list: [
+        '`println` muestra y salta de línea; `print` no salta.',
+        '`+` une textos con valores; los paréntesis deciden qué se suma antes.',
+        '`\\n`, `\\t`, `\\"` y `\\\\` son caracteres especiales dentro de un texto.',
+        '`printf` y `String.format` dan formato: `%d`, `%.2f`, `%s`, anchura y alineación.'
+      ] },
+      { practice: ['a1', 'a3', 'l2'] }
+    ]
+  },
+  {
+    id: 'variables', group: 'Primeros pasos', title: 'Variables y tipos',
+    intro: 'Guardar datos con nombre: los tipos primitivos, String, las constantes y cómo nombrarlas.',
+    blocks: [
+      { h: 'Qué es una variable' },
+      { p: 'Una variable es un espacio de memoria con un **nombre** y un **tipo** donde se guarda un valor. Se **declara** indicando el tipo y el nombre, y se le da un valor con `=`:' },
+      { syntax: 'tipo nombre = valor;' },
+      { code: 'int edad = 20;\nString nombre = "Ana";\nSystem.out.println(nombre + " tiene " + edad + " años");\nedad = 21;          // se cambia su valor (ya no se pone el tipo)\nSystem.out.println(nombre + " tiene " + edad + " años");' },
+      { p: 'También se puede declarar primero y dar el valor después, o declarar varias del mismo tipo en una línea:' },
+      { code: 'int x;\nx = 5;\nint a = 1, b = 2, c = 3;\nSystem.out.println(x + a + b + c);' },
+      { note: 'Una variable local tiene que tener valor antes de usarla. Si la declaras sin valor y la lees, no compila: `variable x might not have been initialized`.', kind: 'warn' },
+
+      { h: 'Los tipos primitivos' },
+      { p: 'Java tiene 8 tipos básicos (primitivos). Guardan directamente el valor:' },
+      { table: [['Tipo', 'Guarda', 'Tamaño', 'Rango / ejemplo'],
+        ['`byte`', 'entero', '1 byte', '-128 a 127'],
+        ['`short`', 'entero', '2 bytes', '-32.768 a 32.767'],
+        ['`int`', 'entero (el habitual)', '4 bytes', 'unos ±2.100 millones'],
+        ['`long`', 'entero grande', '8 bytes', 'unos ±9 trillones; se escribe con L: `3000000000L`'],
+        ['`float`', 'decimal', '4 bytes', 'unas 7 cifras; se escribe con f: `2.5f`'],
+        ['`double`', 'decimal (el habitual)', '8 bytes', 'unas 15 cifras: `2.5`'],
+        ['`char`', 'un carácter', '2 bytes', 'entre comillas simples: `\'A\'`'],
+        ['`boolean`', 'verdadero o falso', '—', '`true` o `false`']] },
+      { code: 'int alumnos = 25;\nlong habitantes = 8000000000L;\ndouble nota = 7.5;\nchar letra = \'B\';\nboolean aprobado = true;\nSystem.out.println(alumnos + " " + habitantes + " " + nota + " " + letra + " " + aprobado);' },
+      { p: 'En la práctica se usan casi siempre `int` para enteros y `double` para decimales. `byte`, `short` y `float` se usan para ahorrar memoria (por ejemplo, en arrays muy grandes):' },
+      { java: 'byte b = 100;\nshort s = 20000;\nfloat f = 3.14f;      // sin la f no compila: 3.14 es double\n// (en este playground byte, short y float no están disponibles)' },
+      { p: 'Los límites de cada tipo están en constantes como `Integer.MAX_VALUE`. Si un `int` se pasa de su máximo, **da la vuelta** al mínimo sin avisar (desbordamiento):' },
+      { code: 'System.out.println(Integer.MAX_VALUE);\nSystem.out.println(Integer.MIN_VALUE);\nint grande = Integer.MAX_VALUE;\ngrande = grande + 1;\nSystem.out.println(grande);' },
+
+      { h: 'String: el texto' },
+      { p: '`String` no es primitivo: es una **clase**, y sus valores son objetos. Se escribe con comillas dobles y tiene muchos métodos (ver el tema Strings).' },
+      { code: 'String saludo = "Hola";\nString vacio = "";\nSystem.out.println(saludo + " tiene " + saludo.length() + " letras");\nSystem.out.println("[" + vacio + "]");' },
+      { note: 'Comillas simples para `char` (`\'A\'`, un solo carácter) y dobles para `String` (`"A"`, un texto). `\'AB\'` no compila.', kind: 'tip' },
+
+      { h: 'Constantes: final' },
+      { p: 'Con `final` la variable no se puede cambiar después de darle valor. Por convención, las constantes se escriben en MAYÚSCULAS con guiones bajos:' },
+      { code: 'final double IVA = 0.21;\nfinal int DIAS_SEMANA = 7;\ndouble precio = 100;\nSystem.out.println("Con IVA: " + precio * (1 + IVA));\nSystem.out.println("Semanas en 365 días: " + 365 / DIAS_SEMANA);' },
+      { code: 'final int MAX = 10;\nMAX = 20;', error: true },
+
+      { h: 'var: que Java deduzca el tipo' },
+      { p: 'Desde Java 10, dentro de un método se puede escribir `var` y Java deduce el tipo por el valor. El tipo sigue siendo fijo: solo te ahorras escribirlo.' },
+      { java: 'var edad = 20;        // int\nvar nota = 7.5;       // double\nvar nombre = "Ana";   // String\n// edad = "veinte";   // error: edad es int\n// (en este playground var no está disponible)' },
+
+      { h: 'Cómo nombrar las variables' },
+      { list: [
+        'Pueden tener letras, números, `_` y `$`, pero no pueden empezar por número ni tener espacios.',
+        'No pueden ser palabras reservadas: `int`, `class`, `for`, `new`…',
+        'Distinguen mayúsculas: `edad` y `Edad` son distintas.',
+        'Convención (camelCase): empiezan en minúscula y cada palabra nueva en mayúscula: `notaMedia`, `numeroDeAlumnos`.',
+        'Mejor nombres que digan qué guardan: `precioTotal` mejor que `pt` o `x`.'
+      ] },
+
+      { h: 'Ámbito: dónde existe una variable' },
+      { p: 'Una variable solo existe dentro del bloque `{ }` donde se declara (y en los bloques que hay dentro). Fuera de él no se puede usar:' },
+      { code: 'int total = 0;\nfor (int i = 1; i <= 3; i++) {\n    int doble = i * 2;     // solo existe dentro del for\n    total += doble;\n}\nSystem.out.println(total);\n// System.out.println(doble);  // error: cannot find symbol' },
+
+      { h: 'Errores típicos' },
+      { list: [
+        'Usar una variable sin darle valor antes.',
+        'Declarar dos veces la misma variable en el mismo bloque: `variable x is already defined`.',
+        'Poner un decimal en un `int`: `int x = 2.5;` no compila (ver Conversión de tipos).',
+        'Escribir un número muy grande sin la `L`: `long n = 3000000000;` no compila (`integer number too large`).'
+      ] },
+
+      { h: 'Resumen' },
+      { list: [
+        'Una variable tiene tipo, nombre y valor: `int edad = 20;`.',
+        '8 primitivos: byte, short, int, long, float, double, char y boolean. Los habituales: int, double, char y boolean.',
+        '`String` es una clase para textos, con comillas dobles.',
+        '`final` crea constantes (en MAYÚSCULAS); `var` deduce el tipo.',
+        'Una variable solo existe en el bloque donde se declara.'
+      ] },
+      { practice: ['a1', 'a2', 'b1'] }
+    ]
+  },
+  {
+    id: 'conversion', group: 'Primeros pasos', title: 'Conversión de tipos',
+    intro: 'Pasar un valor de un tipo a otro: automática, con casting, y entre números y textos.',
+    blocks: [
+      { h: 'Conversión automática (ensanchamiento)' },
+      { p: 'Java convierte solo cuando no se puede perder información: de un tipo "pequeño" a uno "más grande".' },
+      { syntax: 'byte → short → int → long → float → double\n          char → int' },
+      { code: 'int entero = 7;\ndouble decimal = entero;     // automático: 7.0\nlong grande = entero;        // automático\nchar letra = \'A\';\nint codigo = letra;          // el código del carácter: 65\nSystem.out.println(decimal + " " + grande + " " + codigo);' },
+
+      { h: 'Casting: conversión explícita' },
+      { p: 'Para ir de un tipo grande a uno pequeño hay que pedirlo con un **casting**: el tipo entre paréntesis delante del valor. Así le dices a Java que aceptas perder información.' },
+      { syntax: '(tipo) valor' },
+      { code: 'double precio = 9.99;\nint euros = (int) precio;    // corta los decimales: 9 (no redondea)\nSystem.out.println(euros);\nint numero = 66;\nchar c = (char) numero;      // el carácter con código 66\nSystem.out.println(c);\nSystem.out.println((int) -3.7);   // también corta hacia el 0: -3' },
+      { note: 'Pasar un double a int con `(int)` **trunca** (quita los decimales), no redondea: `(int) 9.99` es 9. Para redondear, usa `Math.round` (ver el tema Math).', kind: 'warn' },
+
+      { h: 'La división entera' },
+      { p: 'Si los dos números de una división son enteros, el resultado también es entero: se pierden los decimales. Basta con que uno sea `double` para que la división sea decimal:' },
+      { code: 'int a = 7, b = 2;\nSystem.out.println(a / b);            // 3\nSystem.out.println((double) a / b);   // 3.5: se convierte a antes de dividir\nSystem.out.println((double) (a / b)); // 3.0: ¡se divide antes!\nSystem.out.println(a / 2.0);          // 3.5' },
+      { p: 'Es el error clásico al calcular una media:' },
+      { code: 'int suma = 17;\nint cantidad = 4;\ndouble mal = suma / cantidad;\ndouble bien = (double) suma / cantidad;\nSystem.out.println(mal + " frente a " + bien);' },
+
+      { h: 'Promoción en las operaciones' },
+      { p: 'En una operación con tipos distintos, Java convierte al más grande antes de operar: `int + double` da `double`; `int + long` da `long`. Y con `char`, las operaciones se hacen con su código numérico:' },
+      { code: 'System.out.println(5 + 2.0);\nSystem.out.println(\'A\' + 1);          // 66: el char se convierte a int\nSystem.out.println((char) (\'A\' + 1)); // B\nchar letra = \'a\';\nletra++;                               // ++ y += sí funcionan directamente sobre un char\nSystem.out.println(letra);' },
+
+      { h: 'De texto a número' },
+      { p: 'Para convertir un texto con un número dentro, se usan los métodos `parse` de las clases envoltorio:' },
+      { code: 'int n = Integer.parseInt("42");\ndouble d = Double.parseDouble("3.5");\nlong l = Long.parseLong("9000000000");\nboolean b = Boolean.parseBoolean("true");\nSystem.out.println(n + 1);\nSystem.out.println(d * 2);\nSystem.out.println(l + " " + b);' },
+      { p: 'Si el texto no es un número válido, falla al ejecutarse:' },
+      { code: 'int n = Integer.parseInt("doce");', error: true },
+
+      { h: 'De número a texto' },
+      { code: 'int edad = 20;\nString a = String.valueOf(edad);\nString b = Integer.toString(edad);\nString c = "" + edad;               // truco: unir con un texto vacío\nSystem.out.println(a + b + c);\nSystem.out.println(a.length());' },
+
+      { h: 'Entre char y número' },
+      { code: 'char c = \'7\';\nint valor = c - \'0\';                    // 7 (los dígitos van seguidos en la tabla)\nint tambien = Character.getNumericValue(c);\nSystem.out.println(valor + tambien);\nSystem.out.println((int) \'a\' + " " + (int) \'A\' + " " + (int) \'0\');' },
+      { note: 'Ojo con `(int) \'7\'`: da 55 (el código del carácter), no 7.', kind: 'warn' },
+
+      { h: 'Errores típicos' },
+      { list: [
+        '`int x = 2.5;` no compila (`possible lossy conversion from double to int`): hace falta `(int)`.',
+        'Esperar que `(int)` redondee: trunca.',
+        'Calcular una media con enteros sin convertir: `17 / 4` es 4.',
+        'Poner el casting en el sitio equivocado: `(double) (a / b)` convierte cuando ya se han perdido los decimales.',
+        '`Integer.parseInt` con espacios o letras: `NumberFormatException`.'
+      ] },
+
+      { h: 'Resumen' },
+      { list: [
+        'De pequeño a grande la conversión es automática; de grande a pequeño hace falta `(tipo)`.',
+        '`(int)` quita los decimales sin redondear.',
+        'Entero entre entero da entero: convierte uno a `double` antes de dividir.',
+        'Texto → número: `Integer.parseInt`, `Double.parseDouble`. Número → texto: `String.valueOf`.'
+      ] },
+      { practice: ['a4', 'a2'] }
+    ]
+  },
+  {
+    id: 'operadores', group: 'Primeros pasos', title: 'Operadores',
+    intro: 'Cálculos, comparaciones y condiciones: todos los operadores de Java y en qué orden se aplican.',
+    blocks: [
+      { h: 'Aritméticos' },
+      { table: [['Operador', 'Qué hace', 'Ejemplo', 'Resultado'], ['`+`', 'suma', '`7 + 2`', '9'], ['`-`', 'resta', '`7 - 2`', '5'], ['`*`', 'multiplicación', '`7 * 2`', '14'], ['`/`', 'división', '`7 / 2`', '3 (entera)'], ['`%`', 'resto de la división', '`7 % 2`', '1']] },
+      { code: 'int a = 17, b = 5;\nSystem.out.println(a + b);\nSystem.out.println(a - b);\nSystem.out.println(a * b);\nSystem.out.println(a / b);\nSystem.out.println(a % b);\nSystem.out.println(17.0 / 5);' },
+
+      { h: 'El resto (%)' },
+      { p: 'El operador `%` da el resto de la división entera. Es muy útil:' },
+      { list: [
+        'Saber si un número es par: `n % 2 == 0`.',
+        'Saber si es múltiplo de otro: `n % 3 == 0`.',
+        'Sacar la última cifra: `n % 10`.',
+        'Repartir en grupos: minutos que sobran de las horas, `minutos % 60`.'
+      ] },
+      { code: 'int n = 2024;\nSystem.out.println(n % 2 == 0);   // par\nSystem.out.println(n % 10);       // última cifra\nint totalMinutos = 135;\nSystem.out.println(totalMinutos / 60 + " h " + totalMinutos % 60 + " min");\nSystem.out.println(-7 % 3);       // el signo es el del primero' },
+
+      { h: 'Incremento y decremento: ++ y --' },
+      { p: '`x++` suma 1 a `x` y `x--` resta 1. Puestos delante (`++x`) o detrás (`x++`) hacen lo mismo con la variable, pero cambian el valor que **devuelven** si se usan dentro de otra expresión:' },
+      { code: 'int x = 5;\nint a = x++;   // usa 5 y después suma: a = 5, x = 6\nint y = 5;\nint b = ++y;   // suma primero y usa 6: b = 6, y = 6\nSystem.out.println(a + " " + x);\nSystem.out.println(b + " " + y);' },
+      { note: 'Para evitar líos, usa `++` y `--` solos en su línea (`i++;`) y no dentro de otras operaciones.', kind: 'tip' },
+
+      { h: 'Asignación compuesta' },
+      { table: [['Forma corta', 'Equivale a'], ['`x += 3`', '`x = x + 3`'], ['`x -= 3`', '`x = x - 3`'], ['`x *= 3`', '`x = x * 3`'], ['`x /= 3`', '`x = x / 3`'], ['`x %= 3`', '`x = x % 3`']] },
+      { code: 'int total = 10;\ntotal += 5;\ntotal *= 2;\ntotal -= 4;\ntotal /= 3;\nSystem.out.println(total);\nString texto = "Ho";\ntexto += "la";      // también une textos\nSystem.out.println(texto);' },
+
+      { h: 'Comparación' },
+      { p: 'Comparan dos valores y dan un `boolean` (`true` o `false`):' },
+      { table: [['Operador', 'Significa'], ['`==`', 'igual'], ['`!=`', 'distinto'], ['`<`', 'menor'], ['`>`', 'mayor'], ['`<=`', 'menor o igual'], ['`>=`', 'mayor o igual']] },
+      { code: 'int edad = 18;\nSystem.out.println(edad >= 18);\nSystem.out.println(edad == 20);\nSystem.out.println(edad != 20);\nSystem.out.println(\'a\' < \'b\');' },
+      { note: '`=` asigna y `==` compara. Y para comparar textos (String) no se usa `==` sino `equals` (ver Strings).', kind: 'warn' },
+
+      { h: 'Lógicos: &&, || y !' },
+      { table: [['Operador', 'Nombre', 'Es true cuando…'], ['`&&`', 'Y (AND)', 'las dos condiciones son true'], ['`||`', 'O (OR)', 'al menos una es true'], ['`!`', 'NO (NOT)', 'invierte: !true es false']] },
+      { code: 'int edad = 20;\nboolean carnet = false;\nSystem.out.println(edad >= 18 && carnet);\nSystem.out.println(edad >= 18 || carnet);\nSystem.out.println(!carnet);\nint nota = 7;\nSystem.out.println(nota >= 5 && nota < 7);   // entre 5 y 6' },
+      { note: 'En Java no se puede escribir `5 <= nota < 7` como en matemáticas: hay que unir dos comparaciones, `nota >= 5 && nota < 7`.', kind: 'warn' },
+      { p: '**Cortocircuito:** `&&` no mira la segunda condición si la primera ya es `false`, y `||` no la mira si la primera ya es `true`. Sirve para evitar errores:' },
+      { code: 'int divisor = 0;\n// si divisor es 0, la división no llega a hacerse\nif (divisor != 0 && 10 / divisor > 2) {\n    System.out.println("Mayor que 2");\n} else {\n    System.out.println("No se puede o no es mayor");\n}' },
+      { p: 'Existen también `&` y `|` (sin duplicar), que evalúan siempre las dos partes; y `^` (O exclusivo: true si solo una es true). Con condiciones se usan poco.' },
+
+      { h: 'El operador ternario ? :' },
+      { p: 'Elige entre dos valores según una condición, en una sola expresión:' },
+      { syntax: 'condición ? valorSiTrue : valorSiFalse' },
+      { code: 'int nota = 6;\nString resultado = nota >= 5 ? "Aprobado" : "Suspenso";\nSystem.out.println(resultado);\nint a = 8, b = 3;\nint mayor = a > b ? a : b;\nSystem.out.println("El mayor es " + mayor);' },
+      { note: 'Úsalo para casos cortos. Si la condición o los valores son largos, un if/else se lee mejor.', kind: 'tip' },
+
+      { h: 'Precedencia: qué se calcula antes' },
+      { p: 'Como en matemáticas, `*`, `/` y `%` van antes que `+` y `-`. El orden completo, de más a menos prioridad:' },
+      { table: [['Prioridad', 'Operadores'], ['1', '`()` paréntesis'], ['2', '`++` `--` `!` y el casting `(tipo)`'], ['3', '`*` `/` `%`'], ['4', '`+` `-`'], ['5', '`<` `<=` `>` `>=`'], ['6', '`==` `!=`'], ['7', '`&&`'], ['8', '`||`'], ['9', '`? :`'], ['10', '`=` `+=` `-=`…']] },
+      { code: 'System.out.println(2 + 3 * 4);\nSystem.out.println((2 + 3) * 4);\nSystem.out.println(10 - 4 - 3);    // de izquierda a derecha\nSystem.out.println(true || false && false);  // && va antes que ||' },
+      { note: 'Ante la duda, pon paréntesis: no cambian el resultado si ya era ese orden, y se lee mejor.', kind: 'tip' },
+
+      { h: 'Errores típicos' },
+      { list: [
+        'Confundir `=` con `==` en una condición.',
+        'Esperar decimales de una división entre enteros.',
+        'Escribir `a < b < c`: no compila; se escribe `a < b && b < c`.',
+        'Usar `&` y `|` creyendo que son `&&` y `||`: funcionan, pero sin cortocircuito.',
+        'Abusar de `x++` dentro de otras expresiones.'
+      ] },
+
+      { h: 'Resumen' },
+      { list: [
+        'Aritméticos: `+ - * / %`. El `%` da el resto.',
+        '`++`, `--` y las formas cortas `+=`, `-=`…',
+        'Comparación (`== != < > <= >=`) y lógicos (`&& || !`) dan boolean; `&&` y `||` hacen cortocircuito.',
+        'Ternario: `condición ? a : b`.',
+        'Paréntesis para controlar el orden.'
+      ] },
+      { practice: ['a1', 'a4', 'b1', 'b2', 'b3'] }
+    ]
+  },
+  {
+    id: 'math', group: 'Primeros pasos', title: 'La clase Math',
+    intro: 'Funciones matemáticas listas para usar: potencias, raíces, redondeos, máximos, aleatorios…',
+    blocks: [
+      { h: 'Cómo se usa' },
+      { p: '`Math` es una clase de `java.lang` (no hace falta importarla) con métodos **estáticos**: se llaman con el nombre de la clase delante, `Math.metodo(…)`.' },
+      { code: 'System.out.println(Math.max(4, 9));\nSystem.out.println(Math.sqrt(81));\nSystem.out.println(Math.PI);' },
+
+      { h: 'Máximo, mínimo y valor absoluto' },
+      { code: 'System.out.println(Math.max(3, 8));        // el mayor de dos\nSystem.out.println(Math.min(3, 8));        // el menor de dos\nSystem.out.println(Math.max(2.5, 1));      // si uno es double, da double\nSystem.out.println(Math.abs(-7));          // valor absoluto\nSystem.out.println(Math.abs(3 - 10));\nint a = 4, b = 9, c = 6;\nSystem.out.println(Math.max(a, Math.max(b, c)));  // el mayor de tres' },
+
+      { h: 'Potencias y raíces' },
+      { code: 'System.out.println(Math.pow(2, 10));   // 2 elevado a 10\nSystem.out.println(Math.pow(5, 2));\nSystem.out.println(Math.pow(9, 0.5));   // exponente 0.5 = raíz cuadrada\nSystem.out.println(Math.sqrt(16));      // raíz cuadrada\nSystem.out.println(Math.cbrt(27));      // raíz cúbica' },
+      { note: '`Math.pow` y `Math.sqrt` devuelven siempre `double` (1024.0, 4.0). Si necesitas un int, convierte: `(int) Math.pow(2, 10)`.', kind: 'warn' },
+
+      { h: 'Redondear' },
+      { table: [['Método', 'Qué hace', '2.4', '2.5', '-2.5', 'Devuelve'], ['`Math.round(x)`', 'al entero más cercano (.5 hacia arriba)', '2', '3', '-2', 'long (int si x es float)'], ['`Math.floor(x)`', 'hacia abajo', '2.0', '2.0', '-3.0', 'double'], ['`Math.ceil(x)`', 'hacia arriba', '3.0', '3.0', '-2.0', 'double'], ['`(int) x`', 'quita los decimales (hacia el 0)', '2', '2', '-2', 'int']] },
+      { code: 'double x = 7.65;\nSystem.out.println(Math.round(x));\nSystem.out.println(Math.floor(x));\nSystem.out.println(Math.ceil(x));\nSystem.out.println((int) x);\n// redondear a 2 decimales: multiplicar, redondear y dividir\nSystem.out.println(Math.round(3.14159 * 100) / 100.0);' },
+      { note: '`Math.round` devuelve `long`. Para guardarlo en un int: `int n = (int) Math.round(x);`.', kind: 'warn' },
+      { p: 'Un uso típico de `ceil`: cuántas cajas hacen falta para meter 23 libros de 5 en 5 (la última caja va a medias):' },
+      { code: 'int libros = 23, porCaja = 5;\nint cajas = (int) Math.ceil((double) libros / porCaja);\nSystem.out.println(cajas + " cajas");' },
+
+      { h: 'Números aleatorios' },
+      { p: '`Math.random()` da un `double` al azar entre 0 (incluido) y 1 (sin incluir). Para sacar un entero entre `min` y `max`, ambos incluidos:' },
+      { syntax: '(int) (Math.random() * (max - min + 1)) + min' },
+      { code: 'int dado = (int) (Math.random() * 6) + 1;        // de 1 a 6\nint nota = (int) (Math.random() * 11);           // de 0 a 10\nSystem.out.println("Dado: " + dado + ", nota: " + nota);', random: true },
+      { p: 'Cada vez que lo ejecutas sale otro número. Para programas más completos existe también la clase `java.util.Random` (`new Random().nextInt(6)` da de 0 a 5).' },
+
+      { h: 'Constantes y otros métodos' },
+      { code: 'System.out.println(Math.PI);\nSystem.out.println(Math.E);\ndouble radio = 2;\nSystem.out.printf("Área del círculo: %.2f%n", Math.PI * Math.pow(radio, 2));\nSystem.out.println(Math.floorMod(-7, 3));   // resto siempre positivo' },
+      { p: 'Hay muchos más: `Math.sin`, `Math.cos` y `Math.tan` (trigonometría, en radianes), `Math.log` y `Math.log10` (logaritmos), `Math.hypot(a, b)` (hipotenusa), `Math.signum` (el signo)…' },
+
+      { h: 'Errores típicos' },
+      { list: [
+        'Guardar `Math.pow` o `Math.round` en un int sin convertir: no compila.',
+        'Usar `Math.pow(x, 2)` para elevar al cuadrado está bien, pero `x * x` es más sencillo y da un int.',
+        'Olvidar el `+ 1` en el aleatorio: `(int) (Math.random() * 6)` da de 0 a 5.',
+        'Poner mal los paréntesis: `(int) Math.random() * 6` siempre da 0, porque convierte antes de multiplicar.'
+      ] },
+
+      { h: 'Resumen' },
+      { list: [
+        '`Math.max`, `Math.min`, `Math.abs`.',
+        '`Math.pow(base, exp)`, `Math.sqrt`, `Math.cbrt` (devuelven double).',
+        '`Math.round` (al más cercano), `Math.floor` (abajo), `Math.ceil` (arriba).',
+        '`Math.random()` da un decimal entre 0 y 1; con la fórmula, un entero entre min y max.',
+        '`Math.PI` y `Math.E`.'
+      ] },
+      { practice: ['a3', 'b5'] }
+    ]
+  },
+  {
+    id: 'scanner', group: 'Primeros pasos', title: 'Leer del teclado (Scanner)',
+    intro: 'Pedir datos al usuario mientras el programa está en marcha.',
+    blocks: [
+      { h: 'Crear un Scanner' },
+      { p: 'La clase `Scanner` (del paquete `java.util`) lee lo que el usuario escribe en la consola. Se crea una vez, al principio, conectada al teclado (`System.in`):' },
+      { java: 'import java.util.Scanner;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner teclado = new Scanner(System.in);\n        // ... usar teclado ...\n        teclado.close();\n    }\n}' },
+      { p: 'Cuando el programa llega a una lectura, **se para** hasta que el usuario escribe y pulsa Enter. Aquí puedes probarlo: escribe en la consola cuando te lo pida.' },
+      { code: 'Scanner teclado = new Scanner(System.in);\nSystem.out.print("¿Cómo te llamas? ");\nString nombre = teclado.nextLine();\nSystem.out.print("¿Cuántos años tienes? ");\nint edad = teclado.nextInt();\nSystem.out.println("Hola, " + nombre + ". El año que viene tendrás " + (edad + 1));', stdin: ['Ana', '20'] },
+
+      { h: 'Los métodos para leer' },
+      { table: [['Método', 'Lee', 'Ejemplo de lo escrito'], ['`nextInt()`', 'un int', '`42`'], ['`nextLong()`', 'un long', '`9000000000`'], ['`nextDouble()`', 'un double', '`3,5` (con coma en español)'], ['`nextBoolean()`', 'true o false', '`true`'], ['`next()`', 'una palabra (hasta el siguiente espacio)', '`hola`'], ['`nextLine()`', 'la línea entera, con espacios', '`hola mundo`']] },
+      { code: 'Scanner teclado = new Scanner(System.in);\nSystem.out.print("Escribe una frase: ");\nString primera = teclado.next();       // solo la primera palabra\nString resto = teclado.nextLine();     // lo que queda de la línea\nSystem.out.println("Primera palabra: " + primera);\nSystem.out.println("Resto: [" + resto + "]");', stdin: ['hola que tal'] },
+      { note: 'Con el idioma en español, `nextDouble()` espera la coma decimal (`3,5`). Si escribes `3.5`, Java real da `InputMismatchException`. (Este playground acepta las dos.)', kind: 'warn' },
+
+      { h: 'El problema de nextInt seguido de nextLine' },
+      { p: '`nextInt()` (y `nextDouble()`, `next()`…) lee el número pero **deja en la entrada el salto de línea** del Enter. Si después llamas a `nextLine()`, lee ese salto pendiente y devuelve un texto vacío, sin esperar:' },
+      { code: 'Scanner teclado = new Scanner(System.in);\nSystem.out.print("Edad: ");\nint edad = teclado.nextInt();\nSystem.out.print("Nombre: ");\nString nombre = teclado.nextLine();    // ¡lee el Enter que dejó nextInt!\nSystem.out.println("[" + nombre + "] tiene " + edad + " años");', stdin: ['20', 'Ana'] },
+      { p: 'La solución es "tragarse" ese salto con un `nextLine()` extra justo después del número:' },
+      { code: 'Scanner teclado = new Scanner(System.in);\nSystem.out.print("Edad: ");\nint edad = teclado.nextInt();\nteclado.nextLine();                    // se come el Enter pendiente\nSystem.out.print("Nombre: ");\nString nombre = teclado.nextLine();\nSystem.out.println(nombre + " tiene " + edad + " años");', stdin: ['20', 'Ana'] },
+      { note: 'Otra forma: leer siempre con `nextLine()` y convertir: `int edad = Integer.parseInt(teclado.nextLine());`.', kind: 'tip' },
+
+      { h: 'Si el usuario escribe algo que no es un número' },
+      { p: 'Si `nextInt()` se encuentra con un texto, el programa falla con `InputMismatchException`:' },
+      { code: 'Scanner teclado = new Scanner(System.in);\nSystem.out.print("Número: ");\nint n = teclado.nextInt();\nSystem.out.println(n * 2);', stdin: ['hola'], error: true },
+      { p: 'Para evitarlo, `hasNextInt()` mira **sin leer** si lo siguiente es un entero. Con un bucle se puede insistir hasta que lo sea:' },
+      { code: 'Scanner teclado = new Scanner(System.in);\nSystem.out.print("Número: ");\nwhile (!teclado.hasNextInt()) {\n    String malo = teclado.next();      // se descarta lo que no vale\n    System.out.print(malo + " no es un número. Otra vez: ");\n}\nint n = teclado.nextInt();\nSystem.out.println("El doble es " + n * 2);', stdin: ['hola', '21'] },
+      { p: 'También existen `hasNext()`, `hasNextDouble()` y `hasNextLine()`.' },
+
+      { h: 'Leer varios datos' },
+      { p: 'Se puede leer dentro de un bucle. Por ejemplo, pedir 3 notas y calcular la media:' },
+      { code: 'Scanner teclado = new Scanner(System.in);\ndouble suma = 0;\nfor (int i = 1; i <= 3; i++) {\n    System.out.print("Nota " + i + ": ");\n    suma += teclado.nextDouble();\n}\nSystem.out.printf("Media: %.2f%n", suma / 3);', stdin: ['7', '8,5', '6'] },
+      { p: 'Los números también se pueden escribir en la misma línea separados por espacios: cada `nextInt()` coge el siguiente.' },
+
+      { h: 'Cerrar el Scanner' },
+      { p: '`teclado.close()` libera el recurso al terminar. Con `System.in` hay un detalle: al cerrarlo se cierra también el teclado, y ya no se puede volver a leer en todo el programa, ni con otro Scanner. Por eso se crea **un solo** Scanner y se cierra al final.' },
+
+      { h: 'Errores típicos' },
+      { list: [
+        'Olvidar el `import java.util.Scanner;` (en un programa completo): `cannot find symbol: class Scanner`.',
+        'El salto de línea pendiente tras `nextInt()`.',
+        'Escribir decimales con punto en `nextDouble()` con el idioma en español.',
+        'Crear un Scanner nuevo cada vez que se lee, o cerrarlo y querer volver a leer.',
+        'Comparar el texto leído con `==` en vez de `equals`.'
+      ] },
+
+      { h: 'Resumen' },
+      { list: [
+        '`Scanner teclado = new Scanner(System.in);` (con `import java.util.Scanner;`).',
+        '`nextInt`, `nextDouble`, `next`, `nextLine`… El programa se para hasta que se escribe.',
+        'Después de un `nextInt()`, un `nextLine()` extra para limpiar el salto de línea.',
+        '`hasNextInt()` comprueba sin leer; sirve para validar.',
+        'Un solo Scanner, y `close()` al final.'
+      ] },
+      { practice: ['l17', 'l18', 'l19'] }
+    ]
+  }
+);
+// Teoría, bloque 2: Textos
+TEORIA.push(
+  {
+    id: 'strings', group: 'Textos', title: 'Strings',
+    intro: 'Trabajar con textos: crearlos, compararlos, recorrerlos y todos sus métodos.',
+    blocks: [
+      { h: 'Qué es un String' },
+      { p: 'Un `String` es una secuencia de caracteres. Se escribe entre comillas dobles. Cada carácter tiene una **posición** (índice) que empieza en **0**:' },
+      { table: [['Posición', '0', '1', '2', '3'], ['Carácter', 'J', 'a', 'v', 'a']] },
+      { code: 'String palabra = "Java";\nSystem.out.println(palabra.length());     // 4 caracteres\nSystem.out.println(palabra.charAt(0));    // el primero\nSystem.out.println(palabra.charAt(palabra.length() - 1));  // el último' },
+      { note: 'La última posición es `length() - 1`. `charAt(length())` se sale del texto: `StringIndexOutOfBoundsException`.', kind: 'warn' },
+
+      { h: 'Unir textos' },
+      { code: 'String nombre = "Ana", apellido = "López";\nString completo = nombre + " " + apellido;\nSystem.out.println(completo);\nSystem.out.println(nombre.concat(" García"));\nSystem.out.println(String.join(", ", "uno", "dos", "tres"));\nSystem.out.println("ja".repeat(3));' },
+
+      { h: 'Los Strings no cambian (inmutables)' },
+      { p: 'Un String no se puede modificar: los métodos como `toUpperCase()` o `replace()` **devuelven un String nuevo** y dejan el original igual. Para quedarte con el cambio, guárdalo:' },
+      { code: 'String texto = "hola";\ntexto.toUpperCase();              // crea "HOLA" pero no se guarda\nSystem.out.println(texto);\ntexto = texto.toUpperCase();      // ahora sí\nSystem.out.println(texto);' },
+      { note: 'Unir muchas veces con `+=` dentro de un bucle crea un String nuevo en cada vuelta. Para construir textos largos es mejor `StringBuilder` (siguiente tema).', kind: 'tip' },
+
+      { h: 'Comparar: equals y no ==' },
+      { p: '`==` compara si dos variables apuntan al **mismo objeto**, no si tienen las mismas letras. Para comparar el contenido se usa `equals`:' },
+      { code: 'String a = "hola";\nString b = new String("hola");\nSystem.out.println(a == b);              // false: son objetos distintos\nSystem.out.println(a.equals(b));         // true: mismo contenido\nSystem.out.println("Hola".equals("hola"));\nSystem.out.println("Hola".equalsIgnoreCase("hola"));  // sin mirar mayúsculas' },
+      { p: '`compareTo` compara por orden alfabético (según los códigos de los caracteres): da 0 si son iguales, un número negativo si el primero va antes y positivo si va después.' },
+      { code: 'System.out.println("ana".compareTo("bea"));    // negativo: ana va antes\nSystem.out.println("bea".compareTo("ana"));    // positivo\nSystem.out.println("ana".compareTo("ana"));    // 0\nSystem.out.println("Zoe".compareTo("ana"));    // negativo: las mayúsculas van antes\nSystem.out.println("Zoe".compareToIgnoreCase("ana"));' },
+
+      { h: 'Buscar dentro de un texto' },
+      { table: [['Método', 'Devuelve'], ['`indexOf(texto)`', 'la primera posición donde aparece, o -1 si no está'], ['`indexOf(texto, desde)`', 'igual, empezando a buscar en la posición desde'], ['`lastIndexOf(texto)`', 'la última posición donde aparece, o -1'], ['`contains(texto)`', 'true si lo contiene'], ['`startsWith(texto)`', 'true si empieza así'], ['`endsWith(texto)`', 'true si acaba así']] },
+      { code: 'String frase = "la casa de la playa";\nSystem.out.println(frase.indexOf("la"));\nSystem.out.println(frase.indexOf("la", 1));\nSystem.out.println(frase.lastIndexOf("la"));\nSystem.out.println(frase.indexOf("perro"));\nSystem.out.println(frase.contains("casa"));\nSystem.out.println(frase.startsWith("la"));\nSystem.out.println("foto.png".endsWith(".png"));\nSystem.out.println(frase.indexOf(\'c\'));      // también con un char' },
+
+      { h: 'Sacar un trozo: substring' },
+      { p: '`substring(inicio, fin)` devuelve los caracteres desde `inicio` (incluido) hasta `fin` (**sin incluir**). Con un solo número, hasta el final.' },
+      { code: 'String texto = "programacion";\nSystem.out.println(texto.substring(0, 3));    // posiciones 0, 1 y 2\nSystem.out.println(texto.substring(3));       // desde la 3 hasta el final\nSystem.out.println(texto.substring(texto.length() - 3));  // los 3 últimos\nString archivo = "informe.final.pdf";\nSystem.out.println(archivo.substring(archivo.lastIndexOf(".") + 1));  // la extensión' },
+      { note: 'Un truco para recordarlo: `substring(a, b)` tiene `b - a` caracteres.', kind: 'tip' },
+
+      { h: 'Mayúsculas, espacios y vacíos' },
+      { code: 'String s = "  Hola Mundo  ";\nSystem.out.println("[" + s.toUpperCase() + "]");\nSystem.out.println("[" + s.toLowerCase() + "]");\nSystem.out.println("[" + s.trim() + "]");          // quita espacios de los extremos\nSystem.out.println("[" + s.strip() + "]");         // igual, más moderno\nSystem.out.println("[" + s.stripLeading() + "]");  // solo los del principio\nSystem.out.println("".isEmpty());                  // true: longitud 0\nSystem.out.println("   ".isEmpty());               // false\nSystem.out.println("   ".isBlank());               // true: solo espacios' },
+
+      { h: 'Reemplazar' },
+      { code: 'String s = "banana";\nSystem.out.println(s.replace(\'a\', \'o\'));        // todos los caracteres\nSystem.out.println(s.replace("an", "AN"));       // todos los trozos\nSystem.out.println("a b  c".replace(" ", ""));  // quitar espacios\nSystem.out.println("tel: 600-123-456".replaceAll("[0-9]", "*"));\nSystem.out.println("hola hola".replaceFirst("hola", "adiós"));' },
+      { p: '`replaceAll` y `replaceFirst` usan **expresiones regulares**: patrones como `[0-9]` (cualquier dígito), `\\\\s` (un espacio), `+` (una o más veces)… `replace` busca el texto tal cual.' },
+
+      { h: 'Partir un texto: split' },
+      { p: '`split(separador)` corta el texto por el separador y devuelve un **array** con los trozos:' },
+      { code: 'String csv = "Ana,20,Madrid";\nString[] partes = csv.split(",");\nSystem.out.println(partes.length);\nSystem.out.println(partes[0] + " vive en " + partes[2]);\nString frase = "uno   dos tres";\nString[] palabras = frase.split(" +");      // uno o más espacios\nfor (String p : palabras) {\n    System.out.println(p);\n}' },
+      { p: 'El separador también es una expresión regular: para partir por un punto hay que escribir `split("\\\\.")`, porque `.` solo significa "cualquier carácter".' },
+
+      { h: 'Recorrer un String carácter a carácter' },
+      { code: 'String palabra = "Hola";\nfor (int i = 0; i < palabra.length(); i++) {\n    System.out.println(i + ": " + palabra.charAt(i));\n}' },
+      { p: 'Con `toCharArray()` se convierte en un array de `char`, que se puede recorrer con for-each:' },
+      { code: 'String palabra = "murcielago";\nint vocales = 0;\nfor (char c : palabra.toCharArray()) {\n    if ("aeiou".indexOf(c) >= 0) {\n        vocales++;\n    }\n}\nSystem.out.println(vocales + " vocales");' },
+      { p: 'Darle la vuelta a un texto recorriéndolo hacia atrás:' },
+      { code: 'String palabra = "roma";\nString alReves = "";\nfor (int i = palabra.length() - 1; i >= 0; i--) {\n    alReves += palabra.charAt(i);\n}\nSystem.out.println(alReves);' },
+
+      { h: 'Otras cosas útiles' },
+      { code: 'System.out.println(String.valueOf(3.5) + "!");     // número a texto\nSystem.out.println("abc".toCharArray().length);\nSystem.out.println(String.valueOf(new char[] {\'h\', \'o\', \'l\', \'a\'}));\nSystem.out.println("A1".matches("[A-Z][0-9]"));    // ¿encaja con el patrón entero?\nSystem.out.println(String.format("%05d", 42));' },
+      { p: 'Y algunos métodos más de String, para cuando los necesites: `chars()` (los caracteres como números), `lines()` (separar por líneas), `indent` (sangría), `codePointAt`, `regionMatches`…' },
+
+      { h: 'Errores típicos' },
+      { list: [
+        'Comparar con `==` en vez de `equals`.',
+        'Llamar a un método y no guardar el resultado: `texto.trim();` no cambia `texto`.',
+        'Salirse del texto con `charAt` o `substring`: `StringIndexOutOfBoundsException`.',
+        'Olvidar que `substring(a, b)` no incluye la posición `b`.',
+        'Usar `length` sin paréntesis: en un String es un método, `length()` (en un array es `length`).',
+        'Llamar a un método sobre un String que vale `null`: `NullPointerException`.'
+      ] },
+      { code: 'String s = null;\nSystem.out.println(s.length());', error: true },
+
+      { h: 'Resumen' },
+      { list: [
+        'Posiciones desde 0 hasta `length() - 1`; `charAt(i)` saca un carácter.',
+        'Inmutables: los métodos devuelven un String nuevo.',
+        'Comparar con `equals` / `equalsIgnoreCase`; ordenar con `compareTo`.',
+        'Buscar: `indexOf`, `contains`, `startsWith`, `endsWith`. Trozos: `substring`. Partir: `split`.',
+        'Transformar: `toUpperCase`, `trim`, `replace`, `repeat`.'
+      ] },
+      { practice: ['s1', 's2', 's5', 's7', 's3', 's4', 's6'] }
+    ]
+  },
+  {
+    id: 'stringbuilder', group: 'Textos', title: 'StringBuilder y Character',
+    intro: 'Construir textos que cambian, y preguntar cosas sobre un carácter.',
+    blocks: [
+      { h: 'StringBuilder: un texto que sí se puede cambiar' },
+      { p: 'Al contrario que `String`, un `StringBuilder` se puede modificar sin crear objetos nuevos. Es lo adecuado para construir un texto poco a poco, sobre todo dentro de bucles.' },
+      { code: 'StringBuilder sb = new StringBuilder();\nfor (int i = 1; i <= 5; i++) {\n    sb.append(i).append(" ");\n}\nSystem.out.println(sb.toString());\nSystem.out.println(sb.length());' },
+      { p: 'Se puede crear vacío o con un texto inicial: `new StringBuilder("hola")`. Para usarlo como String (compararlo, guardarlo…) se llama a `toString()`.' },
+
+      { h: 'Sus métodos' },
+      { table: [['Método', 'Qué hace'], ['`append(x)`', 'añade x al final (cualquier tipo)'], ['`insert(pos, x)`', 'mete x en la posición pos'], ['`reverse()`', 'le da la vuelta'], ['`deleteCharAt(pos)`', 'borra el carácter de esa posición'], ['`delete(inicio, fin)`', 'borra desde inicio hasta fin (sin incluir)'], ['`replace(inicio, fin, texto)`', 'sustituye ese trozo'], ['`setCharAt(pos, c)`', 'cambia un carácter'], ['`charAt`, `length`, `indexOf`, `substring`', 'igual que en String'], ['`setLength(n)`', 'corta (o alarga) a n caracteres'], ['`toString()`', 'lo convierte en String']] },
+      { code: 'StringBuilder sb = new StringBuilder("Hola mundo");\nsb.append("!");\nSystem.out.println(sb);\nsb.insert(0, "¡");\nSystem.out.println(sb);\nsb.replace(6, 11, "Java");\nSystem.out.println(sb);\nsb.deleteCharAt(sb.length() - 1);\nSystem.out.println(sb);\nsb.setCharAt(1, \'h\');\nSystem.out.println(sb);\nsb.reverse();\nSystem.out.println(sb);' },
+      { p: 'Los métodos que modifican devuelven el propio StringBuilder, así que se pueden **encadenar**:' },
+      { code: 'String alReves = new StringBuilder("roma").reverse().toString();\nSystem.out.println(alReves);\nString palabra = "reconocer";\nboolean palindromo = palabra.equals(new StringBuilder(palabra).reverse().toString());\nSystem.out.println(palindromo);' },
+      { note: 'Para comparar un StringBuilder con un texto hay que convertirlo: `sb.toString().equals("hola")`. `sb.equals("hola")` siempre da false.', kind: 'warn' },
+
+      { h: 'Character: preguntar sobre un carácter' },
+      { p: 'La clase `Character` tiene métodos estáticos para saber qué tipo de carácter es un `char` o para cambiarlo:' },
+      { table: [['Método', 'Devuelve true si… / qué hace'], ['`Character.isDigit(c)`', 'es un dígito (0-9)'], ['`Character.isLetter(c)`', 'es una letra (también ñ y vocales con tilde)'], ['`Character.isLetterOrDigit(c)`', 'letra o dígito'], ['`Character.isUpperCase(c)` / `isLowerCase(c)`', 'está en mayúscula / minúscula'], ['`Character.isWhitespace(c)`', 'es un espacio, tabulador o salto de línea'], ['`Character.toUpperCase(c)` / `toLowerCase(c)`', 'lo pasa a mayúscula / minúscula'], ['`Character.getNumericValue(c)`', 'el valor de un dígito: \'7\' → 7']] },
+      { code: 'String clave = "Java2024!";\nint letras = 0, digitos = 0, mayus = 0, otros = 0;\nfor (char c : clave.toCharArray()) {\n    if (Character.isLetter(c)) {\n        letras++;\n        if (Character.isUpperCase(c)) {\n            mayus++;\n        }\n    } else if (Character.isDigit(c)) {\n        digitos++;\n    } else {\n        otros++;\n    }\n}\nSystem.out.println(letras + " letras (" + mayus + " mayúscula), " + digitos + " dígitos, " + otros + " otros");' },
+      { code: 'String nombre = "maría";\nString capitalizado = Character.toUpperCase(nombre.charAt(0)) + nombre.substring(1);\nSystem.out.println(capitalizado);\nint suma = 0;\nfor (char c : "4096".toCharArray()) {\n    suma += Character.getNumericValue(c);\n}\nSystem.out.println("Suma de cifras: " + suma);' },
+
+      { h: 'char es un número' },
+      { p: 'Por dentro, un `char` es un número (su código Unicode). Por eso se pueden comparar con `<`, sumar o usar en un `for`:' },
+      { code: 'for (char c = \'a\'; c <= \'e\'; c++) {\n    System.out.print(c + " ");\n}\nSystem.out.println();\nchar letra = \'m\';\nSystem.out.println(letra >= \'a\' && letra <= \'z\');   // ¿minúscula sin tilde?\nSystem.out.println((char) (letra - 32));             // en ASCII, mayúscula = minúscula - 32' },
+
+      { h: 'Errores típicos' },
+      { list: [
+        'Comparar un StringBuilder con `equals("…")` sin `toString()`.',
+        'Usar `+=` con String en bucles muy largos en vez de StringBuilder.',
+        'Confundir `Character.getNumericValue(\'7\')` (7) con `(int) \'7\'` (55).',
+        '`Character.toUpperCase` recibe y devuelve un `char`, no un String.'
+      ] },
+
+      { h: 'Resumen' },
+      { list: [
+        '`StringBuilder` se modifica: `append`, `insert`, `reverse`, `delete`, `replace`…',
+        'Se convierte a String con `toString()`.',
+        '`Character.isDigit`, `isLetter`, `isUpperCase`, `toUpperCase`… para clasificar caracteres.',
+        'Un `char` es un número: se puede comparar y recorrer.'
+      ] },
+      { practice: ['l6', 'l9', 'l5'] }
+    ]
+  }
+);
+// Teoría, bloque 3: Control del flujo (if y switch; el resto, en teoria_3.js)
+TEORIA.push(
+  {
+    id: 'if', group: 'Control del flujo', title: 'if, else if y else',
+    intro: 'Tomar decisiones: ejecutar un código u otro según una condición.',
+    blocks: [
+      { h: 'if' },
+      { p: '`if` ejecuta su bloque solo si la condición es `true`. Si es `false`, se lo salta y sigue después.' },
+      { syntax: 'if (condición) {\n    // se ejecuta si la condición es true\n}' },
+      { code: 'int temperatura = 32;\nif (temperatura > 30) {\n    System.out.println("Hace calor");\n}\nSystem.out.println("Fin");' },
+      { p: 'La condición tiene que dar un `boolean`: una comparación (`x > 3`), una variable boolean, una combinación con `&&`, `||` y `!`, o un método que devuelva boolean (`texto.equals("si")`).' },
+
+      { h: 'else' },
+      { p: '`else` es el camino alternativo: se ejecuta cuando la condición del `if` es `false`. Siempre se ejecuta exactamente uno de los dos bloques.' },
+      { syntax: 'if (condición) {\n    // si es true\n} else {\n    // si es false\n}' },
+      { code: 'int numero = 7;\nif (numero % 2 == 0) {\n    System.out.println(numero + " es par");\n} else {\n    System.out.println(numero + " es impar");\n}' },
+
+      { h: 'else if: varias opciones' },
+      { p: 'Para elegir entre más de dos caminos se encadenan condiciones con `else if`. Se comprueban **en orden** y se ejecuta solo el **primer** bloque cuya condición sea `true`; el `else` final recoge todo lo demás.' },
+      { syntax: 'if (condición1) {\n    // …\n} else if (condición2) {\n    // …\n} else if (condición3) {\n    // …\n} else {\n    // ninguna se ha cumplido\n}' },
+      { code: 'double nota = 7.5;\nif (nota >= 9) {\n    System.out.println("Sobresaliente");\n} else if (nota >= 7) {\n    System.out.println("Notable");\n} else if (nota >= 6) {\n    System.out.println("Bien");\n} else if (nota >= 5) {\n    System.out.println("Suficiente");\n} else {\n    System.out.println("Insuficiente");\n}' },
+      { note: 'El orden importa. Si la primera condición fuera `nota >= 5`, un 9,5 entraría ahí y nunca llegaría a "Sobresaliente". Ve de lo más exigente a lo menos (o al revés, con `<`).', kind: 'warn' },
+      { p: 'Fíjate en que en el segundo `else if` no hace falta poner `nota >= 7 && nota < 9`: si ha llegado ahí, ya se sabe que no es `>= 9`.' },
+
+      { h: 'Condiciones compuestas' },
+      { code: 'int edad = 25;\nboolean carnet = true;\nif (edad >= 18 && carnet) {\n    System.out.println("Puede conducir");\n}\nString dia = "sábado";\nif (dia.equals("sábado") || dia.equals("domingo")) {\n    System.out.println("Fin de semana");\n}\nint hora = 23;\nif (!(hora >= 8 && hora < 22)) {\n    System.out.println("Fuera del horario");\n}' },
+
+      { h: 'if dentro de if (anidados)' },
+      { p: 'Dentro de un bloque puede haber otro `if`. Se usa cuando una pregunta solo tiene sentido si la anterior se ha cumplido:' },
+      { code: 'int edad = 20;\nboolean carnet = false;\nif (edad >= 18) {\n    if (carnet) {\n        System.out.println("Puedes conducir");\n    } else {\n        System.out.println("Necesitas el carnet");\n    }\n} else {\n    System.out.println("Eres menor de edad");\n}' },
+      { p: 'Muchas veces un if anidado se puede escribir como una cadena con `&&` y `else if`. Elige lo que se lea mejor: anidar va bien cuando varios casos comparten la misma condición de fuera.' },
+
+      { h: 'Sin llaves' },
+      { p: 'Si el bloque tiene **una sola instrucción**, las llaves se pueden omitir. Pero es fácil equivocarse al añadir otra línea después, por eso se recomienda ponerlas siempre:' },
+      { code: 'int x = 10;\nif (x > 100)\n    System.out.println("Grande");\n    System.out.println("Esta línea NO está dentro del if, aunque lo parezca");' },
+
+      { h: 'El operador ternario' },
+      { p: 'Para elegir entre dos **valores** (no entre dos bloques de código), existe la forma corta `condición ? a : b` (ver Operadores):' },
+      { code: 'int a = 4, b = 9;\nint mayor = a > b ? a : b;\nSystem.out.println("Mayor: " + mayor);\nint n = 3;\nSystem.out.println(n + (n == 1 ? " elemento" : " elementos"));' },
+
+      { h: 'Errores típicos' },
+      { list: [
+        'Poner `;` después de la condición: `if (x > 5);` cierra el if vacío, y el bloque de después se ejecuta siempre.',
+        'Usar `=` en vez de `==`: `if (x = 5)` no compila.',
+        'Comparar Strings con `==`: usa `equals`.',
+        'Escribir `else if` en un orden en el que una condición tapa a las siguientes.',
+        'Poner una condición en el `else`: `else (x < 5)` no existe; sería `else if (x < 5)`.',
+        'Escribir `if (5 < x < 10)`: se escribe `if (x > 5 && x < 10)`.'
+      ] },
+      { code: 'int x = 1;\nif (x > 5); {\n    System.out.println("Esto sale siempre: el if acabó en el punto y coma");\n}' },
+
+      { h: 'Ejemplo de la vida real' },
+      { p: 'Precio de la entrada de un cine según la edad y el día:' },
+      { code: 'int edad = 70;\nString dia = "miércoles";\ndouble precio;\nif (edad < 4) {\n    precio = 0;\n} else if (edad < 14 || edad >= 65) {\n    precio = 5;\n} else if (dia.equals("miércoles")) {\n    precio = 6;\n} else {\n    precio = 9;\n}\nSystem.out.println("Precio: " + precio + " euros");' },
+
+      { h: 'Resumen' },
+      { list: [
+        '`if` ejecuta un bloque si la condición es true; `else` si es false.',
+        '`else if` encadena opciones: se ejecuta solo la primera que se cumple.',
+        'Las condiciones se combinan con `&&`, `||` y `!`.',
+        'Los if se pueden anidar; pon siempre llaves.'
+      ] },
+      { practice: ['b1', 'b2', 'b3', 'b4', 'b7', 'b5'] }
+    ]
+  },
+  {
+    id: 'switch', group: 'Control del flujo', title: 'switch',
+    intro: 'Elegir entre muchos casos según el valor exacto de una variable.',
+    blocks: [
+      { h: 'El switch clásico' },
+      { p: '`switch` compara una variable con una lista de valores fijos (`case`) y salta al que coincide. `break` hace salir del switch. `default` se ejecuta si no coincide ninguno (es opcional).' },
+      { syntax: 'switch (variable) {\n    case valor1:\n        // …\n        break;\n    case valor2:\n        // …\n        break;\n    default:\n        // ningún case coincide\n}' },
+      { code: 'int dia = 3;\nswitch (dia) {\n    case 1:\n        System.out.println("Lunes");\n        break;\n    case 2:\n        System.out.println("Martes");\n        break;\n    case 3:\n        System.out.println("Miércoles");\n        break;\n    default:\n        System.out.println("Otro día");\n}' },
+      { p: 'La variable puede ser `int` (y `byte`, `short`), `char`, `String` o un `enum`. No vale con `long`, `double`, `float` ni `boolean`. Los valores de los `case` tienen que ser constantes y no pueden repetirse.' },
+      { code: 'String idioma = "en";\nswitch (idioma) {\n    case "es":\n        System.out.println("Hola");\n        break;\n    case "en":\n        System.out.println("Hello");\n        break;\n    case "fr":\n        System.out.println("Bonjour");\n        break;\n    default:\n        System.out.println("?");\n}' },
+
+      { h: 'Qué pasa si falta el break' },
+      { p: 'Sin `break`, al entrar en un `case` la ejecución **sigue con los siguientes** (en inglés, *fall-through*) hasta encontrar un `break` o el final del switch:' },
+      { code: 'int n = 2;\nswitch (n) {\n    case 1:\n        System.out.println("uno");\n    case 2:\n        System.out.println("dos");\n    case 3:\n        System.out.println("tres");\n        break;\n    case 4:\n        System.out.println("cuatro");\n}' },
+      { p: 'Casi siempre es un error, pero a veces se aprovecha para que varios casos compartan el mismo código:' },
+      { code: 'int mes = 4;\nint dias;\nswitch (mes) {\n    case 2:\n        dias = 28;\n        break;\n    case 4:\n    case 6:\n    case 9:\n    case 11:\n        dias = 30;\n        break;\n    default:\n        dias = 31;\n}\nSystem.out.println("El mes " + mes + " tiene " + dias + " días");' },
+
+      { h: 'Varios valores en un case' },
+      { p: 'Desde Java 14, un `case` puede tener varios valores separados por comas:' },
+      { code: 'char letra = \'e\';\nswitch (letra) {\n    case \'a\', \'e\', \'i\', \'o\', \'u\':\n        System.out.println("Vocal");\n        break;\n    default:\n        System.out.println("Consonante");\n}' },
+
+      { h: 'switch con flechas (->)' },
+      { p: 'También desde Java 14 existe la forma con flechas: cada `case` ejecuta solo lo que hay a la derecha de la flecha y **no sigue con los siguientes**, así que no hace falta `break`. Si son varias instrucciones, van entre llaves.' },
+      { code: 'int dia = 6;\nswitch (dia) {\n    case 1, 2, 3, 4, 5 -> System.out.println("Laborable");\n    case 6, 7 -> {\n        System.out.println("Fin de semana");\n        System.out.println("¡A descansar!");\n    }\n    default -> System.out.println("Día no válido");\n}' },
+
+      { h: 'switch como expresión (devuelve un valor)' },
+      { p: 'Con flechas, el switch puede **dar un valor** que se guarda en una variable. Entonces tiene que cubrir todos los casos (normalmente con `default`) y acaba en `;`:' },
+      { code: 'int mes = 11;\nString estacion = switch (mes) {\n    case 12, 1, 2 -> "Invierno";\n    case 3, 4, 5 -> "Primavera";\n    case 6, 7, 8 -> "Verano";\n    case 9, 10, 11 -> "Otoño";\n    default -> "Mes no válido";\n};\nSystem.out.println(estacion);' },
+      { p: 'Si para calcular el valor hacen falta varias instrucciones, se ponen entre llaves y el valor se devuelve con `yield`:' },
+      { code: 'int nota = 8;\nString texto = switch (nota) {\n    case 10, 9 -> "Sobresaliente";\n    case 8, 7 -> {\n        String base = "Notable";\n        yield nota == 8 ? base + " alto" : base;\n    }\n    case 6, 5 -> "Aprobado";\n    default -> "Suspenso";\n};\nSystem.out.println(texto);' },
+
+      { h: 'switch o if' },
+      { list: [
+        '**switch**: cuando se compara **una variable** con **valores exactos** (1, 2, 3; "es", "en"…).',
+        '**if / else if**: cuando hay rangos (`nota >= 7`), condiciones compuestas o se comparan cosas distintas.'
+      ] },
+
+      { h: 'Errores típicos' },
+      { list: [
+        'Olvidar el `break` en el switch clásico: se ejecutan también los casos siguientes.',
+        'Poner un rango en un case: `case nota >= 5:` no compila.',
+        'Usar una variable `double` o `boolean`: no se puede hacer switch sobre ellas.',
+        'Repetir un valor en dos `case`: `duplicate case label`.',
+        'Mezclar en el mismo switch `case 1:` y `case 2 ->`: no compila.'
+      ] },
+
+      { h: 'Resumen' },
+      { list: [
+        '`switch (variable)` salta al `case` cuyo valor coincide; `default` recoge el resto.',
+        'En el clásico, cada case termina en `break` (si no, sigue con el siguiente).',
+        'Con flechas (`case 1 ->`) no hace falta break, y varios valores van separados por comas.',
+        'Como expresión, el switch da un valor; con llaves, se devuelve con `yield`.'
+      ] },
+      { practice: ['b6', 'l19'] }
+    ]
+  }
+);
+// Teoría, bloque 3: Control del flujo
+TEORIA.push(
+  {
+    id: 'while', group: 'Control del flujo', title: 'Bucle while',
+    intro: 'Repite un bloque de código mientras una condición sea verdadera.',
+    blocks: [
+      { h: 'Los bucles' },
+      { p: 'Un bucle ejecuta el mismo bloque de código varias veces seguidas. Sirven para no copiar y pegar instrucciones, para recorrer datos (las letras de un texto, los valores de un array…) y para repetir algo hasta que pase lo que esperas, como que el usuario escriba una respuesta válida.' },
+      { p: 'Java tiene tres bucles: `while`, `do-while` y `for` (con su variante for-each). Este tema trata el primero.' },
+
+      { h: 'El bucle while' },
+      { p: 'El bucle `while` repite su bloque **mientras** la condición entre paréntesis sea `true`. Antes de cada vuelta comprueba la condición: si es `true`, ejecuta el bloque y vuelve a comprobarla; en cuanto es `false`, sale del bucle y sigue con lo que haya después.' },
+      { syntax: 'while (condición) {\n    // código que se repite\n}' },
+      { p: 'En este ejemplo se muestran los números del 0 al 4. La variable `i` empieza en 0 y el bucle se repite mientras `i` sea menor que 5:' },
+      { code: 'int i = 0;\nwhile (i < 5) {\n    System.out.println(i);\n    i++;\n}' },
+      { note: 'No olvides cambiar la variable de la condición dentro del bucle (aquí, `i++`). Si nunca cambia, la condición siempre es `true` y el bucle no termina nunca: es un **bucle infinito**.', kind: 'warn' },
+
+      { h: 'Paso a paso' },
+      { p: 'Así se ejecuta el ejemplo anterior, vuelta a vuelta:' },
+      { table: [['Vuelta', 'Valor de i', '¿i < 5?', 'Qué hace'], ['1', '0', 'true', 'Muestra 0 y pasa i a 1'], ['2', '1', 'true', 'Muestra 1 y pasa i a 2'], ['3', '2', 'true', 'Muestra 2 y pasa i a 3'], ['4', '3', 'true', 'Muestra 3 y pasa i a 4'], ['5', '4', 'true', 'Muestra 4 y pasa i a 5'], ['—', '5', 'false', 'Sale del bucle']] },
+      { p: 'Fíjate en que la condición se comprueba **6 veces** para dar **5 vueltas**: la última comprobación es la que da `false` y hace salir.' },
+
+      { h: 'Si la condición es falsa desde el principio' },
+      { p: 'Como `while` comprueba la condición antes de la primera vuelta, puede que el bloque no se ejecute nunca:' },
+      { code: 'int i = 10;\nwhile (i < 5) {\n    System.out.println(i);\n    i++;\n}\nSystem.out.println("Fin del programa");' },
+      { note: 'Si necesitas que el bloque se ejecute **al menos una vez** (por ejemplo, pedir un dato antes de poder comprobarlo), usa `do-while`, que comprueba la condición al final.', kind: 'tip' },
+
+      { h: 'Cuando no sabes cuántas vueltas va a dar' },
+      { p: '`while` encaja cuando el número de vueltas depende de lo que va pasando y no se sabe de antemano. Por ejemplo, para contar las cifras de un número se divide entre 10 hasta que llega a 0:' },
+      { code: 'int numero = 4096;\nint cifras = 0;\nwhile (numero > 0) {\n    numero = numero / 10;\n    cifras++;\n}\nSystem.out.println("Tiene " + cifras + " cifras");' },
+      { p: 'Otro caso típico: duplicar una cantidad hasta que supere un límite.' },
+      { code: 'int valor = 3;\nint veces = 0;\nwhile (valor <= 100) {\n    valor = valor * 2;\n    veces++;\n}\nSystem.out.println(valor + " tras " + veces + " duplicaciones");' },
+      { note: 'Una regla práctica: si sabes cuántas vueltas hay que dar (del 1 al 10, una por letra…), suele quedar más claro un `for`. Si depende de una condición que cambia por el camino, `while`.', kind: 'tip' },
+
+      { h: 'Leer datos hasta una palabra (con Scanner)' },
+      { p: 'Con `Scanner` el programa puede pedir datos por teclado dentro del bucle. Este repite hasta que escribes «salir». Pulsa **Ejecutar** y escribe en la consola:' },
+      { code: 'Scanner teclado = new Scanner(System.in);\nString texto = "";\nwhile (!texto.equals("salir")) {\n    System.out.print("Escribe algo (o salir): ");\n    texto = teclado.nextLine();\n    System.out.println("Has escrito: " + texto);\n}', stdin: ['hola', 'salir'] },
+      { p: 'La variable `texto` empieza vacía para que la condición sea `true` la primera vez. El texto se compara con `equals`, no con `==`: `==` mira si son el mismo objeto, no si tienen las mismas letras.' },
+      { note: 'En un programa completo, Scanner necesita `import java.util.Scanner;` al principio del archivo. En este playground no hace falta.', kind: 'tip' },
+
+      { h: 'Bucle infinito controlado: while (true) y break' },
+      { p: 'A veces se escribe `while (true)`, que nunca para por sí solo, y se sale desde dentro con `break` cuando se cumple algo:' },
+      { code: 'int candidato = 31;\nwhile (true) {\n    if (candidato % 7 == 0) {\n        break;\n    }\n    candidato++;\n}\nSystem.out.println("Primer múltiplo de 7: " + candidato);' },
+      { p: 'Funciona, pero casi siempre se puede escribir la condición de salida en el propio `while`, y así se ve de un vistazo cuándo termina:' },
+      { code: 'int candidato = 31;\nwhile (candidato % 7 != 0) {\n    candidato++;\n}\nSystem.out.println("Primer múltiplo de 7: " + candidato);' },
+
+      { h: 'continue dentro de un while' },
+      { p: '`continue` salta lo que queda de la vuelta actual y vuelve a comprobar la condición. Aquí se muestran solo los impares del 1 al 9:' },
+      { code: 'int i = 0;\nwhile (i < 9) {\n    i++;\n    if (i % 2 == 0) {\n        continue;\n    }\n    System.out.println(i);\n}' },
+      { note: 'En un `while`, actualiza la variable **antes** del `continue`. Si el `i++` estuviera después, al saltar no llegaría a ejecutarse y el bucle se quedaría atascado en el mismo número para siempre.', kind: 'warn' },
+
+      { h: 'Errores típicos' },
+      { list: [
+        'Poner punto y coma detrás de la condición: `while (i < 5);`. Ese `;` es un bucle vacío que se repite sin hacer nada, y el bloque de después ya no forma parte del bucle. Si la condición es `true`, el programa se queda colgado.',
+        'Olvidar actualizar la variable de la condición: el bucle no termina nunca.',
+        'Equivocarse en el límite: `i <= 5` da una vuelta más que `i < 5`. Comprueba siempre la primera y la última vuelta.',
+        'Escribir `=` en vez de `==` en la condición: `while (i = 5)` no compila, porque `=` asigna y no da un `boolean`.',
+        'Comparar textos con `==` en lugar de `equals`: con lo que se lee del teclado, `texto == "salir"` es `false` aunque escribas salir.'
+      ] },
+
+      { h: 'Ejemplo de la vida real' },
+      { p: 'Cuántos meses hacen falta para ahorrar 1000 euros si se guardan 150 al mes. No sabemos cuántas vueltas dará, así que es un caso de `while`:' },
+      { code: 'int ahorrado = 0;\nint meses = 0;\nwhile (ahorrado < 1000) {\n    ahorrado += 150;\n    meses++;\n    System.out.println("Mes " + meses + ": " + ahorrado + " euros");\n}\nSystem.out.println("Necesitas " + meses + " meses");' },
+
+      { h: 'Resumen' },
+      { list: [
+        '`while (condición) { … }` repite el bloque mientras la condición sea `true`.',
+        'La condición se comprueba antes de cada vuelta: si al principio es `false`, no se ejecuta nunca.',
+        'Dentro del bucle algo tiene que hacer que la condición acabe siendo `false`.',
+        'Es el bucle adecuado cuando no se sabe de antemano cuántas vueltas dará.',
+        '`break` sale del bucle y `continue` salta a la siguiente vuelta.'
+      ] },
+      { practice: ['l4', 'l8', 'l13', 'l17', 'l18'] }
+    ]
+  }
+);
+TEORIA.push(
+  {
+    id: 'dowhile', group: 'Control del flujo', title: 'Bucle do-while',
+    intro: 'Como while, pero comprueba la condición al final: el bloque se ejecuta al menos una vez.',
+    blocks: [
+      { h: 'Cómo funciona' },
+      { p: '`do-while` ejecuta primero el bloque y **después** comprueba la condición. Si es `true`, repite; si es `false`, sale. Por eso siempre da **al menos una vuelta**.' },
+      { syntax: 'do {\n    // código que se repite\n} while (condición);' },
+      { code: 'int i = 1;\ndo {\n    System.out.println(i);\n    i++;\n} while (i <= 5);' },
+      { note: 'Termina en punto y coma: `} while (condición);`. Es el único bucle que lo lleva.', kind: 'warn' },
+
+      { h: 'La diferencia con while' },
+      { p: 'Con una condición que es falsa desde el principio, `while` no entra nunca, pero `do-while` da una vuelta:' },
+      { code: 'int x = 10;\nwhile (x < 5) {\n    System.out.println("while: " + x);\n}\ndo {\n    System.out.println("do-while: " + x);\n} while (x < 5);' },
+      { table: [['', 'while', 'do-while'], ['Comprueba la condición', 'antes de cada vuelta', 'después de cada vuelta'], ['Vueltas mínimas', '0', '1'], ['Punto y coma al final', 'no', 'sí']] },
+
+      { h: 'Cuándo usarlo: pedir hasta que sea válido' },
+      { p: 'El caso típico es pedir un dato: hay que pedirlo una vez antes de poder comprobar si vale. Escribe números fuera del rango para ver cómo insiste:' },
+      { code: 'Scanner teclado = new Scanner(System.in);\nint nota;\ndo {\n    System.out.print("Nota (0 a 10): ");\n    nota = teclado.nextInt();\n} while (nota < 0 || nota > 10);\nSystem.out.println("Nota guardada: " + nota);', stdin: ['12', '-1', '7'] },
+      { p: 'Con un mensaje de error solo cuando el dato no vale:' },
+      { code: 'Scanner teclado = new Scanner(System.in);\nint edad;\ndo {\n    System.out.print("Edad: ");\n    edad = teclado.nextInt();\n    if (edad < 0) {\n        System.out.println("La edad no puede ser negativa");\n    }\n} while (edad < 0);\nSystem.out.println("Tienes " + edad + " años");', stdin: ['-5', '30'] },
+
+      { h: 'Menús que se repiten' },
+      { p: 'Otro uso clásico: un menú que se muestra al menos una vez y se repite hasta elegir salir.' },
+      { code: 'Scanner teclado = new Scanner(System.in);\nint opcion;\ndo {\n    System.out.println("1. Saludar  2. Despedirse  0. Salir");\n    System.out.print("Opción: ");\n    opcion = teclado.nextInt();\n    if (opcion == 1) {\n        System.out.println("¡Hola!");\n    } else if (opcion == 2) {\n        System.out.println("¡Adiós!");\n    }\n} while (opcion != 0);\nSystem.out.println("Programa terminado");', stdin: ['1', '2', '0'] },
+
+      { h: 'Cálculos que necesitan una primera vuelta' },
+      { p: 'Contar las cifras de un número: con `while (n > 0)` el 0 daría 0 cifras; con do-while, 1.' },
+      { code: 'int numero = 0;\nint cifras = 0;\nint n = numero;\ndo {\n    n = n / 10;\n    cifras++;\n} while (n > 0);\nSystem.out.println(numero + " tiene " + cifras + " cifra(s)");' },
+
+      { h: 'La variable de la condición' },
+      { p: 'La condición se escribe **fuera** de las llaves, así que las variables declaradas dentro del bloque no se pueden usar en ella. Declárala antes del `do`:' },
+      { code: 'Scanner teclado = new Scanner(System.in);\ndo {\n    int n = teclado.nextInt();\n} while (n != 0);', stdin: ['0'], error: true },
+
+      { h: 'Errores típicos' },
+      { list: [
+        'Olvidar el `;` final: `error: \';\' expected`.',
+        'Declarar dentro del bloque la variable que usa la condición.',
+        'Usar do-while cuando el bloque **no** debe ejecutarse si la condición ya es falsa al principio.',
+        'Igual que en while: no cambiar dentro del bucle lo que mira la condición (bucle infinito).'
+      ] },
+
+      { h: 'Resumen' },
+      { list: [
+        '`do { … } while (condición);` ejecuta y luego comprueba.',
+        'Siempre da al menos una vuelta.',
+        'Ideal para pedir datos hasta que sean válidos y para menús.',
+        'La variable de la condición se declara antes del `do`.'
+      ] },
+      { practice: ['l12', 'l8', 'l17', 'l19'] }
+    ]
+  },
+  {
+    id: 'for', group: 'Control del flujo', title: 'Bucle for',
+    intro: 'El bucle para repetir un número conocido de veces, con su contador incluido.',
+    blocks: [
+      { h: 'Las tres partes del for' },
+      { p: '`for` junta en una línea lo que un `while` con contador tiene repartido: la variable que cuenta, la condición y el cambio de cada vuelta.' },
+      { syntax: 'for (inicialización; condición; actualización) {\n    // código que se repite\n}' },
+      { list: [
+        '**Inicialización**: se ejecuta una sola vez, al principio. Normalmente declara el contador: `int i = 0`.',
+        '**Condición**: se comprueba antes de cada vuelta; si es `false`, el bucle termina.',
+        '**Actualización**: se ejecuta al final de cada vuelta. Normalmente `i++`.'
+      ] },
+      { code: 'for (int i = 0; i < 5; i++) {\n    System.out.println("Vuelta " + i);\n}' },
+      { p: 'Es exactamente lo mismo que este while:' },
+      { code: 'int i = 0;\nwhile (i < 5) {\n    System.out.println("Vuelta " + i);\n    i++;\n}' },
+
+      { h: 'Contar de distintas formas' },
+      { code: 'for (int i = 1; i <= 5; i++) System.out.print(i + " ");       // de 1 a 5\nSystem.out.println();\nfor (int i = 10; i >= 1; i--) System.out.print(i + " ");     // hacia atrás\nSystem.out.println();\nfor (int i = 0; i <= 20; i += 5) System.out.print(i + " ");  // de 5 en 5\nSystem.out.println();\nfor (int i = 1; i <= 100; i *= 2) System.out.print(i + " "); // multiplicando\nSystem.out.println();' },
+      { note: '¿Cuántas vueltas da? Con `i = 0; i < n` son n vueltas (de 0 a n-1). Con `i = 1; i <= n` también n (de 1 a n). Mezclar `i = 0` con `<=` da una de más.', kind: 'tip' },
+
+      { h: 'Acumular y contar dentro del for' },
+      { p: 'Patrones que se usan constantemente: un **acumulador** (suma, producto…) y un **contador** que se declaran antes del bucle:' },
+      { code: 'int suma = 0;\nint pares = 0;\nfor (int i = 1; i <= 10; i++) {\n    suma += i;\n    if (i % 2 == 0) {\n        pares++;\n    }\n}\nSystem.out.println("Suma del 1 al 10: " + suma);\nSystem.out.println("Pares: " + pares);' },
+      { code: 'int n = 5;\nlong factorial = 1;      // el producto empieza en 1, no en 0\nfor (int i = 2; i <= n; i++) {\n    factorial *= i;\n}\nSystem.out.println(n + "! = " + factorial);' },
+
+      { h: 'Recorrer un texto o un array' },
+      { code: 'String palabra = "Java";\nfor (int i = 0; i < palabra.length(); i++) {\n    System.out.println(i + " -> " + palabra.charAt(i));\n}\nint[] numeros = {4, 8, 15};\nfor (int i = 0; i < numeros.length; i++) {\n    System.out.println("numeros[" + i + "] = " + numeros[i]);\n}' },
+      { p: 'Para recorrer un array sin necesitar la posición hay una forma más corta, el for-each (tema Arrays).' },
+
+      { h: 'Variantes de las tres partes' },
+      { p: 'Se pueden usar **varias variables** separadas por comas, y cualquiera de las tres partes puede quedar vacía:' },
+      { code: 'for (int i = 0, j = 10; i < j; i++, j--) {\n    System.out.println(i + " y " + j);\n}' },
+      { code: 'int i = 3;\nfor (; i > 0; ) {       // sin inicialización ni actualización: como un while\n    System.out.println(i);\n    i--;\n}' },
+      { p: '`for (;;)` (sin nada) es un bucle infinito, como `while (true)`.' },
+
+      { h: 'El contador solo existe dentro' },
+      { p: 'Si el contador se declara en el for (`int i = 0`), solo existe dentro del bucle. Si lo necesitas después, declárala antes:' },
+      { code: 'int i;\nfor (i = 1; i * i < 50; i++) {\n}\nSystem.out.println("El primer número cuyo cuadrado pasa de 50 es " + i);' },
+
+      { h: 'for o while' },
+      { list: [
+        '**for**: cuando se sabe cuántas vueltas dar, o se recorre algo por posiciones.',
+        '**while**: cuando se repite hasta que pase algo y no se sabe cuántas vueltas serán.',
+        '**do-while**: como while, pero tiene que ejecutarse al menos una vez.'
+      ] },
+
+      { h: 'Errores típicos' },
+      { list: [
+        'Poner `;` después del paréntesis: `for (int i = 0; i < 5; i++);` repite 5 veces nada, y el bloque se ejecuta una vez.',
+        'Separar las partes con comas en vez de punto y coma: `for (int i = 0, i < 5, i++)`.',
+        'Equivocarse en el límite (`<` frente a `<=`) y dar una vuelta de más o de menos.',
+        'Cambiar el contador dentro del bucle además de en la actualización: se salta vueltas.',
+        'Que la actualización vaya en la dirección contraria a la condición: `for (int i = 0; i < 10; i--)` no termina.'
+      ] },
+      { code: 'for (int i = 0; i < 3; i++);\n{\n    System.out.println("Solo una vez: el for terminó en el punto y coma");\n}' },
+
+      { h: 'Ejemplo de la vida real' },
+      { p: 'Tabla de una hipoteca sencilla: cuánto queda por pagar cada año si se pagan 6.000 euros al año de una deuda de 30.000:' },
+      { code: 'int deuda = 30000;\nfor (int anio = 1; anio <= 5; anio++) {\n    deuda -= 6000;\n    System.out.println("Año " + anio + ": quedan " + deuda + " euros");\n}' },
+
+      { h: 'Resumen' },
+      { list: [
+        '`for (inicio; condición; actualización)`: las tres partes del contador en una línea.',
+        'Se puede contar hacia arriba, hacia abajo o de n en n.',
+        'Acumuladores y contadores se declaran antes del bucle.',
+        'Se usa cuando se conoce el número de vueltas o para recorrer por posiciones.'
+      ] },
+      { practice: ['l1', 'l2', 'l3', 'l7', 'l10', 'l6'] }
+    ]
+  },
+  {
+    id: 'anidados', group: 'Control del flujo', title: 'Bucles anidados',
+    intro: 'Un bucle dentro de otro: tablas, figuras y combinaciones.',
+    blocks: [
+      { h: 'Cómo funcionan' },
+      { p: 'Cuando un bucle está dentro de otro, el de dentro **se ejecuta entero en cada vuelta** del de fuera. Si el de fuera da 3 vueltas y el de dentro 4, el código de dentro se ejecuta 3 × 4 = 12 veces.' },
+      { code: 'for (int i = 1; i <= 3; i++) {\n    for (int j = 1; j <= 4; j++) {\n        System.out.print("(" + i + "," + j + ") ");\n    }\n    System.out.println();\n}' },
+      { note: 'La variable del bucle de dentro (`j`) **vuelve a empezar** en cada vuelta del de fuera. Es lo que más cuesta al principio: sigue el código con una traza.', kind: 'tip' },
+
+      { h: 'Seguirlo paso a paso (traza)' },
+      { p: 'Así se ejecuta un ejemplo con 2 vueltas fuera y 3 dentro:' },
+      { code: 'for (int i = 1; i <= 2; i++) {\n    for (int j = 1; j <= 3; j++) {\n        System.out.println("i=" + i + " j=" + j);\n    }\n    System.out.println("-- fin de la fila " + i);\n}' },
+      { table: [['Paso', 'i', 'j', 'Qué pasa'], ['1', '1', '1', 'muestra i=1 j=1'], ['2', '1', '2', 'muestra i=1 j=2'], ['3', '1', '3', 'muestra i=1 j=3'], ['4', '1', '4', 'j <= 3 es false: sale del de dentro y acaba la fila 1'], ['5', '2', '1', 'j vuelve a empezar en 1'], ['…', '2', '2, 3', 'igual que la fila 1'], ['8', '3', '—', 'i <= 2 es false: termina todo']] },
+
+      { h: 'Tablas' },
+      { code: 'for (int i = 1; i <= 5; i++) {\n    for (int j = 1; j <= 5; j++) {\n        System.out.printf("%4d", i * j);\n    }\n    System.out.println();\n}' },
+
+      { h: 'Figuras con asteriscos' },
+      { p: 'El bucle de fuera recorre las **filas**; el de dentro dibuja lo que va en cada fila. La clave es encontrar cuántos símbolos lleva la fila `i`:' },
+      { code: 'int filas = 4;\n// cuadrado: siempre filas asteriscos\nfor (int i = 1; i <= filas; i++) {\n    for (int j = 1; j <= filas; j++) System.out.print("*");\n    System.out.println();\n}\nSystem.out.println();\n// triángulo: la fila i tiene i asteriscos\nfor (int i = 1; i <= filas; i++) {\n    for (int j = 1; j <= i; j++) System.out.print("*");\n    System.out.println();\n}\nSystem.out.println();\n// invertido: la fila i tiene filas - i + 1\nfor (int i = 1; i <= filas; i++) {\n    for (int j = 1; j <= filas - i + 1; j++) System.out.print("*");\n    System.out.println();\n}' },
+      { p: 'Dentro de una fila puede haber **varios bucles seguidos**: uno para los espacios y otro para los asteriscos (pirámide centrada):' },
+      { code: 'int filas = 4;\nfor (int i = 1; i <= filas; i++) {\n    for (int j = 1; j <= filas - i; j++) System.out.print(" ");\n    for (int j = 1; j <= 2 * i - 1; j++) System.out.print("*");\n    System.out.println();\n}' },
+      { note: 'Para sacar la fórmula, haz una tabla con el número de fila y lo que tiene (fila 1 → 1, fila 2 → 3, fila 3 → 5…) y busca la relación con `i`.', kind: 'tip' },
+
+      { h: 'Combinar elementos' },
+      { p: 'Recorrer todas las parejas posibles. Si `j` empieza en `i + 1`, cada pareja sale una sola vez y no se empareja nadie consigo mismo:' },
+      { code: 'String[] equipos = {"Rojo", "Azul", "Verde", "Negro"};\nfor (int i = 0; i < equipos.length; i++) {\n    for (int j = i + 1; j < equipos.length; j++) {\n        System.out.println(equipos[i] + " - " + equipos[j]);\n    }\n}' },
+
+      { h: 'Otros bucles también se anidan' },
+      { p: 'Se puede anidar cualquier bucle en cualquier otro (while dentro de for, for dentro de do-while…):' },
+      { code: 'for (int n = 10; n <= 13; n++) {\n    int divisor = 2;\n    while (n % divisor != 0) {\n        divisor++;\n    }\n    System.out.println(n + ": su menor divisor (mayor que 1) es " + divisor);\n}' },
+
+      { h: 'Salir de los dos bucles a la vez' },
+      { p: 'Un `break` solo sale del bucle donde está (el de dentro). Para salir de los dos hay dos formas: una variable boolean en las condiciones, o un `break` con **etiqueta** (tema break y continue).' },
+      { code: 'boolean encontrado = false;\nfor (int i = 1; i <= 9 && !encontrado; i++) {\n    for (int j = 1; j <= 9 && !encontrado; j++) {\n        if (i * j == 42) {\n            System.out.println(i + " x " + j + " = 42");\n            encontrado = true;\n        }\n    }\n}' },
+
+      { h: 'Errores típicos' },
+      { list: [
+        'Usar la misma variable (`i`) en los dos bucles.',
+        'Olvidar el `println()` al final de cada fila: todo sale en una línea.',
+        'Poner el `println()` dentro del bucle de dentro: cada asterisco sale en su línea.',
+        'Pensar que `j` sigue donde se quedó: vuelve a empezar en cada vuelta de fuera.',
+        'Anidar demasiado: con 3 bucles de 1.000 vueltas son mil millones de pasos.'
+      ] },
+
+      { h: 'Resumen' },
+      { list: [
+        'El bucle de dentro se ejecuta completo en cada vuelta del de fuera.',
+        'Vueltas totales = vueltas de fuera × vueltas de dentro.',
+        'Fuera, las filas; dentro, lo que va en cada fila.',
+        'Si no lo ves claro, haz una traza con una tabla de i y j.'
+      ] },
+      { practice: ['l11', 'l14', 'l15', 'l16', 'r9'] }
+    ]
+  },
+  {
+    id: 'breakcontinue', group: 'Control del flujo', title: 'break y continue',
+    intro: 'Cambiar el recorrido normal de un bucle: salir antes o saltar una vuelta.',
+    blocks: [
+      { h: 'break: salir del bucle' },
+      { p: '`break` termina el bucle **inmediatamente**, aunque la condición siga siendo true, y el programa sigue con lo que hay después del bucle.' },
+      { code: 'for (int i = 1; i <= 10; i++) {\n    if (i == 5) {\n        break;\n    }\n    System.out.println(i);\n}\nSystem.out.println("Fuera del bucle");' },
+      { p: 'Se usa sobre todo para **dejar de buscar** cuando ya se ha encontrado lo que se buscaba:' },
+      { code: 'int[] numeros = {7, 12, 5, 30, 8};\nint posicion = -1;\nfor (int i = 0; i < numeros.length; i++) {\n    if (numeros[i] > 20) {\n        posicion = i;\n        break;                 // no hace falta mirar el resto\n    }\n}\nSystem.out.println("Primer número mayor que 20 en la posición " + posicion);' },
+
+      { h: 'continue: saltar a la siguiente vuelta' },
+      { p: '`continue` salta lo que queda de la vuelta actual y pasa a la siguiente. En un `for`, se ejecuta la actualización (`i++`) y se vuelve a comprobar la condición.' },
+      { code: 'for (int i = 1; i <= 10; i++) {\n    if (i % 3 == 0) {\n        continue;              // los múltiplos de 3 no se muestran\n    }\n    System.out.print(i + " ");\n}\nSystem.out.println();' },
+      { p: 'Sirve para descartar al principio los casos que no interesan, sin meter todo lo demás dentro de un if:' },
+      { code: 'String[] palabras = {"sol", "", "mar", "  ", "luna"};\nfor (String p : palabras) {\n    if (p.isBlank()) {\n        continue;\n    }\n    System.out.println(p.toUpperCase());\n}' },
+      { note: 'En un `while`, cambia la variable de la condición **antes** del `continue`. Si el cambio está después, nunca se ejecuta y el bucle no termina (ver el tema while).', kind: 'warn' },
+
+      { h: 'Comparación' },
+      { table: [['', 'break', 'continue'], ['Qué hace', 'sale del bucle', 'salta a la siguiente vuelta'], ['¿Sigue el bucle?', 'no', 'sí'], ['Dónde se usa', 'bucles y switch', 'solo bucles']] },
+
+      { h: 'break solo sale del bucle donde está' },
+      { p: 'En bucles anidados, `break` y `continue` afectan solo al bucle más cercano (el de dentro):' },
+      { code: 'for (int i = 1; i <= 3; i++) {\n    for (int j = 1; j <= 3; j++) {\n        if (j == 2) {\n            break;             // sale solo del bucle de j\n        }\n        System.out.println("i=" + i + " j=" + j);\n    }\n}' },
+      { p: 'Y dentro de un `switch`, `break` sale del switch, no del bucle que lo contiene.' },
+
+      { h: 'break y continue con etiqueta' },
+      { p: 'Para salir (o saltar) del bucle de **fuera** desde el de dentro, se pone una **etiqueta** (un nombre seguido de dos puntos) delante del bucle de fuera y se usa `break etiqueta;` o `continue etiqueta;`:' },
+      { code: 'fuera:\nfor (int i = 1; i <= 3; i++) {\n    for (int j = 1; j <= 3; j++) {\n        if (i * j == 4) {\n            System.out.println("Encontrado: " + i + " x " + j);\n            break fuera;       // sale de los dos bucles\n        }\n    }\n}\nSystem.out.println("Fin");' },
+      { code: 'filas:\nfor (int i = 1; i <= 3; i++) {\n    for (int j = 1; j <= 3; j++) {\n        if (j > i) {\n            System.out.println();\n            continue filas;    // pasa a la siguiente vuelta del bucle de fuera\n        }\n        System.out.print(j + " ");\n    }\n    System.out.println();\n}' },
+      { note: 'Las etiquetas se usan poco: casi siempre queda más claro con una variable boolean en la condición o separando el código.', kind: 'tip' },
+
+      { h: 'Sin break ni continue' },
+      { p: 'Muchos profesores prefieren evitarlos: el código se entiende mejor cuando **la condición del bucle dice cuándo para**. Cualquier break se puede sustituir por una condición:' },
+      { code: 'int[] numeros = {7, 12, 5, 30, 8};\nint posicion = -1;\nint i = 0;\nwhile (i < numeros.length && posicion == -1) {\n    if (numeros[i] > 20) {\n        posicion = i;\n    }\n    i++;\n}\nSystem.out.println("Posición: " + posicion);' },
+      { p: 'Y un continue, por un if que envuelva el resto de la vuelta:' },
+      { code: 'for (int n = 1; n <= 10; n++) {\n    if (n % 3 != 0) {\n        System.out.print(n + " ");\n    }\n}\nSystem.out.println();' },
+
+      { h: 'Errores típicos' },
+      { list: [
+        'Esperar que `break` salga de todos los bucles: solo del más cercano.',
+        'Poner instrucciones después de `break` o `continue` en el mismo bloque: nunca se ejecutan (y Java da error: `unreachable statement`).',
+        'Usar `continue` fuera de un bucle: `continue outside of loop`.',
+        '`continue` antes de actualizar la variable en un while: bucle infinito.'
+      ] },
+
+      { h: 'Resumen' },
+      { list: [
+        '`break` sale del bucle (o del switch) en el acto.',
+        '`continue` salta a la siguiente vuelta.',
+        'Solo afectan al bucle más cercano; con etiqueta, al que tú digas.',
+        'Casi siempre se pueden sustituir por una buena condición.'
+      ] },
+      { practice: ['l10', 'l13', 'r4'] }
+    ]
+  },
+  {
+    id: 'infinitos', group: 'Control del flujo', title: 'Bucles infinitos y buenas prácticas',
+    intro: 'Por qué un bucle no termina, cómo evitarlo, y consejos para escribir bucles claros.',
+    blocks: [
+      { h: 'Qué es un bucle infinito' },
+      { p: 'Un bucle infinito es el que **nunca termina** porque su condición nunca llega a ser `false`. El programa se queda "colgado". En este playground se para solo tras unos millones de pasos y te avisa:' },
+      { code: 'int i = 0;\nwhile (i < 5) {\n    System.out.println("Vuelta");\n    // falta i++: i siempre vale 0\n}', error: true },
+
+      { h: 'Causas habituales' },
+      { list: [
+        '**No actualizar la variable** de la condición dentro del bucle.',
+        '**Actualizar en la dirección contraria**: `for (int i = 0; i < 10; i--)`.',
+        '**Una condición que siempre se cumple**: `while (x > 0 || x < 10)` (cualquier número es mayor que 0 o menor que 10).',
+        '**Saltarse el valor de parada**: `for (int i = 1; i != 10; i += 2)` pasa por 9 y 11, nunca por 10.',
+        '**continue antes de actualizar** en un while.',
+        '**Un punto y coma** detrás del while: `while (i < 5);`.'
+      ] },
+      { code: 'for (int i = 1; i != 10 && i < 100; i += 2) {   // sin el i < 100 no pararía nunca\n    System.out.print(i + " ");\n}\nSystem.out.println();' },
+      { note: 'Usa `<` o `<=` en vez de `!=` en las condiciones de los contadores: si el contador se pasa del valor, el bucle para igualmente.', kind: 'tip' },
+
+      { h: 'Bucles infinitos a propósito' },
+      { p: 'A veces se escribe un bucle infinito controlado: `while (true)` (o `for (;;)`) del que se sale con `break` cuando pasa algo. Es habitual en programas que esperan órdenes del usuario:' },
+      { code: 'Scanner teclado = new Scanner(System.in);\nwhile (true) {\n    System.out.print("Comando: ");\n    String comando = teclado.nextLine();\n    if (comando.equals("salir")) {\n        break;\n    }\n    System.out.println("Has escrito " + comando);\n}\nSystem.out.println("Hasta luego");', stdin: ['hola', 'ayuda', 'salir'] },
+      { p: 'Lo mismo, sin `while (true)`: con la condición de salida en el propio bucle (la forma que se suele preferir en clase):' },
+      { code: 'Scanner teclado = new Scanner(System.in);\nString comando = "";\nwhile (!comando.equals("salir")) {\n    System.out.print("Comando: ");\n    comando = teclado.nextLine();\n    if (!comando.equals("salir")) {\n        System.out.println("Has escrito " + comando);\n    }\n}\nSystem.out.println("Hasta luego");', stdin: ['hola', 'ayuda', 'salir'] },
+
+      { h: 'Cómo detectarlos' },
+      { list: [
+        'Mira la condición y pregúntate: **¿qué cambia dentro del bucle para que llegue a ser false?** Si nada, es infinito.',
+        'Haz una traza con las primeras vueltas: anota el valor de la variable en cada una.',
+        'Pon un `System.out.println` dentro del bucle para ver qué valores va tomando.',
+        'En un programa real colgado, se para con Ctrl+C en la consola o con el botón de parar del IDE.'
+      ] },
+
+      { h: 'Buenas prácticas con bucles' },
+      { list: [
+        '**Elige el bucle adecuado**: for si sabes cuántas vueltas; while si depende de una condición; do-while si tiene que ejecutarse al menos una vez; for-each para recorrer arrays.',
+        '**Nombres claros**: `i`, `j` para contadores cortos; `fila`, `columna`, `intento` cuando ayudan a entender.',
+        '**Declara las variables donde hacen falta**: el contador en el for; acumuladores justo antes del bucle.',
+        '**No cambies el contador del for dentro del bloque**: solo en la actualización.',
+        '**Que la condición diga cuándo para**: usa break y continue con moderación.',
+        '**No repitas cálculos** que no cambian dentro del bucle: calcúlalos antes.',
+        '**Sal en cuanto tengas la respuesta** al buscar (con la condición o con break), sin recorrer de más.',
+        '**Cuidado con los límites**: `i < array.length`, no `<=`.',
+        '**Pon siempre llaves**, aunque el bloque tenga una línea.',
+        '**No modifiques una colección** (como un ArrayList) mientras la recorres con for-each: da `ConcurrentModificationException`.'
+      ] },
+      { p: 'Ejemplo de dejar de buscar en cuanto se encuentra, con la condición:' },
+      { code: 'String[] nombres = {"Ana", "Luis", "Marta", "Pedro"};\nString buscado = "Marta";\nboolean esta = false;\nint i = 0;\nwhile (i < nombres.length && !esta) {\n    esta = nombres[i].equals(buscado);\n    i++;\n}\nSystem.out.println(buscado + (esta ? " está" : " no está") + " (miradas " + i + " posiciones)");' },
+      { p: 'Salirse del array por usar `<=` en vez de `<`:' },
+      { code: 'int[] datos = {1, 2, 3};\nfor (int i = 0; i <= datos.length; i++) {\n    System.out.println(datos[i]);\n}', error: true },
+
+      { h: 'Resumen' },
+      { list: [
+        'Un bucle es infinito si nada de lo que pasa dentro hace falsa la condición.',
+        'Comprueba siempre qué cambia en cada vuelta y en qué dirección.',
+        '`while (true)` con break es un infinito controlado; suele quedar más claro con la condición.',
+        'Elige el bucle adecuado, cuida los límites y pon llaves.'
+      ] },
+      { practice: ['l13', 'l18', 'l19'] }
+    ]
+  }
+);
+// Teoría, bloque 4: Arrays
+TEORIA.push(
+  {
+    id: 'arrays', group: 'Arrays', title: 'Arrays',
+    intro: 'Guardar muchos valores del mismo tipo bajo un solo nombre, cada uno en su posición.',
+    blocks: [
+      { h: 'Qué es un array' },
+      { p: 'Un array (o vector) es una lista de valores **del mismo tipo** con un **tamaño fijo**. Cada valor ocupa una posición (índice) que empieza en **0**.' },
+      { table: [['Índice', '0', '1', '2', '3', '4'], ['notas', '7', '5', '9', '6', '8']] },
+
+      { h: 'Crear un array' },
+      { p: 'Hay dos formas. Si ya sabes los valores, entre llaves:' },
+      { syntax: 'tipo[] nombre = {valor1, valor2, …};' },
+      { code: 'int[] notas = {7, 5, 9, 6, 8};\nString[] dias = {"lunes", "martes", "miércoles"};\nSystem.out.println(notas[0]);       // el primero\nSystem.out.println(dias[2]);' },
+      { p: 'Si solo sabes cuántos habrá, con `new` y el tamaño. Las posiciones se rellenan con un **valor por defecto**: 0 para números, `false` para boolean, `\'\\u0000\'` para char y `null` para String y objetos.' },
+      { syntax: 'tipo[] nombre = new tipo[tamaño];' },
+      { code: 'int[] cuadrados = new int[5];\nboolean[] marcas = new boolean[3];\nString[] nombres = new String[2];\nSystem.out.println(cuadrados[0] + " " + marcas[0] + " " + nombres[0]);' },
+      { p: 'También se puede declarar primero y crear después, o escribir los corchetes detrás del nombre (`int notas[]`), aunque lo habitual es `int[] notas`.' },
+      { code: 'int[] datos;\ndatos = new int[] {1, 2, 3};   // con valores, después de declararlo, hace falta new int[]\nSystem.out.println(datos.length);' },
+
+      { h: 'Leer y cambiar posiciones' },
+      { code: 'int[] notas = {7, 5, 9, 6, 8};\nnotas[1] = 10;                         // cambia el segundo\nnotas[4] += 1;\nSystem.out.println(notas[1] + " " + notas[4]);\nSystem.out.println("Tamaño: " + notas.length);\nSystem.out.println("Último: " + notas[notas.length - 1]);' },
+      { note: '`length` en un array va **sin paréntesis** (`notas.length`); en un String, con ellos (`texto.length()`).', kind: 'warn' },
+
+      { h: 'Recorrer un array' },
+      { p: 'Con un `for` que va de 0 a `length - 1` se pasa por todas las posiciones:' },
+      { code: 'int[] notas = {7, 5, 9, 6, 8};\nfor (int i = 0; i < notas.length; i++) {\n    System.out.println("Nota " + (i + 1) + ": " + notas[i]);\n}' },
+      { p: 'Si no necesitas la posición, el **for-each** es más corto (siguiente tema). Y para verlo entero de un vistazo, `Arrays.toString(array)`:' },
+      { code: 'int[] notas = {7, 5, 9, 6, 8};\nSystem.out.println(Arrays.toString(notas));\nSystem.out.println(notas);   // sin Arrays.toString sale algo como [I@1b6d3586' , random: true },
+
+      { h: 'Rellenar un array' },
+      { code: 'int[] cuadrados = new int[6];\nfor (int i = 0; i < cuadrados.length; i++) {\n    cuadrados[i] = i * i;\n}\nSystem.out.println(Arrays.toString(cuadrados));' },
+      { p: 'Leyendo los valores del teclado:' },
+      { code: 'Scanner teclado = new Scanner(System.in);\nint[] edades = new int[3];\nfor (int i = 0; i < edades.length; i++) {\n    System.out.print("Edad " + (i + 1) + ": ");\n    edades[i] = teclado.nextInt();\n}\nSystem.out.println(Arrays.toString(edades));', stdin: ['18', '25', '31'] },
+
+      { h: 'Operaciones típicas' },
+      { p: '**Suma y media:**' },
+      { code: 'int[] notas = {7, 5, 9, 6, 8};\nint suma = 0;\nfor (int i = 0; i < notas.length; i++) {\n    suma += notas[i];\n}\ndouble media = (double) suma / notas.length;\nSystem.out.println("Suma: " + suma + ", media: " + media);' },
+      { p: '**Máximo y mínimo** (empezando por el primer elemento, no por 0, para que funcione con números negativos):' },
+      { code: 'int[] temperaturas = {-3, -8, 2, -1};\nint max = temperaturas[0], min = temperaturas[0];\nfor (int i = 1; i < temperaturas.length; i++) {\n    if (temperaturas[i] > max) max = temperaturas[i];\n    if (temperaturas[i] < min) min = temperaturas[i];\n}\nSystem.out.println("Máxima: " + max + ", mínima: " + min);' },
+      { p: '**Contar** los que cumplen algo y **buscar** la posición de un valor:' },
+      { code: 'int[] notas = {7, 4, 9, 3, 8};\nint aprobados = 0;\nfor (int i = 0; i < notas.length; i++) {\n    if (notas[i] >= 5) aprobados++;\n}\nSystem.out.println(aprobados + " aprobados");\nint buscado = 9, posicion = -1;\nfor (int i = 0; i < notas.length && posicion == -1; i++) {\n    if (notas[i] == buscado) posicion = i;\n}\nSystem.out.println("El " + buscado + " está en la posición " + posicion);' },
+      { p: '**Recorrer al revés** e **invertir** el array:' },
+      { code: 'int[] v = {1, 2, 3, 4, 5};\nfor (int i = v.length - 1; i >= 0; i--) System.out.print(v[i] + " ");\nSystem.out.println();\nfor (int i = 0; i < v.length / 2; i++) {\n    int aux = v[i];                         // intercambio con variable auxiliar\n    v[i] = v[v.length - 1 - i];\n    v[v.length - 1 - i] = aux;\n}\nSystem.out.println(Arrays.toString(v));' },
+
+      { h: 'Salirse del array' },
+      { p: 'Las posiciones válidas van de 0 a `length - 1`. Usar otra hace fallar el programa al ejecutarse con `ArrayIndexOutOfBoundsException`:' },
+      { code: 'int[] v = {10, 20, 30};\nSystem.out.println(v[3]);', error: true },
+
+      { h: 'Los arrays son referencias' },
+      { p: 'Una variable de array no guarda los valores, sino **dónde están**. Si asignas un array a otro, los dos apuntan al **mismo** array: cambiar uno cambia el otro. Para tener una copia independiente, usa `Arrays.copyOf` o `clone()`.' },
+      { code: 'int[] a = {1, 2, 3};\nint[] b = a;                     // b es el mismo array que a\nb[0] = 99;\nSystem.out.println(Arrays.toString(a));\nint[] c = Arrays.copyOf(a, a.length);   // copia de verdad\nc[1] = 0;\nSystem.out.println(Arrays.toString(a) + " " + Arrays.toString(c));' },
+      { p: 'Por la misma razón, `==` entre arrays mira si son el mismo array, no si tienen lo mismo dentro. Para comparar el contenido: `Arrays.equals(a, b)`.' },
+
+      { h: 'Tamaño fijo' },
+      { p: 'Una vez creado, un array no puede crecer ni encoger. Si necesitas añadir y quitar elementos, existe `ArrayList` (se verá con las colecciones). Para "agrandarlo" se crea otro más grande y se copian los datos:' },
+      { code: 'int[] v = {1, 2, 3};\nv = Arrays.copyOf(v, 5);   // nuevo array de 5 con los datos copiados\nv[3] = 4;\nSystem.out.println(Arrays.toString(v));' },
+
+      { h: 'Errores típicos' },
+      { list: [
+        'Usar `<=` en el for: `i <= v.length` se sale del array.',
+        'Empezar en 1: el primer elemento es `v[0]`.',
+        'Escribir `length()` con paréntesis en un array.',
+        'Imprimir el array con `println(v)` en vez de `Arrays.toString(v)`.',
+        'Empezar el máximo en 0: falla si todos los valores son negativos.',
+        'Copiar con `b = a` creyendo que es una copia.',
+        'Usar posiciones de un array de String sin rellenar: valen `null`.'
+      ] },
+
+      { h: 'Resumen' },
+      { list: [
+        '`int[] v = {…};` o `new int[n]` (con valores por defecto).',
+        'Posiciones de 0 a `v.length - 1`; `v[i]` lee o cambia una.',
+        'Se recorre con for (con posición) o for-each (sin ella).',
+        'Patrones: suma, media, máximo, contar, buscar, invertir.',
+        'Tamaño fijo, y son referencias: `b = a` no copia.'
+      ] },
+      { practice: ['r2', 'r3', 'r5', 'r7', 'r1', 'r4'] }
+    ]
+  },
+  {
+    id: 'foreach', group: 'Arrays', title: 'Bucle for-each',
+    intro: 'La forma corta de recorrer todos los elementos de un array, uno a uno.',
+    blocks: [
+      { h: 'Sintaxis' },
+      { p: 'El for-each (o "for mejorado") recorre un array de principio a fin y, en cada vuelta, deja en una variable el elemento que toca. No hay índice ni condición: no te puedes salir del array.' },
+      { syntax: 'for (tipo variable : array) {\n    // variable vale cada elemento, en orden\n}' },
+      { code: 'String[] frutas = {"manzana", "pera", "uva"};\nfor (String fruta : frutas) {\n    System.out.println(fruta);\n}' },
+      { p: 'Se lee "para cada fruta **en** frutas". El tipo de la variable es el de los elementos del array.' },
+
+      { h: 'Ejemplos' },
+      { code: 'int[] numeros = {4, 8, 15, 16, 23, 42};\nint suma = 0, mayor = numeros[0];\nfor (int n : numeros) {\n    suma += n;\n    if (n > mayor) mayor = n;\n}\nSystem.out.println("Suma: " + suma + ", mayor: " + mayor);' },
+      { code: 'String[] palabras = {"sol", "arcoíris", "mar", "nube"};\nString larga = "";\nfor (String p : palabras) {\n    if (p.length() > larga.length()) larga = p;\n}\nSystem.out.println("La más larga: " + larga);' },
+      { p: 'También sirve para recorrer los caracteres de un String, convirtiéndolo antes con `toCharArray()`:' },
+      { code: 'int vocales = 0;\nfor (char c : "programacion".toCharArray()) {\n    if ("aeiou".indexOf(c) >= 0) vocales++;\n}\nSystem.out.println(vocales + " vocales");' },
+
+      { h: 'Lo que no puede hacer' },
+      { list: [
+        '**No da la posición.** Si la necesitas (para mostrarla, buscar dónde está algo, comparar con el vecino…), usa un for normal.',
+        '**No cambia el array.** La variable es una copia del elemento: asignarle otro valor no modifica el array.',
+        '**Siempre va de principio a fin**, de uno en uno: no recorre al revés ni salta posiciones.',
+        '**No recorre dos arrays a la vez** (para eso hace falta el índice).'
+      ] },
+      { code: 'int[] v = {1, 2, 3};\nfor (int x : v) {\n    x = x * 10;            // cambia la copia, no el array\n}\nSystem.out.println(Arrays.toString(v));\nfor (int i = 0; i < v.length; i++) {\n    v[i] = v[i] * 10;      // con índice sí se cambia\n}\nSystem.out.println(Arrays.toString(v));' },
+
+      { h: 'for-each o for con índice' },
+      { table: [['Necesito…', 'Usa'], ['recorrer todos para sumar, contar, buscar si está, mostrar', 'for-each'], ['saber la posición', 'for'], ['cambiar los valores del array', 'for'], ['recorrer al revés o saltando', 'for'], ['comparar un elemento con el siguiente', 'for']] },
+      { note: 'Regla práctica: empieza pensando en for-each y cambia a for solo si necesitas la posición.', kind: 'tip' },
+      { p: 'Además de arrays, el for-each recorre cualquier colección (`ArrayList`, `Set`…). Con una colección, no se pueden añadir ni quitar elementos mientras se recorre.' },
+
+      { h: 'Errores típicos' },
+      { list: [
+        'Escribir el tipo mal: `for (int n : palabras)` con un array de String no compila.',
+        'Olvidar el tipo: `for (n : numeros)` no compila.',
+        'Recorrer un String directamente: `for (char c : texto)` no compila; hace falta `texto.toCharArray()`.',
+        'Esperar que asignar a la variable cambie el array.'
+      ] },
+
+      { h: 'Resumen' },
+      { list: [
+        '`for (tipo x : array)` recorre todos los elementos en orden.',
+        'Más corto y sin riesgo de salirse del array.',
+        'No da la posición ni permite cambiar el array: para eso, for con índice.'
+      ] },
+      { practice: ['r2', 'r3', 'r8', 'l5'] }
+    ]
+  },
+  {
+    id: 'clasearrays', group: 'Arrays', title: 'La clase Arrays',
+    intro: 'Métodos ya hechos para mostrar, ordenar, rellenar, copiar, comparar y buscar en arrays.',
+    blocks: [
+      { h: 'Cómo se usa' },
+      { p: '`Arrays` (del paquete `java.util`, se importa con `import java.util.Arrays;`) tiene métodos estáticos que trabajan sobre arrays: `Arrays.metodo(array, …)`.' },
+
+      { h: 'toString: ver el array' },
+      { code: 'int[] v = {5, 3, 8};\nString[] s = {"a", "b"};\nSystem.out.println(Arrays.toString(v));\nSystem.out.println(Arrays.toString(s));' },
+
+      { h: 'sort: ordenar' },
+      { p: 'Ordena el array **en el sitio** (lo modifica): números de menor a mayor y textos por orden alfabético (las mayúsculas antes que las minúsculas).' },
+      { code: 'int[] puntos = {40, 15, 90, 15, 60};\nArrays.sort(puntos);\nSystem.out.println(Arrays.toString(puntos));\nString[] nombres = {"Luis", "ana", "Bea", "carlos"};\nArrays.sort(nombres);\nSystem.out.println(Arrays.toString(nombres));' },
+      { p: 'Para mostrarlo de mayor a menor, se recorre al revés después de ordenar. Con `Arrays.sort(v, desde, hasta)` se ordena solo un trozo.' },
+      { code: 'int[] puntos = {40, 15, 90, 60};\nArrays.sort(puntos);\nfor (int i = puntos.length - 1; i >= 0; i--) System.out.print(puntos[i] + " ");\nSystem.out.println();' },
+      { note: '`sort` no devuelve nada: `int[] ordenado = Arrays.sort(v);` no compila. Si quieres conservar el original, ordena una copia.', kind: 'warn' },
+
+      { h: 'fill: rellenar' },
+      { code: 'int[] v = new int[5];\nArrays.fill(v, 7);\nSystem.out.println(Arrays.toString(v));\nchar[] linea = new char[10];\nArrays.fill(linea, \'-\');\nSystem.out.println(new String(linea));' },
+
+      { h: 'copyOf y copyOfRange: copiar' },
+      { code: 'int[] v = {1, 2, 3, 4, 5};\nint[] copia = Arrays.copyOf(v, v.length);       // copia entera\nint[] corta = Arrays.copyOf(v, 3);              // los 3 primeros\nint[] larga = Arrays.copyOf(v, 7);              // rellena con 0\nint[] trozo = Arrays.copyOfRange(v, 1, 4);      // posiciones 1, 2 y 3\nSystem.out.println(Arrays.toString(copia));\nSystem.out.println(Arrays.toString(corta));\nSystem.out.println(Arrays.toString(larga));\nSystem.out.println(Arrays.toString(trozo));' },
+
+      { h: 'equals: comparar el contenido' },
+      { code: 'int[] a = {1, 2, 3};\nint[] b = {1, 2, 3};\nSystem.out.println(a == b);              // false: arrays distintos\nSystem.out.println(Arrays.equals(a, b)); // true: mismo contenido' },
+
+      { h: 'Otros métodos' },
+      { list: [
+        '`Arrays.binarySearch(v, valor)`: busca muy rápido en un array **ordenado** y da la posición (o un número negativo si no está).',
+        '`Arrays.deepToString(m)`: como toString, para arrays de 2 dimensiones.',
+        '`Arrays.asList(…)`: convierte en una lista.',
+        '`Arrays.stream(v)`: para operaciones como `Arrays.stream(v).sum()` o `.max()` (se ven más adelante, con streams).'
+      ] },
+      { java: 'int[] v = {3, 8, 15, 21};\nint pos = Arrays.binarySearch(v, 15);       // 2\nint suma = Arrays.stream(v).sum();           // 47\n// (binarySearch y stream no están disponibles en este playground)' },
+
+      { h: 'Resumen' },
+      { list: [
+        '`Arrays.toString(v)` para mostrarlo; `Arrays.sort(v)` para ordenarlo (lo modifica).',
+        '`Arrays.fill`, `Arrays.copyOf`, `Arrays.copyOfRange`.',
+        '`Arrays.equals(a, b)` compara el contenido (no `==`).'
+      ] },
+      { practice: ['r6', 'r7'] }
+    ]
+  },
+  {
+    id: 'matrices', group: 'Arrays', title: 'Arrays de 2 dimensiones',
+    intro: 'Tablas de filas y columnas: un array de arrays.',
+    blocks: [
+      { h: 'Qué es una matriz' },
+      { p: 'Un array de 2 dimensiones (matriz) es un array cuyos elementos son arrays: cada uno es una **fila**. Se accede con dos índices: `m[fila][columna]`, los dos desde 0.' },
+      { table: [['', 'col 0', 'col 1', 'col 2'], ['fila 0', '1', '2', '3'], ['fila 1', '4', '5', '6']] },
+      { code: 'int[][] m = {\n    {1, 2, 3},\n    {4, 5, 6}\n};\nSystem.out.println(m[0][2]);    // fila 0, columna 2\nSystem.out.println(m[1][0]);\nm[1][1] = 50;\nSystem.out.println(Arrays.deepToString(m));' },
+
+      { h: 'Crearla' },
+      { syntax: 'tipo[][] nombre = new tipo[filas][columnas];' },
+      { code: 'int[][] tablero = new int[3][4];       // 3 filas, 4 columnas, todo a 0\nSystem.out.println(tablero.length);       // número de filas\nSystem.out.println(tablero[0].length);    // columnas de la fila 0\nSystem.out.println(Arrays.deepToString(tablero));' },
+
+      { h: 'Recorrerla' },
+      { p: 'Con dos bucles anidados: el de fuera recorre las filas y el de dentro las columnas de cada fila.' },
+      { code: 'int[][] m = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};\nfor (int f = 0; f < m.length; f++) {\n    for (int c = 0; c < m[f].length; c++) {\n        System.out.print(m[f][c] + " ");\n    }\n    System.out.println();\n}' },
+      { p: 'Con for-each: cada fila es un `int[]`.' },
+      { code: 'int[][] m = {{1, 2, 3}, {4, 5, 6}};\nint total = 0;\nfor (int[] fila : m) {\n    for (int valor : fila) {\n        total += valor;\n    }\n}\nSystem.out.println("Suma de todo: " + total);' },
+      { note: 'Usa `m[f].length` para las columnas (no `m.length`): así funciona aunque la matriz no sea cuadrada.', kind: 'tip' },
+
+      { h: 'Sumas por filas y por columnas' },
+      { code: 'int[][] ventas = {\n    {10, 20, 30},     // tienda 0: ventas de 3 días\n    {5, 15, 25}       // tienda 1\n};\nfor (int f = 0; f < ventas.length; f++) {\n    int sumaFila = 0;\n    for (int c = 0; c < ventas[f].length; c++) sumaFila += ventas[f][c];\n    System.out.println("Tienda " + f + ": " + sumaFila);\n}\nfor (int c = 0; c < ventas[0].length; c++) {\n    int sumaCol = 0;\n    for (int f = 0; f < ventas.length; f++) sumaCol += ventas[f][c];\n    System.out.println("Día " + c + ": " + sumaCol);\n}' },
+
+      { h: 'Diagonal y traspuesta' },
+      { code: 'int[][] m = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};\nint diagonal = 0;\nfor (int i = 0; i < m.length; i++) diagonal += m[i][i];\nSystem.out.println("Diagonal: " + diagonal);\nint[][] t = new int[3][3];\nfor (int f = 0; f < 3; f++) {\n    for (int c = 0; c < 3; c++) {\n        t[c][f] = m[f][c];             // filas pasan a columnas\n    }\n}\nSystem.out.println(Arrays.deepToString(t));' },
+
+      { h: 'Filas de distinto tamaño' },
+      { p: 'Como cada fila es un array independiente, pueden tener tamaños distintos (matriz "dentada"):' },
+      { code: 'int[][] triangulo = new int[4][];\nfor (int f = 0; f < triangulo.length; f++) {\n    triangulo[f] = new int[f + 1];\n    Arrays.fill(triangulo[f], f + 1);\n}\nfor (int[] fila : triangulo) System.out.println(Arrays.toString(fila));' },
+
+      { h: 'Más dimensiones' },
+      { p: 'Se pueden tener 3 o más dimensiones (`int[][][] cubo = new int[2][3][4];`), aunque es poco habitual.' },
+
+      { h: 'Errores típicos' },
+      { list: [
+        'Confundir el orden: es `m[fila][columna]`.',
+        'Usar `m.length` para las columnas: da el número de filas.',
+        'Mostrar la matriz con `Arrays.toString(m)`: salen direcciones; usa `Arrays.deepToString(m)`.',
+        'Salirse con los índices: `ArrayIndexOutOfBoundsException`.'
+      ] },
+
+      { h: 'Resumen' },
+      { list: [
+        '`int[][] m = new int[filas][columnas];` o con llaves anidadas.',
+        '`m[f][c]`; `m.length` son las filas y `m[f].length` las columnas.',
+        'Se recorre con dos bucles anidados.',
+        '`Arrays.deepToString(m)` para verla entera.'
+      ] },
+      { practice: ['r9'] }
+    ]
+  }
+);
+// Apartado de Teoría: pestañas Ejercicios / Teoría, índice de temas y ejemplos que se pueden ejecutar.
+(function () {
+  'use strict';
+  var KEY = 'jp-teoria';
+  var $ = function (id) { return document.getElementById(id); };
+  var st = { view: 'ej', topic: TEORIA[0].id };
+  try { var saved = JSON.parse(localStorage.getItem(KEY)); if (saved) { st.view = saved.view === 'teo' ? 'teo' : 'ej'; st.collapsed = saved.collapsed || {}; if (TEORIA.some(function (t) { return t.id === saved.topic; })) st.topic = saved.topic; } } catch (e) { }
+  function save() { try { localStorage.setItem(KEY, JSON.stringify(st)); } catch (e) { } }
+
+  function esc(t) { return t.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
+  // `código` y **negrita** dentro de un texto
+  function inline(t) { return esc(t).replace(/`([^`]+)`/g, '<code>$1</code>').replace(/\*\*([^*]+)\*\*/g, '<b>$1</b>'); }
+  var KW = /^(while|do|for|if|else|switch|case|default|break|continue|return|new|public|static|void|class|import|yield)$/;
+  var TY = /^(int|long|double|boolean|char|String|StringBuilder|Scanner|true|false|null)$/;
+  function highlight(src) {
+    return src.replace(/\/\/.*|"(?:\\.|[^"\\])*"|'(?:\\.|[^'\\])'|[A-Za-z_]\w*|\d+(?:\.\d+)?|[^"'\/\w]+|[\s\S]/g, function (t) {
+      var c = /^\/\//.test(t) ? 'c' : /^["']/.test(t) ? 's' : /^\d/.test(t) ? 'n' : TY.test(t) ? 't' : KW.test(t) ? 'k' : '';
+      return c ? '<span class="' + c + '">' + esc(t) + '</span>' : esc(t);
+    });
+  }
+
+  // ----- ejemplos ejecutables (con Scanner: se para y deja escribir en la consola, como en los ejercicios) -----
+  function paint(out, r) {
+    var at = 0;
+    out.textContent = '';
+    (r.echo || []).forEach(function (x) {
+      out.appendChild(document.createTextNode(r.output.slice(at, x.at)));
+      var sp = document.createElement('span'); sp.className = 'in'; sp.textContent = x.text + '\n'; out.appendChild(sp);
+      at = x.at;
+    });
+    out.appendChild(document.createTextNode(r.output.slice(at)));
+  }
+  function runExample(box, lines) {
+    var src = box.querySelector('textarea') ? box.querySelector('textarea').value : box.dataset.code;
+    var out = box.querySelector('.out'), r;
+    try { r = MiniJava.run(src, { input: lines, interactive: true }); } catch (e) { r = { ok: false, kind: 'limit', output: '', error: 'Algo ha fallado al ejecutar el ejemplo.' }; }
+    out.hidden = false;
+    paint(out, r);
+    if (r.kind === 'input') {
+      var inp = document.createElement('input');
+      inp.className = 'stdin'; inp.spellcheck = false; inp.autocomplete = 'off';
+      inp.setAttribute('aria-label', 'Escribe tu respuesta y pulsa Enter');
+      inp.addEventListener('keydown', function (ev) { if (ev.key === 'Enter') { ev.preventDefault(); runExample(box, lines.concat([inp.value])); } });
+      out.appendChild(inp); inp.focus();
+      return;
+    }
+    if (!r.ok) {
+      var sp = document.createElement('span'); sp.className = 'e';
+      if (r.output && !/\n$/.test(r.output)) out.appendChild(document.createTextNode('\n'));
+      sp.textContent = r.kind === 'compile' ? 'Error de compilación (línea ' + r.line + '): ' + r.error
+        : r.kind === 'runtime' ? r.error + ' (línea ' + r.line + ')' : r.error;
+      out.appendChild(sp);
+    } else if (!r.output) out.innerHTML = '<span class="m">(El programa no muestra nada)</span>';
+  }
+  function example(code) {
+    var box = document.createElement('div');
+    box.className = 'teo-ex'; box.dataset.code = code;
+    box.innerHTML = '<div class="teo-ex-bar"><span>Ejemplo</span><div><button type="button" class="btn-ghost" data-a="edit">Editar</button> ' +
+      '<button type="button" class="btn-run" data-a="run"><svg aria-hidden="true" width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><polygon points="6 4 20 12 6 20 6 4"></polygon></svg>Ejecutar</button></div></div>' +
+      '<pre class="teo-code">' + highlight(code) + '</pre><pre class="out" hidden></pre>';
+    box.addEventListener('click', function (ev) {
+      var b = ev.target.closest('button'); if (!b) return;
+      if (b.dataset.a === 'run') runExample(box, []);
+      if (b.dataset.a === 'edit') {
+        var ta = box.querySelector('textarea');
+        if (ta) { // volver al ejemplo original
+          box.replaceChild(Object.assign(document.createElement('pre'), { className: 'teo-code', innerHTML: highlight(code) }), ta);
+          b.textContent = 'Editar'; box.querySelector('.out').hidden = true;
+        } else {
+          ta = document.createElement('textarea');
+          ta.className = 'teo-code'; ta.value = code; ta.spellcheck = false; ta.setAttribute('aria-label', 'Código del ejemplo');
+          ta.rows = code.split('\n').length + 1;
+          box.replaceChild(ta, box.querySelector('pre.teo-code'));
+          b.textContent = 'Deshacer cambios'; ta.focus();
+        }
+      }
+    });
+    return box;
+  }
+
+  // ----- pintar un tema -----
+  function topic() { return TEORIA.filter(function (t) { return t.id === st.topic; })[0] || TEORIA[0]; }
+  function render() {
+    var t = topic(), art = $('teoArticle'), i = TEORIA.indexOf(t);
+    art.innerHTML = '<div class="crumb"><span>' + esc(t.group) + '</span><span aria-hidden="true">/</span><span>Teoría</span></div>' +
+      '<h1 class="title">' + esc(t.title) + '</h1><p class="teo-intro">' + inline(t.intro) + '</p>';
+    var nh = 0;
+    t.blocks.forEach(function (b) {
+      var el;
+      if (b.h) { el = document.createElement('h2'); el.textContent = b.h; el.id = 'teo-' + t.id + '-' + (nh++); }
+      else if (b.p) { el = document.createElement('p'); el.innerHTML = inline(b.p); }
+      else if (b.syntax) { el = document.createElement('div'); el.className = 'teo-syntax'; el.innerHTML = '<div class="label">Sintaxis</div><pre class="teo-code">' + highlight(b.syntax) + '</pre>'; }
+      else if (b.code) el = example(b.code);
+      else if (b.java) { el = document.createElement('div'); el.className = 'teo-ex'; el.innerHTML = '<div class="teo-ex-bar"><span>Código</span><span class="teo-norun">No se ejecuta aquí</span></div><pre class="teo-code">' + highlight(b.java) + '</pre>'; }
+      else if (b.note) { el = document.createElement('div'); el.className = 'teo-note ' + (b.kind || 'tip'); el.innerHTML = '<b>' + (b.kind === 'warn' ? 'Cuidado' : 'Consejo') + '</b> ' + inline(b.note); }
+      else if (b.list) { el = document.createElement('ul'); el.innerHTML = b.list.map(function (x) { return '<li>' + inline(x) + '</li>'; }).join(''); }
+      else if (b.table) {
+        el = document.createElement('div'); el.className = 'teo-table';
+        el.innerHTML = '<table><thead><tr>' + b.table[0].map(function (c) { return '<th>' + inline(c) + '</th>'; }).join('') + '</tr></thead><tbody>' +
+          b.table.slice(1).map(function (r) { return '<tr>' + r.map(function (c) { return '<td>' + inline(c) + '</td>'; }).join('') + '</tr>'; }).join('') + '</tbody></table>';
+      } else if (b.practice) {
+        el = document.createElement('div'); el.className = 'teo-practice';
+        el.innerHTML = '<h2>Practícalo</h2><div class="teo-practice-list"></div>';
+        b.practice.forEach(function (id) {
+          var e = EXERCISES.filter(function (x) { return x.id === id; })[0]; if (!e) return;
+          var btn = document.createElement('button'); btn.type = 'button'; btn.className = 'btn-line';
+          btn.innerHTML = esc(e.title) + ' <span class="chip ' + esc(e.level) + '">' + esc(e.level) + '</span>';
+          btn.addEventListener('click', function () { show('ej'); window.JP.goExercise(id); });
+          el.querySelector('.teo-practice-list').appendChild(btn);
+        });
+      }
+      if (el) art.appendChild(el);
+    });
+    $('teoPrev').disabled = i === 0; $('teoNext').disabled = i === TEORIA.length - 1;
+    $('teoPrev').textContent = i > 0 ? '‹ ' + TEORIA[i - 1].title : 'Anterior';
+    $('teoNext').textContent = i < TEORIA.length - 1 ? TEORIA[i + 1].title + ' ›' : 'Siguiente';
+    $('teoSelect').value = t.id;
+    document.querySelectorAll('#teoSide .ex-btn').forEach(function (b) { b.setAttribute('aria-current', b.dataset.id === t.id ? 'true' : 'false'); if (b.dataset.id === t.id && b.offsetParent) b.scrollIntoView({ block: 'nearest' }); });
+  }
+  // section: número de apartado (h) al que ir; sin él, al principio del tema
+  function goTopic(id, section) {
+    st.topic = id;
+    var g = topic().group; if (st.collapsed && st.collapsed[g]) { delete st.collapsed[g]; paintGroups(); }
+    save(); render();
+    var h = section != null && $('teo-' + id + '-' + section);
+    if (h) h.scrollIntoView({ block: 'start' });
+    else try { window.scrollTo({ top: 0, behavior: 'smooth' }); } catch (e) { window.scrollTo(0, 0); }
+  }
+
+  // índice: lateral en escritorio y desplegable en el móvil, agrupado como los ejercicios
+  var CHEV = '<svg class="chev" aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>';
+  function paintGroups() {
+    document.querySelectorAll('#teoSide .group-head').forEach(function (h) {
+      var c = !!(st.collapsed && st.collapsed[h.dataset.group]);
+      h.setAttribute('aria-expanded', c ? 'false' : 'true');
+      $(h.getAttribute('aria-controls')).hidden = c;
+    });
+  }
+  function buildNav() {
+    var side = $('teoSide'), sel = $('teoSelect'), last = null, og = null, items = null;
+    TEORIA.forEach(function (t, i) {
+      if (t.group !== last) {
+        var head = document.createElement('button'); head.type = 'button'; head.className = 'group-head'; head.dataset.group = t.group;
+        head.setAttribute('aria-controls', 'teo-grp-' + i);
+        head.innerHTML = CHEV + '<span class="gname"></span><span class="group-count"></span>';
+        head.querySelector('.gname').textContent = t.group;
+        head.querySelector('.group-count').textContent = TEORIA.filter(function (x) { return x.group === t.group; }).length;
+        head.addEventListener('click', function () {
+          st.collapsed = st.collapsed || {};
+          if (st.collapsed[t.group]) delete st.collapsed[t.group]; else st.collapsed[t.group] = true;
+          save(); paintGroups();
+        });
+        side.appendChild(head);
+        items = document.createElement('div'); items.id = 'teo-grp-' + i; side.appendChild(items);
+        og = document.createElement('optgroup'); og.label = t.group; sel.appendChild(og); last = t.group;
+      }
+      var b = document.createElement('button'); b.type = 'button'; b.className = 'ex-btn'; b.dataset.id = t.id; b.textContent = t.title;
+      b.addEventListener('click', function () { goTopic(t.id); });
+      items.appendChild(b);
+      var o = document.createElement('option'); o.value = t.id; o.textContent = t.title; og.appendChild(o);
+    });
+    var soon = document.createElement('p'); soon.className = 'teo-soon'; soon.textContent = 'Se irán añadiendo temas según avance el curso.'; side.appendChild(soon);
+    sel.addEventListener('change', function () { goTopic(sel.value); });
+    paintGroups();
+  }
+
+  // ----- pestañas -----
+  function show(view) {
+    st.view = view; save();
+    $('ejView').hidden = view !== 'ej'; $('teoView').hidden = view !== 'teo';
+    document.querySelectorAll('.tabs button').forEach(function (b) { b.setAttribute('aria-current', b.dataset.view === view ? 'page' : 'false'); });
+  }
+  document.querySelectorAll('.tabs button').forEach(function (b) { b.addEventListener('click', function () { show(b.dataset.view); }); });
+  $('teoPrev').addEventListener('click', function () { var i = TEORIA.indexOf(topic()); if (i > 0) goTopic(TEORIA[i - 1].id); });
+  $('teoNext').addEventListener('click', function () { var i = TEORIA.indexOf(topic()); if (i < TEORIA.length - 1) goTopic(TEORIA[i + 1].id); });
+  // en cada ejercicio, un botón a los temas que lo ponen en «Practícalo»
+  var BOOK = '<svg aria-hidden="true" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20V3H6.5A2.5 2.5 0 0 0 4 5.5z"></path><path d="M4 19.5A2.5 2.5 0 0 0 6.5 22H20v-5"></path></svg>';
+  function exerciseLinks() {
+    var e = window.JP.current(), box = $('exTeoria');
+    var topics = TEORIA.filter(function (t) { return t.blocks.some(function (b) { return b.practice && b.practice.indexOf(e.id) >= 0; }); });
+    box.innerHTML = '';
+    topics.forEach(function (t) {
+      var b = document.createElement('button'); b.type = 'button'; b.className = 'teo-link';
+      b.innerHTML = BOOK + 'Teoría: ' + esc(t.title);
+      b.addEventListener('click', function () { show('teo'); goTopic(t.id); });
+      box.appendChild(b);
+    });
+    box.hidden = !topics.length;
+  }
+  window.JP.onRender(exerciseLinks);
+  window.JP.teoria = { show: show, goTopic: goTopic };
+
+  buildNav(); render(); exerciseLinks(); show(st.view);
+})();
+
+// Las barras laterales ocupan solo el alto visible: así su scroll llega siempre al final.
+(function () {
+  function ajustar() {
+    document.querySelectorAll('.side').forEach(function (s) {
+      if (!s.offsetParent) return;
+      var top = Math.max(s.getBoundingClientRect().top, 0);
+      s.style.maxHeight = Math.max(window.innerHeight - top - 16, 200) + 'px';
+    });
+  }
+  window.addEventListener('scroll', ajustar, { passive: true });
+  window.addEventListener('resize', ajustar);
+  document.addEventListener('click', function () { setTimeout(ajustar, 0); });
+  ajustar();
+})();
+// Búsqueda de la cabecera: temas de Teoría (va al apartado concreto) y ejercicios (por título y por lo que usa la solución).
+(function () {
+  'use strict';
+  var $ = function (id) { return document.getElementById(id); };
+  var input = $('searchInput'), box = $('searchResults'), items = [], sel = -1;
+  function esc(t) { return t.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
+  // minúsculas y sin tildes; «do while», «foreach»… se escriben de una sola forma
+  function norm(t) {
+    return t.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+      .replace(/\bdo\s*-?\s*while\b/g, 'do-while').replace(/\bfor\s*-?\s*each\b/g, 'for-each')
+      .replace(/\bwhile\s*\(\s*true\s*\)/g, 'while-true').replace(/\bmatrices\b/g, 'matriz').replace(/\barrays?\b|\bvectore?s?\b/g, 'array');
+  }
+  function words(t) { return norm(t).split(/[^a-z0-9ñ_\-]+/).filter(Boolean); }
+
+  // ----- lo que usa cada ejercicio, sacado de su solución -----
+  function tags(e) {
+    var src = e.solution.replace(/"(?:\\.|[^"\\])*"/g, '""').replace(/\/\/.*$/gm, ''), t = [];
+    var add = function (cond, name) { if (cond && t.indexOf(name) < 0) t.push(name); };
+    var whiles = (src.match(/\bwhile\s*\(/g) || []).length, dos = (src.match(/\bdo\s*\{/g) || []).length;
+    add(/\bfor\s*\([^:;)]*;/.test(src), 'for');
+    add(/\bfor\s*\([^;)]*:/.test(src), 'for-each');
+    add(whiles > dos, 'while');
+    add(dos > 0, 'do-while');
+    add(/\bwhile\s*\(\s*true\s*\)/.test(src), 'while-true');
+    add(/\b(for|while)\b[\s\S]*\{[^}]*\b(for|while)\b/.test(src) && (e.req || []).some(function (q) { return /dentro/.test(q.msg); }), 'bucles anidados');
+    add(/\bif\s*\(/.test(src), 'if');
+    add(/\belse\s+if\b/.test(src), 'else if');
+    add(/\bswitch\s*\(/.test(src), 'switch');
+    add(/\bbreak\s*;/.test(src), 'break');
+    add(/\bcontinue\s*;/.test(src), 'continue');
+    add(/\?[^;]*:/.test(src), 'ternario');
+    add(/\[\s*\]|new\s+\w+\s*\[/.test(src), 'array');
+    add(/\[\s*\]\s*\[\s*\]|\]\s*\[/.test(src), 'matriz');
+    add(/\bScanner\b/.test(src), 'scanner');
+    add(/\bString\b/.test(src), 'string');
+    add(/\(\s*(int|double|long|char)\s*\)/.test(src), 'casting');
+    add(/%/.test(src), 'resto %');
+    (src.match(/\.\s*([a-zA-Z]+)\s*\(/g) || []).forEach(function (m) {
+      var n = m.replace(/[.\s(]/g, '');
+      if (!/^(println|print|printf)$/.test(n)) add(true, n);   // salen en todos: no sirven para buscar
+    });
+    (src.match(/\b(Math|Arrays|Integer|Double|Character|String|StringBuilder)\s*\.\s*([a-zA-Z]+)/g) || []).forEach(function (m) { add(true, m.replace(/\s/g, '')); });
+    add(/\bStringBuilder\b/.test(src), 'StringBuilder');
+    return t;
+  }
+  var EX = EXERCISES.map(function (e) { var tg = tags(e); return { e: e, tags: tg, title: words(e.title + ' ' + e.group), tw: tg.map(norm) }; });
+
+  // ----- apartados de la teoría -----
+  function plain(b) { return b.p || b.syntax || b.code || b.java || b.note || (b.list || []).join(' ') || (b.table || []).map(function (r) { return r.join(' '); }).join(' ') || ''; }
+  var SEC = [];
+  TEORIA.forEach(function (t) {
+    var cur = { t: t, n: null, head: '', text: '' };
+    SEC.push(cur);
+    t.blocks.forEach(function (b) {
+      if (b.h) { cur = { t: t, n: SEC.filter(function (s) { return s.t === t && s.n != null; }).length, head: b.h, text: '' }; SEC.push(cur); }
+      else cur.text += ' ' + plain(b).replace(/[`*]/g, '');
+    });
+  });
+
+  // las palabras de Java se buscan enteras: «for» no tiene que encontrar «forma»
+  var KEYWORD = /^(for|while|do|do-while|for-each|if|else|switch|case|break|continue|int|char|long|new|null|true|false|return|var|final)$/;
+  // cada palabra buscada tiene que aparecer; puntúa más si está en el título o el encabezado
+  function scoreWords(q, fields) {
+    var total = 0;
+    for (var i = 0; i < q.length; i++) {
+      var best = 0;
+      fields.forEach(function (f) {
+        if (f.exact && f.exact.indexOf(q[i]) >= 0) best = Math.max(best, f.w + 2);
+        else if (f.words.some(function (w) { return KEYWORD.test(q[i]) ? w === q[i] : w.indexOf(q[i]) === 0; })) best = Math.max(best, f.w);
+      });
+      if (!best) return 0;
+      total += best;
+    }
+    return total;
+  }
+  function snippet(text, q) {
+    var n = norm(text), at = -1;
+    q.forEach(function (w) { var i = n.indexOf(w); if (i >= 0 && (at < 0 || i < at)) at = i; });
+    if (at < 0) return '';
+    var from = Math.max(0, at - 40), s = text.slice(from, from + 120).trim();
+    return (from > 0 ? '…' : '') + s + (from + 120 < text.length ? '…' : '');
+  }
+  function search(raw) {
+    var q = words(raw); if (!q.length) return [];
+    var res = [];
+    SEC.forEach(function (s) {
+      var sc = scoreWords(q, [{ words: words(s.t.title), w: 6 }, { words: words(s.head), w: 4 }, { words: words(s.text), w: 1 }]);
+      if (sc && !(s.n == null && !s.text.trim())) res.push({ kind: 'teo', sc: sc + 0.5, s: s, snip: snippet(s.head + ' ' + s.text, q) });
+    });
+    EX.forEach(function (x) {
+      var sc = scoreWords(q, [{ words: x.title, w: 5 }, { words: x.tw.join(' ').split(' '), exact: x.tw, w: 3 }]);
+      if (sc) res.push({ kind: 'ej', sc: sc, x: x, hit: x.tags.filter(function (t) { var nt = norm(t); return q.some(function (w) { return nt.indexOf(w) === 0; }); }) });
+    });
+    return res.sort(function (a, b) { return b.sc - a.sc; });
+  }
+
+  // ----- lista de resultados -----
+  function paint() {
+    var res = search(input.value);
+    box.innerHTML = ''; items = []; sel = -1;
+    if (!input.value.trim()) { box.hidden = true; return; }
+    var teo = res.filter(function (r) { return r.kind === 'teo'; }).slice(0, 6), ej = res.filter(function (r) { return r.kind === 'ej'; });
+    if (!teo.length && !ej.length) { box.innerHTML = '<p class="sr-empty">No hay nada con «' + esc(input.value.trim()) + '».</p>'; box.hidden = false; return; }
+    [['Teoría', teo], ['Ejercicios', ej]].forEach(function (g) {
+      if (!g[1].length) return;
+      var h = document.createElement('div'); h.className = 'sr-group'; h.textContent = g[0] + (g[0] === 'Ejercicios' ? ' (' + g[1].length + ')' : ''); box.appendChild(h);
+      g[1].forEach(function (r) {
+        var b = document.createElement('button'); b.type = 'button'; b.className = 'sr-item'; b.setAttribute('role', 'option');
+        if (r.kind === 'teo') {
+          b.innerHTML = '<span class="sr-title">' + esc(r.s.t.title) + (r.s.head ? ' <span class="sr-sub">› ' + esc(r.s.head) + '</span>' : '') + '</span>' +
+            (r.snip ? '<span class="sr-snip">' + esc(r.snip) + '</span>' : '');
+          b.addEventListener('click', function () { close(); window.JP.teoria.show('teo'); window.JP.teoria.goTopic(r.s.t.id, r.s.n); });
+        } else {
+          b.innerHTML = '<span class="sr-title">' + esc(r.x.e.title) + ' <span class="lv ' + esc(r.x.e.level) + '">' + esc(r.x.e.level) + '</span></span>' +
+            '<span class="sr-snip">' + esc(r.x.e.group) + (r.hit.length ? ' · usa ' + r.hit.map(esc).join(', ') : '') + '</span>';
+          b.addEventListener('click', function () { close(); window.JP.teoria.show('ej'); window.JP.goExercise(r.x.e.id); });
+        }
+        box.appendChild(b); items.push(b);
+      });
+    });
+    box.hidden = false;
+  }
+  function close() { box.hidden = true; input.value = ''; items = []; sel = -1; input.blur(); }
+  function mark(i) {
+    if (!items.length) return;
+    sel = (i + items.length) % items.length;
+    items.forEach(function (b, j) { b.setAttribute('aria-selected', j === sel ? 'true' : 'false'); });
+    items[sel].scrollIntoView({ block: 'nearest' });
+  }
+  input.addEventListener('input', paint);
+  input.addEventListener('focus', function () { if (input.value.trim()) paint(); });
+  input.addEventListener('keydown', function (ev) {
+    if (ev.key === 'ArrowDown') { ev.preventDefault(); mark(sel + 1); }
+    else if (ev.key === 'ArrowUp') { ev.preventDefault(); mark(sel - 1); }
+    else if (ev.key === 'Enter') { ev.preventDefault(); if (items.length) items[sel < 0 ? 0 : sel].click(); }
+    else if (ev.key === 'Escape') { close(); }
+  });
+  document.addEventListener('click', function (ev) { if (!ev.target.closest('.search')) box.hidden = true; });
 })();
 </script>
 

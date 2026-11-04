@@ -36,6 +36,8 @@ def documento(html):
 
 
 plantilla = leer('template.html')
+# temas de Teoría, en el orden del índice
+TEORIA_ARCHIVOS = re.findall(r"'(teoria_[^']+\.js)'", leer('teoria_archivos.js'))
 minijava = leer('minijava.js').replace("if (typeof module !== 'undefined') module.exports = MiniJava;", "")
 ejercicios = leer('exercises.js').replace("if (typeof module !== 'undefined') module.exports = EXERCISES;", "")
 
@@ -59,6 +61,9 @@ pruebas = (plantilla.replace("/*MINIJAVA*/", minijava).replace("/*EXERCISES*/", 
            .replace("/*REFSOL_JS*/", leer('refsol.js').rstrip() + "\n" + leer('walk.js').rstrip() + "\n" + leer('autocomplete.js').rstrip())
            .replace("// Tu código aquí\\n'", "// Recuerda: para que el resultado salga en consola usa System.out.println(...);\\n"
                     "// Atajo: escribe sout (o syso) y pulsa Tab para que se escriba solo.\\n\\n// Tu código aquí\\n'")
+           .replace("/*TEORIA_CSS*/", leer('teoria.css').rstrip())
+           .replace("/*TEORIA_HTML*/", leer('teoria.html').rstrip())
+           .replace("/*TEORIA_JS*/", leer('teoria_temas.js').rstrip() + "\n" + "\n".join(leer(f).rstrip() for f in TEORIA_ARCHIVOS) + "\n" + leer('teoria.js').rstrip() + "\n" + leer('buscar.js').rstrip())
            .replace("/*LEVELS*/false", "true")
            .replace("/*SNIPPETS*/", leer('snippets.js').rstrip())
            .replace("/*SNIPPET_HELP*/", "Atajo: sout o syso + Tab escribe System.out.println(). Al escribir el nombre de una variable "
@@ -67,7 +72,7 @@ pruebas = (plantilla.replace("/*MINIJAVA*/", minijava).replace("/*EXERCISES*/", 
 ANCLA = '<button type="button" class="theme-btn" id="themeBtn" aria-label="Cambiar a modo claro"></button>\n'
 assert pruebas.count(ANCLA) == 1
 pruebas = pruebas.replace(ANCLA, ANCLA + '      ' + EXP_BADGE + '\n')
-assert not re.search(r'/\*(WELCOME|LEVEL|SNIPPET|REFSOL|MINIJAVA|EXERCISES)', pruebas), 'queda algún hueco sin rellenar'
+assert not re.search(r'/\*(WELCOME|LEVEL|SNIPPET|REFSOL|MINIJAVA|EXERCISES|TEORIA)', pruebas), 'queda algún hueco sin rellenar'
 
 escribir('salida/pruebas.html', pruebas)                  # lo que se publica en el artefacto experimental
 escribir('salida/pruebas_completa.html', documento(pruebas))  # para las pruebas automáticas en el navegador
@@ -77,7 +82,7 @@ print('experimental lista: salida/pruebas.html')
 # La misma experimental en varios archivos (salida/partes/), que es como se publica en el artefacto:
 # un index.html pequeño y los estilos y scripts grandes aparte. Así, para actualizarla desde un hilo
 # nuevo basta con leer el index.html y ver la lista de archivos, sin leer la página entera.
-PARTES = ['minijava.js', 'ejercicios.js', 'app.js']
+PARTES = ['minijava.js', 'ejercicios.js', 'app.js', 'teoria.js']
 os.makedirs('salida/partes', exist_ok=True)
 indice, bloques = pruebas, re.findall(r'<script>([\s\S]*?)</script>', pruebas)
 assert len(bloques) == len(PARTES) + 1, 'han cambiado los bloques <script> de la plantilla: revisa PARTES'
